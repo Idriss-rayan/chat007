@@ -26,27 +26,27 @@ app.use("/api/auth", authRoutes);
 
 // 🔌 Socket.IO
 io.on("connection", (socket) => {
-  console.log("🟢 Utilisateur connecté :", socket.id);
+  console.log("Utilisateur connecté :", socket.id);
 
   socket.on("send_message", (data) => {
-    console.log("📩 Message reçu :", data);
+    console.log("Message reçu :", data);
     socket.broadcast.emit("receive_message", data); // Renvoie à tous sauf l’émetteur
   });
 
   socket.on("disconnect", () => {
-    console.log("🔴 Utilisateur déconnecté :", socket.id);
+    console.log("Utilisateur déconnecté :", socket.id);
   });
 });
 
 // Connexion à MongoDB et lancement du serveur
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("✅ MongoDB Atlas connecté");
+    console.log("MongoDB Atlas connecté");
     const PORT = process.env.PORT || 5000;
     httpServer.listen(PORT, () => {
-      console.log("🚀 Serveur démarré sur le port", PORT);
+      console.log("Serveur démarré sur le port", PORT);
     });
   })
   .catch((err) => {
-    console.error("❌ Erreur de connexion MongoDB :", err.message);
+    console.error("Erreur de connexion MongoDB :", err.message);
   });
