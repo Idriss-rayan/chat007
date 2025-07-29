@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:simplechat/lunch_gate.dart';
 import 'login_page.dart';
 import 'register_page.dart';
+import 'home_page.dart';
 
 void main() {
-  runApp(ChatApp());
+  runApp(MyApp());
 }
 
-class ChatApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Facebook Clone',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: LoginPage(),
+      title: 'SimpleChat',
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/',
       routes: {
-        '/register': (_) => RegisterPage(),
-        '/login': (_) => LoginPage(),
+        '/': (context) => LaunchGate(),
+        '/login': (context) => LoginPage(),
+        '/register': (context) => RegisterPage(),
+        '/home': (context) => HomePage(),
       },
     );
   }
