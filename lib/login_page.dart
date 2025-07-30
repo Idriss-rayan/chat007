@@ -32,8 +32,11 @@ class _LoginPageState extends State<LoginPage> {
       print("Token reçu : $token");
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Connexion réussie")),
+        SnackBar(
+          content: Text("Connexion réussie"),
+        ),
       );
+      Navigator.pushReplacementNamed(context, '/chat');
 
       // Naviguer vers une autre page si besoin
     } else {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simplechat/chat_page.dart';
 import 'package:simplechat/lunch_gate.dart';
 import 'login_page.dart';
 import 'register_page.dart';
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => LaunchGate(),
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
+        '/chat': (_) => ChatPage(),
         '/home': (context) => HomePage(),
       },
     );

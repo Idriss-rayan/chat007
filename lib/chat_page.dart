@@ -62,7 +62,19 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Chat")),
+      appBar: AppBar(
+        title: Text("Chat"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            tooltip: 'Déconnexion',
+            onPressed: () {
+              // Ici tu peux aussi effacer le token si besoin
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(

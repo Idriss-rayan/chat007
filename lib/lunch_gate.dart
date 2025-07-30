@@ -1,5 +1,6 @@
+// lunch_gate.dart
+
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LaunchGate extends StatefulWidget {
@@ -13,17 +14,15 @@ class _LaunchGateState extends State<LaunchGate> {
   @override
   void initState() {
     super.initState();
-    checkAuth();
+    checkLogin();
   }
 
-  Future<void> checkAuth() async {
+  Future<void> checkLogin() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
-    await Future.delayed(Duration(seconds: 2));
-
-    if (token != null) {
-      Navigator.pushReplacementNamed(context, '/home');
+    if (token != null && token.isNotEmpty) {
+      Navigator.pushReplacementNamed(context, '/chat');
     } else {
       Navigator.pushReplacementNamed(context, '/login');
     }
@@ -32,7 +31,7 @@ class _LaunchGateState extends State<LaunchGate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: CircularProgressIndicator()),
+      body: Center(child: CircularProgressIndicator()), // loading temporaire
     );
   }
 }
