@@ -3,50 +3,26 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
-const { createServer } = require("http");
-const { Server } = require("socket.io");
+const userRoutes = require("./routes/userRoutes"); // 🔄 bien après express()
 
 dotenv.config();
 
-const app = express();
-const httpServer = createServer(app); // 🔁 Création du serveur HTTP
-const io = new Server(httpServer, {
-  cors: {
-    origin: "*", // à sécuriser plus tard
-    methods: ["GET", "POST"]
-  }
-});
+const app = express(); // ✅ Initialisation AVANT app.use
 
-// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// Routes API REST
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes); // 🔄 correct ici
 
-// 🔌 Socket.IO
-io.on("connection", (socket) => {
-  console.log("Utilisateur connecté :", socket.id);
-
-  socket.on("send_message", (data) => {
-    console.log("Message reçu :", data);
-    socket.broadcast.emit("receive_message", data); // Renvoie à tous sauf l’émetteur
-  });
-
-  socket.on("disconnect", () => {
-    console.log("Utilisateur déconnecté :", socket.id);
-  });
-});
-
-// Connexion à MongoDB et lancement du serveur
+// Connexion MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("MongoDB Atlas connecté");
-    const PORT = process.env.PORT || 5000;
-    httpServer.listen(PORT, () => {
-      console.log("Serveur démarré sur le port", PORT);
+    console.log("✅ MongoDB connecté");
+    app.listen(process.env.PORT, () => {
+      console.log("🚀 Serveur lancé sur le port", process.env.PORT);
     });
   })
   .catch((err) => {
-    console.error("Erreur de connexion MongoDB :", err.message);
+    console.error("❌ Erreur MongoDB :", err.message);
   });

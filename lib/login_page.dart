@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
@@ -29,16 +31,18 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final token = data['token'];
-      print("Token reçu : $token");
+
+      // 🔐 Enregistrer le token et l'email
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+      await prefs.setString('email', email);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Connexion réussie"),
-        ),
+        SnackBar(content: Text("Connexion réussie")),
       );
-      Navigator.pushReplacementNamed(context, '/chat');
 
-      // Naviguer vers une autre page si besoin
+      Navigator.pushReplacementNamed(
+          context, '/home'); // rediriger vers HomePage
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Identifiants incorrects")),
