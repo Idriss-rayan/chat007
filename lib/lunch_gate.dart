@@ -22,7 +22,8 @@ class _LaunchGateState extends State<LaunchGate> {
     final token = prefs.getString('token');
 
     if (token != null && token.isNotEmpty) {
-      Navigator.pushReplacementNamed(context, '/chat');
+      Navigator.pushReplacementNamed(
+          context, '/home'); // before it was /chat, we will try /home ...
     } else {
       Navigator.pushReplacementNamed(context, '/login');
     }
