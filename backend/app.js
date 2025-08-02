@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const Message = require("./models/message");
@@ -9,19 +11,26 @@ const Message = require("./models/message");
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app); // ✅ Utilise http.Server
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes d'authentification et utilisateurs
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 
-// Route pour récupérer les messages entre deux utilisateurs
+// ✅ Route GET pour les anciens messages
 app.get("/api/messages", async (req, res) => {
   const { sender, receiver } = req.query;
 
-  // Validation des paramètres
   if (!sender || !receiver) {
     return res.status(400).json({ message: "Paramètres sender et receiver requis" });
   }
@@ -30,7 +39,7 @@ app.get("/api/messages", async (req, res) => {
     const messages = await Message.find({
       $or: [
         { sender, receiver },
-        { sender: receiver, receiver: sender },
+        { sender: receiver, receiver: sender }
       ]
     }).sort({ timestamp: 1 });
 
@@ -41,14 +50,41 @@ app.get("/api/messages", async (req, res) => {
   }
 });
 
-// Connexion à MongoDB et lancement du serveur
-const PORT = process.env.PORT || 5000;
+// ✅ SOCKET.IO LOGIC
+io.on("connection", (socket) => {
+  console.log("⚡ Un utilisateur est connecté");
 
+  socket.on("send_message", async (data) => {
+    try {
+      const { sender, receiver, text } = data;
+
+      const message = new Message({ sender, receiver, text });
+      await message.save();
+
+      // 💬 Envoyer le message aux clients
+      io.emit("receive_message", {
+        sender,
+        receiver,
+        text,
+        timestamp: message.timestamp,
+      });
+    } catch (err) {
+      console.error("Erreur lors de l'envoi du message :", err.message);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    console.log("👋 Utilisateur déconnecté");
+  });
+});
+
+// Connexion à MongoDB + lancement serveur
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("✅ MongoDB connecté");
-    app.listen(PORT, () => {
-      console.log("🚀 Serveur lancé sur le port", PORT);
+    const PORT = process.env.PORT || 5000;
+    server.listen(PORT, () => {
+      console.log(`🚀 Serveur lancé sur le port ${PORT}`);
     });
   })
   .catch((err) => {
