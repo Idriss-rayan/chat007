@@ -33,8 +33,10 @@ class _ChatPageState extends State<ChatPage> {
 
   // 🔁 Récupérer les anciens messages depuis l'API
   Future<void> loadMessages() async {
-    final response = await http.get(Uri.parse(
-        "http://192.168.0.169:5000/api/messages?sender=$sender&receiver=$receiver"));
+    final response = await http.get(
+      Uri.parse(
+          "http://192.168.0.169:5000/api/messages?sender=$sender&receiver=$receiver"),
+    );
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -112,8 +114,11 @@ class _ChatPageState extends State<ChatPage> {
           Expanded(
             child: ListView.builder(
               itemCount: messages.length,
-              itemBuilder: (_, index) => ListTile(
-                title: Text(messages[index]),
+              itemBuilder: (_, index) => Padding(
+                padding: const EdgeInsets.only(bottom: 28.0),
+                child: ListTile(
+                  title: Text(messages[index]),
+                ),
               ),
             ),
           ),
