@@ -1,9 +1,28 @@
-const express = require('express');
-const app = express();
-const PORT = 3000;
+const axios = require("axios");
+const cheerio = require("cheerio");
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+const BASE_URL = "https://books.toscrape.com/";
 
-app.listen(PORT, () => console.log(`le serveur est lancer sur http://localhost:${PORT}`));
+async function scrapeBooks() {
+  try {
+    const { data } = await axios.get(BASE_URL);
+    const $ = cheerio.load(data);
+
+    const books = [];
+
+    $(".product_pod").each((index, element) => {
+      const title = $(element).find("h3 a").attr("title");
+      const price = $(element).find(".price_color").text();
+      const availability = $(element).find(".availability").text().trim();
+
+      books.push({ title, price, availability });
+    });
+
+    console.log("📚 Livres trouvés :");
+    console.table(books);
+  } catch (error) {
+    console.error("❌ Erreur de scraping :", error.message);
+  }
+}
+
+scrapeBooks();
