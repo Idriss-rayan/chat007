@@ -50,18 +50,15 @@ app.get("/api/messages", async (req, res) => {
   }
 });
 
-// ✅ SOCKET.IO LOGIC
+
 io.on("connection", (socket) => {
   console.log("⚡ Un utilisateur est connecté");
 
   socket.on("send_message", async (data) => {
     try {
       const { sender, receiver, text } = data;
-
       const message = new Message({ sender, receiver, text });
       await message.save();
-
-      // 💬 Envoyer le message aux clients
       io.emit("receive_message", {
         sender,
         receiver,
