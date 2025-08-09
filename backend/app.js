@@ -59,7 +59,7 @@ io.on("connection", (socket) => {
       const { sender, receiver, text } = data;
       const message = new Message({ sender, receiver, text });
       await message.save();
-      io.emit("receive_message", {
+      socket.broadcast.emit("receive_message", {
         sender,
         receiver,
         text,
