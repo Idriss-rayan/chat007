@@ -52,7 +52,7 @@ app.get("/api/messages", async (req, res) => {
 
 
 io.on("connection", (socket) => {
-  console.log("⚡ Un utilisateur est connecté");
+  console.log(`l'utilisateur connect a pour id ${socket.id}`);
 
   socket.on("send_message", async (data) => {
     try {
