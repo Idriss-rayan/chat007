@@ -91,7 +91,7 @@ class _MyAppState extends State<MyApp> {
             children: [
               TextField(
                   controller: usernameController,
-                  decoration: InputDecoration(labelText: "pomodoro")),
+                  decoration: InputDecoration(labelText: "pomro")),
               ElevatedButton(
                   onPressed: setUsername, child: Text("Valider pseudo")),
               TextField(
