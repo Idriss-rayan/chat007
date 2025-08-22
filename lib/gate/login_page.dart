@@ -12,9 +12,13 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        fit: StackFit.expand,
         children: [
-          Image.asset("component/images/bg.png"),
+          SizedBox.expand(
+            child: Image.asset(
+              "assets/images/bg.png",
+              fit: BoxFit.cover,
+            ),
+          ),
         ],
       ),
     );
