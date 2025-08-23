@@ -47,14 +47,35 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: height * 0.05,
                 ),
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-                  child: Container(
-                    color: Colors.black.withOpacity(0),
-                    width: 200,
-                    height: 200,
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+                      child: Container(
+                        width: width * 0.9052,
+                        height: height * 0.65,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(12, 255, 255, 255),
+                          border: Border.all(
+                            color: Colors.white30,
+                          ),
+                        ),
+
+                        // pour l'effet "verre"
+                        alignment: Alignment.center,
+                      ),
+                    ),
                   ),
-                ),
+                )
+                // BackdropFilter(
+                //   filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+                //   child: Container(
+                //     color: Colors.black,
+                //     width: 200,
+                //     height: 200,
+                //   ),
+                // ),
               ],
             ),
           ),
