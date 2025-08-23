@@ -60,14 +60,12 @@ class _LoginPageState extends State<LoginPage> {
                           border: Border.all(
                             color: Colors.white30,
                           ),
-                        ),
-
-                        // pour l'effet "verre"
+                        ), // pour l'effet "verre"
                         alignment: Alignment.center,
                       ),
                     ),
                   ),
-                )
+                ),
                 // BackdropFilter(
                 //   filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
                 //   child: Container(
