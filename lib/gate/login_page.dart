@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:simplechat/component/buttons/email_button.dart';
+import 'package:simplechat/component/buttons/password_button.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -62,18 +64,25 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ), // pour l'effet "verre"
                         alignment: Alignment.center,
+                        child: Form(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              top: height * 0.03,
+                              left: width * 0.03,
+                              right: width * 0.03,
+                            ),
+                            child: Column(
+                              children: [
+                                EmailButton(),
+                                PasswordButton(),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-                // BackdropFilter(
-                //   filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-                //   child: Container(
-                //     color: Colors.black,
-                //     width: 200,
-                //     height: 200,
-                //   ),
-                // ),
               ],
             ),
           ),
