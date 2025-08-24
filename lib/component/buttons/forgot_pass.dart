@@ -11,18 +11,23 @@ class _ForgotPassState extends State<ForgotPass> {
   bool IsClicked = false;
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        setState(() {
-          IsClicked = !IsClicked;
-        });
-      },
-      child: Text(
-        'Forgot password',
-        style: TextStyle(
-          color: IsClicked ? Colors.grey : Colors.white,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton(
+          onPressed: () {
+            setState(() {
+              IsClicked = !IsClicked;
+            });
+          },
+          child: Text(
+            'Forgot password',
+            style: TextStyle(
+              color: IsClicked ? Colors.white : Colors.white70,
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }
