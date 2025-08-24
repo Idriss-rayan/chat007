@@ -13,15 +13,38 @@ class _LoginButtonState extends State<LoginButton> {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
-    return Container(
-      width: width * 0.25,
-      height: height * 0.05,
-      decoration: BoxDecoration(
-        color: Colors.amber,
-        border: Border.all(
-          color: Colors.white,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Material(
+        // elevation: 50,
+        // shadowColor: Colors.orange,
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {},
+          splashColor: Colors.white.withOpacity(0.3), // couleur de l'ondulation
+          highlightColor: Colors.white.withOpacity(0.1), // couleur quand pressé
+          child: Container(
+            width: width * 0.3,
+            height: height * 0.06,
+            decoration: BoxDecoration(
+              color: Colors.white24,
+              border: Border.all(
+                color: const Color.fromARGB(0, 255, 255, 255),
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: Text(
+                "Sign In",
+                style: TextStyle(
+                  fontSize: width * 0.04,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
         ),
-        borderRadius: BorderRadius.circular(10),
       ),
     );
   }

@@ -53,8 +53,9 @@ class _PasswordButtonState extends State<PasswordButton> {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(7),
-            borderSide:
-                BorderSide(color: const Color.fromARGB(70, 255, 255, 255)),
+            borderSide: BorderSide(
+              color: const Color.fromARGB(70, 255, 255, 255),
+            ),
           ),
           // Bordure quand il y a une erreur
           errorBorder: OutlineInputBorder(

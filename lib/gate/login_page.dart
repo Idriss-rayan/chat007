@@ -79,6 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                                 PasswordButton(),
                                 ForgotPass(),
                                 LoginButton(),
+                                Divider(color: Colors.white30),
                               ],
                             ),
                           ),
