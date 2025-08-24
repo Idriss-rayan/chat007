@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:simplechat/component/buttons/email_button.dart';
+import 'package:simplechat/component/buttons/forgot_pass.dart';
 import 'package:simplechat/component/buttons/password_button.dart';
 
 class LoginPage extends StatefulWidget {
@@ -75,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                               children: [
                                 EmailButton(),
                                 PasswordButton(),
+                                ForgotPass(),
                               ],
                             ),
                           ),

@@ -8,14 +8,19 @@ class ForgotPass extends StatefulWidget {
 }
 
 class _ForgotPassState extends State<ForgotPass> {
+  bool IsClicked = false;
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(3),
-      child: TextButton(
-        onPressed: () {},
-        child: Text(
-          'Forgot password',
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          IsClicked = !IsClicked;
+        });
+      },
+      child: Text(
+        'Forgot password',
+        style: TextStyle(
+          color: IsClicked ? Colors.grey : Colors.white,
         ),
       ),
     );

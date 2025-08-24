@@ -17,7 +17,7 @@ class _PasswordButtonState extends State<PasswordButton> {
     final width = size.width;
     final height = size.height;
     return Padding(
-      padding: EdgeInsets.only(bottom: width * 0.08),
+      padding: EdgeInsets.only(bottom: 0),
       child: Form(
         key: _formKey,
         child: TextFormField(
