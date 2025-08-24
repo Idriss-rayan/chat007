@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:simplechat/component/buttons/email_button.dart';
+import 'package:simplechat/component/buttons/facebook_btn.dart';
 import 'package:simplechat/component/buttons/forgot_pass.dart';
+import 'package:simplechat/component/buttons/google_btn.dart';
 import 'package:simplechat/component/buttons/password_button.dart';
 import 'package:simplechat/gate/login_button.dart';
 
@@ -80,6 +82,14 @@ class _LoginPageState extends State<LoginPage> {
                                 ForgotPass(),
                                 LoginButton(),
                                 Divider(color: Colors.white30),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    FacebookBtn(),
+                                    SizedBox(width: width * 0.1),
+                                    GoogleBtn(),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
