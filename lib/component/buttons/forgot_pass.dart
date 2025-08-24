@@ -15,6 +15,16 @@ class _ForgotPassState extends State<ForgotPass> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
+          style: ButtonStyle(
+            overlayColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+                if (states.contains(MaterialState.pressed)) {
+                  return Colors.white.withOpacity(0.3); // couleur du ripple
+                }
+                return null;
+              },
+            ),
+          ),
           onPressed: () {
             setState(() {
               IsClicked = !IsClicked;

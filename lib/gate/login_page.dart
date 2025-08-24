@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:simplechat/component/buttons/dont_have_account.dart';
 import 'package:simplechat/component/buttons/email_button.dart';
 import 'package:simplechat/component/buttons/facebook_btn.dart';
 import 'package:simplechat/component/buttons/forgot_pass.dart';
@@ -90,6 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                                     GoogleBtn(),
                                   ],
                                 ),
+                                DontHaveAccount(),
                               ],
                             ),
                           ),
