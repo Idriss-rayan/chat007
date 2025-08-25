@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simplechat/gate/register_page.dart';
 
 class DontHaveAccount extends StatefulWidget {
   const DontHaveAccount({super.key});
@@ -36,7 +37,14 @@ class _DontHaveAccountState extends State<DontHaveAccount> {
                 },
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RegisterPage(),
+                ),
+              );
+            },
             child: Text(
               "Sign Up",
               style: TextStyle(

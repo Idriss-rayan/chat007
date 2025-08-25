@@ -7,7 +7,7 @@ import 'package:simplechat/component/buttons/facebook_btn.dart';
 import 'package:simplechat/component/buttons/forgot_pass.dart';
 import 'package:simplechat/component/buttons/google_btn.dart';
 import 'package:simplechat/component/buttons/password_button.dart';
-import 'package:simplechat/gate/login_button.dart';
+import 'package:simplechat/component/buttons/login_button.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -88,9 +88,9 @@ class _LoginPageState extends State<LoginPage> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      FacebookBtn(),
-                                      SizedBox(width: width * 0.1),
                                       GoogleBtn(),
+                                      SizedBox(width: width * 0.1),
+                                      FacebookBtn(),
                                     ],
                                   ),
                                   DontHaveAccount(),
