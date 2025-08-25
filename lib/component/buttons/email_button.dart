@@ -8,6 +8,24 @@ class EmailButton extends StatefulWidget {
 }
 
 class _EmailButtonState extends State<EmailButton> {
+  final TextEditingController _emailController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+
+    // 🔸 écouter les changements en temps réel
+    _emailController.addListener(() {
+      print("Texte actuel: ${_emailController.text}");
+      // Ici tu peux faire une validation live, ou activer un bouton
+    });
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose(); // bonne pratique pour libérer la mémoire
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -16,13 +34,14 @@ class _EmailButtonState extends State<EmailButton> {
     return Padding(
       padding: EdgeInsets.only(bottom: width * 0.08),
       child: TextFormField(
-        // 🔸 le texte que l'utilisateur tape
+        controller: _emailController,
         style: const TextStyle(
           color: Colors.white,
           fontSize: 16,
         ),
         cursorColor: Colors.white,
         keyboardType: TextInputType.emailAddress,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           labelText: "Enter your email",
           border: OutlineInputBorder(
@@ -31,22 +50,16 @@ class _EmailButtonState extends State<EmailButton> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(7),
-            borderSide: BorderSide(
-              color: const Color.fromARGB(179, 255, 255, 255),
-            ),
+            borderSide: BorderSide(color: Colors.white),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(7),
-            borderSide:
-                BorderSide(color: const Color.fromARGB(70, 255, 255, 255)),
+            borderSide: BorderSide(color: Colors.white54),
           ),
-          // Bordure quand il y a une erreur
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(7),
             borderSide: BorderSide(color: Colors.red, width: 1.5),
           ),
-
-          // Bordure quand focus + erreur
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(7),
             borderSide: BorderSide(color: Colors.red, width: 2),
@@ -58,12 +71,12 @@ class _EmailButtonState extends State<EmailButton> {
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return "Veuillez entrer votre email";
+            return "Please enter your email";
           }
           if (!value.contains('@')) {
             return "Email invalide";
           }
-          return null;
+          return null; // ✅ aucun message si valide
         },
       ),
     );
