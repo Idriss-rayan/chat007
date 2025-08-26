@@ -30,7 +30,7 @@ class _EmailButtonState extends State<EmailButton> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final width = size.width;
-    final height = size.height;
+    //final height = size.height;
     return Padding(
       padding: EdgeInsets.only(bottom: width * 0.08),
       child: TextFormField(

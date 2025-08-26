@@ -1,67 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:country_picker/country_picker.dart';
 
-class LoginForm extends StatelessWidget {
-  const LoginForm({super.key});
+class CountryDropdownAnimated extends StatefulWidget {
+  const CountryDropdownAnimated({super.key});
+
+  @override
+  State<CountryDropdownAnimated> createState() =>
+      _CountryDropdownAnimatedState();
+}
+
+class _CountryDropdownAnimatedState extends State<CountryDropdownAnimated> {
+  String? _selectedCountry;
+
+  void _showAnimatedCountryPicker() {
+    showCountryPicker(
+      context: context,
+      showPhoneCode: false,
+      onSelect: (country) {
+        setState(() {
+          _selectedCountry = country.name;
+        });
+      },
+      countryListTheme: CountryListThemeData(
+        borderRadius: BorderRadius.circular(12),
+        backgroundColor: Colors.white,
+        textStyle: TextStyle(fontSize: 16, color: Colors.black87),
+        bottomSheetHeight: 500,
+        inputDecoration: InputDecoration(
+          labelText: 'Rechercher un pays',
+          prefixIcon: Icon(Icons.search),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final width = size.width;
-    final height = size.height;
-
     return Scaffold(
-      body: Form(
+      body: Center(
         child: Padding(
-          padding: const EdgeInsets.only(top: 100.0),
-          child: Column(
-            children: [
-              // Champ Email
-              TextFormField(
-                keyboardType: TextInputType.emailAddress,
+          padding: const EdgeInsets.all(20),
+          child: GestureDetector(
+            onTap: _showAnimatedCountryPicker,
+            child: AbsorbPointer(
+              child: TextFormField(
                 decoration: InputDecoration(
-                  labelText: "Email",
-                  prefixIcon: Icon(Icons.email),
+                  labelText: "Sélectionnez un pays",
+                  prefixIcon: Icon(Icons.flag),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   filled: true,
                   fillColor: Colors.white.withOpacity(0.8),
+                  suffixIcon: Icon(Icons.arrow_drop_down),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Veuillez entrer votre email";
-                  }
-                  if (!value.contains('@')) {
-                    return "Email invalide";
-                  }
-                  return null;
-                },
+                controller: TextEditingController(text: _selectedCountry),
+                validator: (value) => value == null || value.isEmpty
+                    ? "Veuillez choisir un pays"
+                    : null,
               ),
-              SizedBox(height: height * 0.02),
-
-              // Champ Mot de passe
-              TextFormField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: "Mot de passe",
-                  prefixIcon: Icon(Icons.lock),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white10,
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Veuillez entrer votre mot de passe";
-                  }
-                  if (value.length < 6) {
-                    return "Au moins 6 caractères";
-                  }
-                  return null;
-                },
-              ),
-            ],
+            ),
           ),
         ),
       ),
