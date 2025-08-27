@@ -40,8 +40,17 @@ class _DontHaveAccountState extends State<DontHaveAccount> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => RegisterPage(),
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      RegisterPage(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    final offsetAnimation =
+                        Tween(begin: const Offset(-1, 0), end: Offset.zero)
+                            .animate(animation);
+                    return SlideTransition(
+                        position: offsetAnimation, child: child);
+                  },
                 ),
               );
             },
