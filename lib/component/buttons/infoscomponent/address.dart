@@ -76,17 +76,17 @@ class _AddressState extends State<Address> {
                     controller: _controller,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.orange.withOpacity(0.2),
+                      fillColor: Color.fromARGB(5, 255, 109, 64),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(3),
                         borderSide: const BorderSide(
-                          color: Colors.deepOrangeAccent,
+                          color: Color.fromARGB(5, 255, 109, 64),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(3),
                         borderSide: const BorderSide(
-                          color: Colors.deepOrange,
+                          color: Color.fromARGB(5, 255, 109, 64),
                         ),
                       ),
                     ),
