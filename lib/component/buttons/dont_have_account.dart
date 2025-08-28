@@ -45,11 +45,7 @@ class _DontHaveAccountState extends State<DontHaveAccount> {
                       RegisterPage(),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
-                    final offsetAnimation =
-                        Tween(begin: const Offset(-1, 0), end: Offset.zero)
-                            .animate(animation);
-                    return SlideTransition(
-                        position: offsetAnimation, child: child);
+                    return FadeTransition(opacity: animation, child: child);
                   },
                 ),
               );

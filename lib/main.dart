@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simplechat/gate/informations.dart';
 import 'package:simplechat/gate/login_page.dart';
 
 void main() {
@@ -11,8 +12,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginPage(),
-      //home: Informations(),
+      //home: LoginPage(),
+      home: Informations(),
     );
   }
 }

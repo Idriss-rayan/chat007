@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simplechat/component/buttons/infoscomponent/first_name.dart';
+import 'package:simplechat/component/buttons/infoscomponent/last_name.dart';
 
 class Informations extends StatefulWidget {
   const Informations({super.key});
@@ -14,7 +15,12 @@ class _InformationsState extends State<Informations> {
     return Scaffold(
       body: ListView(
         children: [
-          FirstName(),
+          Row(
+            children: [
+              FirstName(),
+              LastName(),
+            ],
+          ),
         ],
       ),
     );

@@ -14,70 +14,35 @@ class _FirstNameState extends State<FirstName> {
     final width = size.width;
     final height = size.height;
     return Form(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    //mainAxisAlignment: MainAxisAlignment.start,
+      child: Expanded(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text('First name'),
-                        ],
-                      ),
-                      SizedBox(height: 5),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: const Color.fromARGB(5, 255, 109, 64),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(7),
-                            borderSide:
-                                BorderSide(color: Colors.deepOrangeAccent),
-                          ),
-                        ),
-                      ),
+                      Text('First name'),
                     ],
                   ),
-                ),
-              ),
-              SizedBox(width: width * 0.02),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    //mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text('last name'),
-                        ],
+                  SizedBox(height: 5),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: const Color.fromARGB(5, 255, 109, 64),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: BorderSide(color: Colors.deepOrangeAccent),
                       ),
-                      SizedBox(height: 5),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: const Color.fromARGB(5, 255, 109, 64),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(7),
-                            borderSide:
-                                BorderSide(color: Colors.deepOrangeAccent),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
