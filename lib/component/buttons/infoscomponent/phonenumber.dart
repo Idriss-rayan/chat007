@@ -82,34 +82,41 @@ class _PhonenumberState extends State<Phonenumber> {
 
                     /// 🔹 Validator complexe
                     validator: (phone) {
+                      // 🔹 Vérifie que le champ n’est pas vide
                       if (phone == null || phone.nsn.isEmpty) {
                         return 'Phone number is required';
                       }
 
+                      // 🔹 Utilise la lib pour vérifier le format international/numéro valide
                       if (!phone.isValid()) {
                         return 'Invalid phone number';
                       }
 
                       final national = phone.nsn;
 
+                      // 🔹 Longueur minimale
                       if (national.length < 8) {
                         return "Phone number is too short";
                       }
 
+                      // 🔹 Longueur maximale
                       if (national.length > 15) {
                         return "Phone number is too long";
                       }
 
+                      // 🔹 Interdit les numéros commençant par 0 sauf pour FR
                       if (phone.isoCode != IsoCode.FR &&
                           national.startsWith('0')) {
                         return "Invalid prefix for international format";
                       }
 
+                      // 🔹 Autorise uniquement les chiffres
                       if (!RegExp(r'^[0-9]+$').hasMatch(national)) {
                         return "Phone number contains invalid characters";
                       }
 
-                      return null; // ✅ valide
+                      // ✅ Si tout est ok
+                      return null;
                     },
                   ),
                 ],
