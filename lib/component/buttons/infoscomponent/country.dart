@@ -34,7 +34,7 @@ class _CountryState extends State<Country> {
                       filled: true,
                       fillColor: const Color.fromARGB(5, 255, 109, 64),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7),
+                        borderRadius: BorderRadius.circular(3),
                         borderSide: BorderSide(color: Colors.deepOrangeAccent),
                       ),
                     ),

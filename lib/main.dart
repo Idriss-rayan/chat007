@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:simplechat/gate/informations.dart';
-import 'package:simplechat/gate/login_page.dart';
 
 void main() {
   runApp(MyApp());

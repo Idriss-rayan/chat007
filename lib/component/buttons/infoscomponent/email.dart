@@ -34,10 +34,26 @@ class _EmailState extends State<Email> {
                       filled: true,
                       fillColor: const Color.fromARGB(5, 255, 109, 64),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7),
+                        borderRadius: BorderRadius.circular(3),
                         borderSide: BorderSide(color: Colors.deepOrangeAccent),
                       ),
                     ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Please enter your email";
+                      }
+
+                      String email = value.trim();
+
+                      // Vérifie le format email basique
+                      final emailRegExp =
+                          RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+                      if (!emailRegExp.hasMatch(email)) {
+                        return "Invalid email address";
+                      }
+
+                      return null; // ✅ aucun message si valide
+                    },
                   ),
                 ],
               ),
