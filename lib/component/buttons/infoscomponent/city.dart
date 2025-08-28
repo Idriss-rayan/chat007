@@ -8,6 +8,49 @@ class City extends StatefulWidget {
 }
 
 class _CityState extends State<City> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  String? _validateCity(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Please enter your city";
+    }
+
+    String city = value.trim();
+
+    if (city.length < 2) {
+      return "City name is too short";
+    }
+
+    if (city.length > 50) {
+      return "City name is too long";
+    }
+
+    // Vérifie qu'il n'y a que des lettres, espaces simples, apostrophes et tirets
+    final cityRegExp =
+        RegExp(r"^[A-Za-zÀ-ÖØ-öø-ÿ'-]+(?: [A-Za-zÀ-ÖØ-öø-ÿ'-]+)*$");
+    if (!cityRegExp.hasMatch(city)) {
+      return "City contains invalid characters";
+    }
+
+    // Vérifie qu'il n'y a pas d'espaces consécutifs
+    if (city.contains("  ")) {
+      return "City cannot contain consecutive spaces";
+    }
+
+    // Optionnel : première lettre en majuscule
+    if (city[0] != city[0].toUpperCase()) {
+      return "First letter should be uppercase";
+    }
+
+    return null; // Valide
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -20,24 +63,35 @@ class _CityState extends State<City> {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
+                    children: const [
                       Text(
                         'City',
                         style: TextStyle(
-                            color: const Color.fromARGB(128, 0, 0, 0)),
+                          color: Color.fromARGB(128, 0, 0, 0),
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   TextFormField(
+                    controller: _controller,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: const Color.fromARGB(5, 255, 109, 64),
+                      fillColor: Colors.orange.withOpacity(0.2),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(3),
-                        borderSide: BorderSide(color: Colors.deepOrangeAccent),
+                        borderSide: const BorderSide(
+                          color: Colors.deepOrangeAccent,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(3),
+                        borderSide: const BorderSide(
+                          color: Colors.deepOrange,
+                        ),
                       ),
                     ),
+                    validator: _validateCity,
                   ),
                 ],
               ),
