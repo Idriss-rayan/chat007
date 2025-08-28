@@ -21,7 +21,11 @@ class _PhonenumberState extends State<Phonenumber> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Phone number'),
+                      Text(
+                        'Phone number',
+                        style: TextStyle(
+                            color: const Color.fromARGB(107, 0, 0, 0)),
+                      ),
                     ],
                   ),
                   SizedBox(height: 5),

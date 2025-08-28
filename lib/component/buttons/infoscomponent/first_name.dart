@@ -33,6 +33,9 @@ class _FirstNameState extends State<FirstName> {
                   ),
                   SizedBox(height: 5),
                   TextFormField(
+                    cursorColor: Colors.white,
+                    keyboardType: TextInputType.emailAddress,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: const Color.fromARGB(5, 255, 109, 64),
@@ -41,6 +44,15 @@ class _FirstNameState extends State<FirstName> {
                         borderSide: BorderSide(color: Colors.deepOrangeAccent),
                       ),
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter your email";
+                      }
+                      if (!value.contains('@')) {
+                        return "Email invalide";
+                      }
+                      return null; // ✅ aucun message si valide
+                    },
                   ),
                 ],
               ),

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:simplechat/component/buttons/infoscomponent/address.dart';
+import 'package:simplechat/component/buttons/infoscomponent/city.dart';
+import 'package:simplechat/component/buttons/infoscomponent/country.dart';
 import 'package:simplechat/component/buttons/infoscomponent/email.dart';
 import 'package:simplechat/component/buttons/infoscomponent/first_name.dart';
+import 'package:simplechat/component/buttons/infoscomponent/gender.dart';
 import 'package:simplechat/component/buttons/infoscomponent/last_name.dart';
 import 'package:simplechat/component/buttons/infoscomponent/phonenumber.dart';
 
@@ -34,14 +38,14 @@ class _InformationsState extends State<Informations> {
               Divider(),
               Row(
                 children: [
-                  FirstName(),
-                  LastName(),
+                  Address(),
+                  Country(),
                 ],
               ),
               Row(
                 children: [
-                  FirstName(),
-                  LastName(),
+                  City(),
+                  Gender(),
                 ],
               ),
             ],

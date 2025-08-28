@@ -21,7 +21,11 @@ class _EmailState extends State<Email> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Email address'),
+                      Text(
+                        'Email address',
+                        style: TextStyle(
+                            color: const Color.fromARGB(117, 0, 0, 0)),
+                      ),
                     ],
                   ),
                   SizedBox(height: 5),
