@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:simplechat/component/buttons/infoscomponent/email.dart';
 import 'package:simplechat/component/buttons/infoscomponent/first_name.dart';
 import 'package:simplechat/component/buttons/infoscomponent/last_name.dart';
+import 'package:simplechat/component/buttons/infoscomponent/phonenumber.dart';
 
 class Informations extends StatefulWidget {
   const Informations({super.key});
@@ -15,10 +17,33 @@ class _InformationsState extends State<Informations> {
     return Scaffold(
       body: ListView(
         children: [
-          Row(
+          Column(
             children: [
-              FirstName(),
-              LastName(),
+              Row(
+                children: [
+                  FirstName(),
+                  LastName(),
+                ],
+              ),
+              Row(
+                children: [
+                  Email(),
+                  Phonenumber(),
+                ],
+              ),
+              Divider(),
+              Row(
+                children: [
+                  FirstName(),
+                  LastName(),
+                ],
+              ),
+              Row(
+                children: [
+                  FirstName(),
+                  LastName(),
+                ],
+              ),
             ],
           ),
         ],

@@ -24,7 +24,11 @@ class _FirstNameState extends State<FirstName> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('First name'),
+                      Text(
+                        'First name',
+                        style: TextStyle(
+                            color: const Color.fromARGB(128, 0, 0, 0)),
+                      ),
                     ],
                   ),
                   SizedBox(height: 5),

@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 
-class LastName extends StatefulWidget {
-  const LastName({super.key});
+class Email extends StatefulWidget {
+  const Email({super.key});
 
   @override
-  State<LastName> createState() => _LastNameState();
+  State<Email> createState() => _EmailState();
 }
 
-class _LastNameState extends State<LastName> {
+class _EmailState extends State<Email> {
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final width = size.width;
-    final height = size.height;
     return Form(
       child: Expanded(
         child: Column(
@@ -24,11 +21,7 @@ class _LastNameState extends State<LastName> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        'Last name',
-                        style: TextStyle(
-                            color: const Color.fromARGB(111, 0, 0, 0)),
-                      ),
+                      Text('Email address'),
                     ],
                   ),
                   SizedBox(height: 5),
@@ -49,5 +42,6 @@ class _LastNameState extends State<LastName> {
         ),
       ),
     );
+    ;
   }
 }
