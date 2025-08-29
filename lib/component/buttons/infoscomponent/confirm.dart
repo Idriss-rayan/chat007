@@ -22,7 +22,7 @@ class _ConfirmState extends State<Confirm> {
           height: height * 0.08,
           decoration: BoxDecoration(
             border: Border.all(color: Colors.deepOrangeAccent),
-            borderRadius: BorderRadius.circular(3),
+            borderRadius: BorderRadius.circular(7),
             color: Colors.deepOrange,
           ),
           child: Center(

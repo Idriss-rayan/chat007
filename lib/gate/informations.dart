@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simplechat/component/buttons/infoscomponent/acc_cond_util.dart';
 import 'package:simplechat/component/buttons/infoscomponent/address.dart';
 import 'package:simplechat/component/buttons/infoscomponent/city.dart';
 import 'package:simplechat/component/buttons/infoscomponent/confirm.dart';
@@ -48,6 +49,7 @@ class _InformationsState extends State<Informations> {
               Phonenumber(),
             ],
           ),
+          AccCondUtil(),
           Confirm(),
         ],
       ),
