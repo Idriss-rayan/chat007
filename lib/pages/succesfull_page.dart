@@ -22,7 +22,7 @@ class _SuccesfullPageState extends State<SuccesfullPage> {
             Padding(
               padding: const EdgeInsets.only(left: 20.0),
               child: SvgPicture.asset(
-                'assets/logo/tik2.svg',
+                'assets/component/tik2.svg',
                 width: 150,
                 height: 150,
                 // colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn), // optionnel: recoloriser
