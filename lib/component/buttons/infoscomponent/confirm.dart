@@ -10,6 +10,32 @@ class Confirm extends StatefulWidget {
 class _ConfirmState extends State<Confirm> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
+    return Padding(
+      padding: const EdgeInsets.only(top: 50.0),
+      child: InkWell(
+        onTap: () {},
+        child: Container(
+          width: width * 0.7,
+          height: height * 0.08,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.deepOrangeAccent),
+            borderRadius: BorderRadius.circular(3),
+            color: Colors.deepOrange,
+          ),
+          child: Center(
+            child: Text(
+              'Confirm',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
