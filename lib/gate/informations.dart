@@ -22,53 +22,58 @@ class _InformationsState extends State<Informations> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      resizeToAvoidBottomInset: true,
+      body: ListView(
         children: [
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: SvgPicture.asset(
-                  'assets/logo/PAPAchou.svg',
-                  width: 27,
-                  height: 27,
-                  // colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn), // optionnel: recoloriser
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
           Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Row(
                 children: [
-                  FirstName(),
-                  LastName(),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: SvgPicture.asset(
+                      'assets/logo/PAPAchou.svg',
+                      width: 27,
+                      height: 27,
+                      // colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn), // optionnel: recoloriser
+                    ),
+                  ),
                 ],
               ),
-              Row(
+              SizedBox(height: 20),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Email(),
-                  Gender(),
+                  Row(
+                    children: [
+                      FirstName(),
+                      LastName(),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Email(),
+                      Gender(),
+                    ],
+                  ),
+                  //Divider(),
+                  Row(
+                    children: [
+                      Country(),
+                      City(),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      // Address(),
+                      Phonenumber(),
+                    ],
+                  ),
+                  AccCondUtil(),
+                  Confirm(),
                 ],
               ),
-              Divider(),
-              Row(
-                children: [
-                  Country(),
-                  City(),
-                ],
-              ),
-              Row(
-                children: [
-                  // Address(),
-                  Phonenumber(),
-                ],
-              ),
-              AccCondUtil(),
-              Confirm(),
             ],
           ),
         ],
