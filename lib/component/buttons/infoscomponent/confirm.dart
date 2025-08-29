@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simplechat/pages/succesfull_page.dart';
 
 class Confirm extends StatefulWidget {
   const Confirm({super.key});
@@ -16,7 +17,19 @@ class _ConfirmState extends State<Confirm> {
     return Padding(
       padding: const EdgeInsets.only(top: 50.0),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  SuccesfullPage(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+            ),
+          );
+        },
         child: Container(
           width: width * 0.7,
           height: height * 0.08,
