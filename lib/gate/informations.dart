@@ -19,35 +19,32 @@ class _InformationsState extends State<Informations> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Column(
+          Row(
             children: [
-              Row(
-                children: [
-                  FirstName(),
-                  LastName(),
-                ],
-              ),
-              Row(
-                children: [
-                  Email(),
-                  Phonenumber(),
-                ],
-              ),
-              Divider(),
-              Row(
-                children: [
-                  Address(),
-                  Country(),
-                ],
-              ),
-              Row(
-                children: [
-                  City(),
-                  Gender(),
-                ],
-              ),
+              FirstName(),
+              LastName(),
+            ],
+          ),
+          Row(
+            children: [
+              Email(),
+              Gender(),
+            ],
+          ),
+          Divider(),
+          Row(
+            children: [
+              Country(),
+              City(),
+            ],
+          ),
+          Row(
+            children: [
+              // Address(),
+              Phonenumber(),
             ],
           ),
         ],

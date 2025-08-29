@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simplechat/gate/informations.dart';
 
 class LoginButton extends StatefulWidget {
   const LoginButton({super.key});
@@ -20,7 +21,19 @@ class _LoginButtonState extends State<LoginButton> {
         // shadowColor: Colors.orange,
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    Informations(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+              ),
+            );
+          },
           splashColor: Colors.white.withOpacity(0.3), // couleur de l'ondulation
           highlightColor: Colors.white.withOpacity(0.1), // couleur quand pressé
           child: Container(
