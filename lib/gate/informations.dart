@@ -31,13 +31,14 @@ class _InformationsState extends State<Informations> {
                 padding: const EdgeInsets.only(left: 20.0),
                 child: SvgPicture.asset(
                   'assets/logo/PAPAchou.svg',
-                  width: 30,
-                  height: 30,
+                  width: 27,
+                  height: 27,
                   // colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn), // optionnel: recoloriser
                 ),
               ),
             ],
           ),
+          SizedBox(height: 20),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
