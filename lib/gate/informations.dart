@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:simplechat/component/buttons/infoscomponent/acc_cond_util.dart';
 import 'package:simplechat/component/buttons/infoscomponent/address.dart';
 import 'package:simplechat/component/buttons/infoscomponent/city.dart';
@@ -22,35 +23,53 @@ class _InformationsState extends State<Informations> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Row(
             children: [
-              FirstName(),
-              LastName(),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: SvgPicture.asset(
+                  'assets/logo/PAPAchou.svg',
+                  width: 30,
+                  height: 30,
+                  // colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn), // optionnel: recoloriser
+                ),
+              ),
             ],
           ),
-          Row(
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Email(),
-              Gender(),
+              Row(
+                children: [
+                  FirstName(),
+                  LastName(),
+                ],
+              ),
+              Row(
+                children: [
+                  Email(),
+                  Gender(),
+                ],
+              ),
+              Divider(),
+              Row(
+                children: [
+                  Country(),
+                  City(),
+                ],
+              ),
+              Row(
+                children: [
+                  // Address(),
+                  Phonenumber(),
+                ],
+              ),
+              AccCondUtil(),
+              Confirm(),
             ],
           ),
-          Divider(),
-          Row(
-            children: [
-              Country(),
-              City(),
-            ],
-          ),
-          Row(
-            children: [
-              // Address(),
-              Phonenumber(),
-            ],
-          ),
-          AccCondUtil(),
-          Confirm(),
         ],
       ),
     );
