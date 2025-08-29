@@ -25,7 +25,6 @@ class _SuccesfullPageState extends State<SuccesfullPage> {
                 'assets/component/tik2.svg',
                 width: 150,
                 height: 150,
-                // colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn), // optionnel: recoloriser
               ),
             ),
             SizedBox(height: 60),
