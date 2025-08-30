@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:simplechat/gate/informations.dart';
 import 'package:simplechat/gate/login_page.dart';
 import 'package:simplechat/pages/main_page.dart';
-import 'package:simplechat/pages/publication/pub_page.dart';
-import 'package:simplechat/pages/ui_nav_bar.dart';
 
 void main() {
   runApp(MyApp());
