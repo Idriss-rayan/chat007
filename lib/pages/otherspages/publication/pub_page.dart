@@ -24,7 +24,7 @@ class _PubPageState extends State<PubPage> {
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.white,
+                    Colors.orange,
                     Colors.white,
                   ],
                   begin: Alignment.topLeft,
