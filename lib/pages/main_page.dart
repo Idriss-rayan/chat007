@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:simplechat/pages/custom/animated_gradient_border.dart';
+import 'package:simplechat/pages/otherspages/publication/pub_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -13,7 +14,7 @@ class _PubPageState extends State<MainPage> {
   int selectedIndex = 0;
 
   final List<Widget> pages = const [
-    Center(child: Text("🏠 Home", style: TextStyle(fontSize: 24))),
+    PubPage(),
     Center(child: Text("💬 Message", style: TextStyle(fontSize: 24))),
     Center(child: Text("👥 Users", style: TextStyle(fontSize: 24))),
     Center(child: Text("👤 Profil", style: TextStyle(fontSize: 24))),

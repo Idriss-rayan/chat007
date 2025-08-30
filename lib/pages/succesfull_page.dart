@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:simplechat/pages/main_page.dart';
+import 'package:simplechat/pages/otherspages/publication/pub_page.dart';
 
 class SuccesfullPage extends StatefulWidget {
   const SuccesfullPage({super.key});
@@ -45,7 +47,19 @@ class _SuccesfullPageState extends State<SuccesfullPage> {
             Padding(
               padding: const EdgeInsets.only(top: 50.0),
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          MainPage(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(opacity: animation, child: child);
+                      },
+                    ),
+                  );
+                },
                 child: Container(
                   width: width * 0.7,
                   height: height * 0.08,
