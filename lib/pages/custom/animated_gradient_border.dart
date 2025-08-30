@@ -65,12 +65,15 @@ class _AnimatedGradientBorderState extends State<AnimatedGradientBorder>
           AnimatedBuilder(
             animation: _anim,
             builder: (context, _) {
-              return CustomPaint(
-                painter: _GradientBorderPainter(
-                  rotation: _anim.value,
-                  strokeWidth: widget.strokeWidth,
-                  radius: widget.borderRadius,
-                  colors: widget.colors,
+              return IgnorePointer(
+                ignoring: true,
+                child: CustomPaint(
+                  painter: _GradientBorderPainter(
+                    rotation: _anim.value,
+                    strokeWidth: widget.strokeWidth,
+                    radius: widget.borderRadius,
+                    colors: widget.colors,
+                  ),
                 ),
               );
             },
