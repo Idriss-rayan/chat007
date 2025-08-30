@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:simplechat/pages/custom/animated_gradient_border.dart';
 
-class PubPage extends StatefulWidget {
-  const PubPage({super.key});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
   @override
-  State<PubPage> createState() => _PubPageState();
+  State<MainPage> createState() => _PubPageState();
 }
 
-class _PubPageState extends State<PubPage> {
+class _PubPageState extends State<MainPage> {
   int selectedIndex = 0;
 
   final List<Widget> pages = const [
