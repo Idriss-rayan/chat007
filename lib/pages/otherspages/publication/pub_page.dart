@@ -15,72 +15,53 @@ class _PubPageState extends State<PubPage> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // 🔹 Header custom
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              width: double.infinity,
-              height: 130,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.orange,
-                    Colors.white,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // 🔹 Logo à gauche
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: SvgPicture.asset(
+                    "assets/logo/PAPAchou.svg",
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // 🔹 Search + Notifications regroupés
+              Row(
                 children: [
-                  // 🔹 Logo à gauche
                   Padding(
-                    padding: const EdgeInsets.all(12.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: SizedBox(
-                      width: 100,
-                      height: 100,
+                      width: 30,
+                      height: 30,
                       child: SvgPicture.asset(
-                        "assets/logo/PAPAchou.svg",
+                        "assets/component/search.svg",
                         fit: BoxFit.contain,
+                        color: Colors.deepOrangeAccent,
                       ),
                     ),
                   ),
-
-                  // 🔹 Search + Notifications regroupés
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: SizedBox(
-                          width: 30,
-                          height: 30,
-                          child: SvgPicture.asset(
-                            "assets/component/search.svg",
-                            fit: BoxFit.contain,
-                            color: Colors.deepOrangeAccent,
-                          ),
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: SvgPicture.asset(
+                        "assets/component/notifications.svg",
+                        fit: BoxFit.contain,
+                        color: Colors.deepOrangeAccent,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: SizedBox(
-                          width: 30,
-                          height: 30,
-                          child: SvgPicture.asset(
-                            "assets/component/notifications.svg",
-                            fit: BoxFit.contain,
-                            color: Colors.deepOrangeAccent,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),
-            ),
+            ],
           ),
-          Divider()
+          Divider(color: Colors.deepOrangeAccent),
         ],
       ),
     );
