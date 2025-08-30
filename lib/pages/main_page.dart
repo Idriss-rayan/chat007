@@ -30,6 +30,7 @@ class _PubPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: pages[selectedIndex],
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12.0),

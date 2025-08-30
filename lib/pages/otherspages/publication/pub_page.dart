@@ -58,7 +58,7 @@ class _PubPageState extends State<PubPage> {
                           child: SvgPicture.asset(
                             "assets/component/search.svg",
                             fit: BoxFit.contain,
-                            color: Colors.red,
+                            color: Colors.deepOrangeAccent,
                           ),
                         ),
                       ),
@@ -70,7 +70,7 @@ class _PubPageState extends State<PubPage> {
                           child: SvgPicture.asset(
                             "assets/component/notifications.svg",
                             fit: BoxFit.contain,
-                            color: Colors.red,
+                            color: Colors.deepOrangeAccent,
                           ),
                         ),
                       ),
@@ -80,6 +80,7 @@ class _PubPageState extends State<PubPage> {
               ),
             ),
           ),
+          Divider()
         ],
       ),
     );
