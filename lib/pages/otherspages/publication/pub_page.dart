@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class PubPage extends StatefulWidget {
   const PubPage({super.key});
@@ -12,68 +13,74 @@ class _PubPageState extends State<PubPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Container(
-                width: double.infinity,
-                height: 160,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFFFF6464), // vert doux
-                      Color(0xFFFFB744), // bleu doux
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Stack(
-                  children: [
-                    // Cercle déco en arrière-plan
-                    Positioned(
-                      right: -60,
-                      top: -40,
-                      child: Container(
-                        width: 240,
-                        height: 240,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white.withOpacity(0.1),
-                          border: Border.all(color: Colors.deepOrange),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 20,
-                      top: 20,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            " Hi,",
-                            style: TextStyle(
-                              fontSize: 45,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(137, 255, 255, 255),
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(width: 50),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+      body: Column(
+        children: [
+          // 🔹 Header custom
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              width: double.infinity,
+              height: 130,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white,
+                    Colors.white,
                   ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
               ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // 🔹 Logo à gauche
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: SvgPicture.asset(
+                        "assets/logo/PAPAchou.svg",
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+
+                  // 🔹 Search + Notifications regroupés
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: SvgPicture.asset(
+                            "assets/component/search.svg",
+                            fit: BoxFit.contain,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: SvgPicture.asset(
+                            "assets/component/notifications.svg",
+                            fit: BoxFit.contain,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
