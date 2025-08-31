@@ -24,22 +24,9 @@ class _PubPageState extends State<PubPage> {
                 child: SizedBox(
                   width: 100,
                   height: 100,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 30,
-                      ),
-                      SvgPicture.asset(
-                        "assets/logo/PAPAchou.svg",
-                        fit: BoxFit.contain,
-                      ),
-                      SvgPicture.asset(
-                        width: 30,
-                        height: 30,
-                        "assets/logo/P.svg",
-                        fit: BoxFit.contain,
-                      ),
-                    ],
+                  child: SvgPicture.asset(
+                    "assets/logo/PAPAchou.svg",
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
