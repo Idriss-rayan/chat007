@@ -63,7 +63,28 @@ class _PubPageState extends State<PubPage> {
             ],
           ),
           Divider(color: Colors.deepOrangeAccent),
-          PubCard()
+          Expanded(
+            child: ListView(
+              children: [
+                PubCard(),
+                PubCard(),
+                PubCard(),
+                PubCard(),
+                PubCard(),
+                PubCard(),
+                PubCard(),
+                PubCard(),
+                PubCard(),
+                PubCard(),
+                PubCard(),
+                PubCard(),
+                PubCard(),
+                PubCard(),
+                PubCard(),
+                PubCard(),
+              ],
+            ),
+          )
         ],
       ),
     );
