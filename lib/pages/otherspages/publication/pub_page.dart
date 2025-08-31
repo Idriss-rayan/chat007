@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:simplechat/pages/otherspages/publication/pub_card.dart';
 
 class PubPage extends StatefulWidget {
   const PubPage({super.key});
@@ -62,6 +63,7 @@ class _PubPageState extends State<PubPage> {
             ],
           ),
           Divider(color: Colors.deepOrangeAccent),
+          PubCard()
         ],
       ),
     );

@@ -1,68 +1,114 @@
 import 'package:flutter/material.dart';
-import 'package:country_picker/country_picker.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:like_button/like_button.dart';
 
-class CountryDropdownAnimated extends StatefulWidget {
-  const CountryDropdownAnimated({super.key});
-
-  @override
-  State<CountryDropdownAnimated> createState() =>
-      _CountryDropdownAnimatedState();
-}
-
-class _CountryDropdownAnimatedState extends State<CountryDropdownAnimated> {
-  String? _selectedCountry;
-
-  void _showAnimatedCountryPicker() {
-    showCountryPicker(
-      context: context,
-      showPhoneCode: false,
-      onSelect: (country) {
-        setState(() {
-          _selectedCountry = country.name;
-        });
-      },
-      countryListTheme: CountryListThemeData(
-        borderRadius: BorderRadius.circular(12),
-        backgroundColor: Colors.white,
-        textStyle: TextStyle(fontSize: 16, color: Colors.black87),
-        bottomSheetHeight: 500,
-        inputDecoration: InputDecoration(
-          labelText: 'Rechercher un pays',
-          prefixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-    );
-  }
+class PublicationCard extends StatelessWidget {
+  const PublicationCard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: GestureDetector(
-            onTap: _showAnimatedCountryPicker,
-            child: AbsorbPointer(
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: "Sélectionnez un pays",
-                  prefixIcon: Icon(Icons.flag),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.8),
-                  suffixIcon: Icon(Icons.arrow_drop_down),
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "L’esclave qui n’est pas capable d’assumer sa révolte ne mérite pas que l’on s’apitoie sur son sort. Voir plus",
                 ),
-                controller: TextEditingController(text: _selectedCountry),
-                validator: (value) => value == null || value.isEmpty
-                    ? "Veuillez choisir un pays"
-                    : null,
               ),
-            ),
+              Container(
+                width: double.infinity,
+                height: height * 0.4,
+                decoration: BoxDecoration(
+                  //color: Colors.amber,
+                  gradient: LinearGradient(
+                    colors: [Colors.pinkAccent, Colors.deepOrange],
+                  ),
+                  //border: Border.all(color: Colors.black),
+                ),
+              ),
+              Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: height * 0.07,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          LikeButton(
+                            size: 30,
+                            likeCount: 123,
+                            countBuilder: (count, isLiked, text) {
+                              return Text(
+                                text,
+                                style: TextStyle(
+                                  color: isLiked ? Colors.pink : Colors.grey,
+                                ),
+                              );
+                            },
+                          ),
+                          InkWell(
+                            onTap: () {},
+                            child: SvgPicture.asset(
+                              'assets/component/msg.svg',
+                              width: 30,
+                              height: 30,
+                              color: Colors.pink,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {},
+                            child: SvgPicture.asset(
+                              'assets/component/Share.svg',
+                              width: 30,
+                              height: 30,
+                              color: Colors.pink,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 22,
+                          backgroundImage: NetworkImage(
+                              "https://i.pravatar.cc/150?img=8"), // fake avatar
+                        ),
+                        SizedBox(width: 10),
+                        Column(
+                          children: [
+                            Text(
+                              'Citation : la plus grande et l’une des meilleure!',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+                            Text(
+                              'I.Rayan . 2M views . 10 years ago',
+                              textAlign: TextAlign.start,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

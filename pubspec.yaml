@@ -36,6 +36,7 @@ dependencies:
   flutter_city_picker: ^2.1.1
   cities: ^1.0.0
   flutter_svg: ^2.0.9
+  flutter_reaction_button: ^3.0.0
   
 
   # The following adds the Cupertino Icons font to your application.
@@ -47,6 +48,8 @@ dependencies:
   country_picker: 2.0.27
   country_state_city_pro: ^0.0.6
   country_state_city_picker_2: ^1.0.5
+  like_button: ^2.1.0
+  emoji_picker_flutter: ^4.3.0
   
 
 dev_dependencies:
