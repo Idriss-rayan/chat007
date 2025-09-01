@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:simplechat/pages/otherspages/publication/pub_card.dart';
 
@@ -64,25 +65,15 @@ class _PubPageState extends State<PubPage> {
           ),
           Divider(color: Colors.deepOrangeAccent),
           Expanded(
-            child: ListView(
-              children: [
-                PubCard(),
-                PubCard(),
-                PubCard(),
-                PubCard(),
-                PubCard(),
-                PubCard(),
-                PubCard(),
-                PubCard(),
-                PubCard(),
-                PubCard(),
-                PubCard(),
-                PubCard(),
-                PubCard(),
-                PubCard(),
-                PubCard(),
-                PubCard(),
-              ],
+            child: AnimationLimiter(
+              child: ListView.builder(
+                itemCount: 1000,
+                itemBuilder: (context, index) {
+                  return const RepaintBoundary(
+                    child: const PubCard(),
+                  );
+                },
+              ),
             ),
           )
         ],
