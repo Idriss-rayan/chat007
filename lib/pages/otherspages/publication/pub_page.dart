@@ -65,17 +65,13 @@ class _PubPageState extends State<PubPage> {
           ),
           Divider(color: Colors.deepOrangeAccent),
           Expanded(
-            child: AnimationLimiter(
-              child: ListView.builder(
-                itemCount: 1000,
-                itemBuilder: (context, index) {
-                  return const RepaintBoundary(
-                    child: const PubCard(),
-                  );
-                },
-              ),
+            child: ListView.builder(
+              itemCount: 1000,
+              itemBuilder: (context, index) {
+                return PubCard();
+              },
             ),
-          )
+          ),
         ],
       ),
     );
