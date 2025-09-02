@@ -66,7 +66,7 @@ class _PubPageState extends State<PubPage> {
           Divider(color: Colors.deepOrangeAccent),
           Expanded(
             child: ListView.builder(
-              itemCount: 1000,
+              itemCount: 5,
               itemBuilder: (context, index) {
                 return PubCard();
               },
