@@ -20,7 +20,7 @@ class PublicationCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "L’esclave qui n’est pas capable d’assumer sa révolte ne mérite pas que l’on s’apitoie sur son sort.",
+                  "L’esclave qui n’est pas capable ur son sort.",
                 ),
               ),
               Container(
