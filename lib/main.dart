@@ -1,108 +1,81 @@
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final cameras = await availableCameras();
-  final firstCamera = cameras.first;
+class SlidePages extends StatefulWidget {
+  const SlidePages({super.key});
 
-  runApp(CameraApp(camera: firstCamera));
+  @override
+  State<SlidePages> createState() => _SlidePagesState();
 }
 
-class CameraApp extends StatelessWidget {
-  final CameraDescription camera;
-  const CameraApp({super.key, required this.camera});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Camera Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: CameraHomePage(camera: camera),
-    );
-  }
-}
-
-class CameraHomePage extends StatefulWidget {
-  final CameraDescription camera;
-  const CameraHomePage({super.key, required this.camera});
-
-  @override
-  State<CameraHomePage> createState() => _CameraHomePageState();
-}
-
-class _CameraHomePageState extends State<CameraHomePage> {
-  late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
-  XFile? _imageFile;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = CameraController(
-      widget.camera,
-      ResolutionPreset.high,
-    );
-    _initializeControllerFuture = _controller.initialize();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Future<void> _takePicture() async {
-    try {
-      await _initializeControllerFuture;
-      final image = await _controller.takePicture();
-      setState(() {
-        _imageFile = image;
-      });
-    } catch (e) {
-      print("Erreur prise de photo: $e");
-    }
-  }
+class _SlidePagesState extends State<SlidePages> {
+  final PageController _controller = PageController();
+  int _currentPage = 0;
+  final int _totalPages = 3;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("📸 Camera Flutter")),
-      body: Column(
-        children: [
-          Expanded(
-            flex: 3,
-            child: FutureBuilder<void>(
-              future: _initializeControllerFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return CameraPreview(_controller);
-                } else {
-                  return const Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(_totalPages, (index) {
+            final isActive = _currentPage == index;
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: TextButton(
+                onPressed: () {
+                  _controller.animateToPage(
+                    index,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                child: Text(
+                  "P${index + 1}",
+                  style: TextStyle(
+                    fontSize: isActive ? 18 : 16,
+                    fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                    color: isActive ? Colors.blue : Colors.grey,
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 1,
+      ),
+      body: PageView(
+        controller: _controller,
+        onPageChanged: (index) {
+          setState(() {
+            _currentPage = index;
+          });
+        },
+        children: const [
+          Center(
+            child: Text("Page 1",
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
           ),
-          Expanded(
-            flex: 2,
-            child: Center(
-              child: _imageFile == null
-                  ? const Text("Aucune photo prise",
-                      style: TextStyle(fontSize: 18))
-                  : Image.file(File(_imageFile!.path)),
-            ),
+          Center(
+            child: Text("Page 2",
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+          ),
+          Center(
+            child: Text("Page 3",
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _takePicture,
-        child: const Icon(Icons.camera_alt),
-      ),
     );
   }
+}
+
+void main() {
+  runApp(const MaterialApp(
+    home: SlidePages(),
+  ));
 }
 
 // import 'package:flutter/material.dart';
