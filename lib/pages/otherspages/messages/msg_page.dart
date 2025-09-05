@@ -46,7 +46,8 @@ class _MsgPageState extends State<MsgPage> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white.withOpacity(0.1),
-                        border: Border.all(color: Colors.deepOrange),
+                        border: Border.all(
+                            color: const Color.fromARGB(65, 255, 86, 34)),
                       ),
                     ),
                   ),
@@ -75,7 +76,7 @@ class _MsgPageState extends State<MsgPage> {
                                 style: TextStyle(
                                   color: isActive
                                       ? Colors.black87
-                                      : Colors.white70,
+                                      : const Color.fromARGB(255, 207, 51, 4),
                                   fontWeight: isActive
                                       ? FontWeight.bold
                                       : FontWeight.normal,
