@@ -10,7 +10,7 @@ class MsgPage extends StatefulWidget {
 class _MsgPageState extends State<MsgPage> {
   final PageController _controller = PageController();
   int _currentPage = 0;
-  final List<String> _tabs = ["Chat", "Community", "Feeds", "Stories"];
+  final List<String> _tabs = ["Chat", "Stories", "Feeds", "Rooms", "Calls"];
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +78,9 @@ class _MsgPageState extends State<MsgPage> {
                                       ? Colors.black87
                                       : const Color.fromARGB(255, 207, 51, 4),
                                   fontWeight: isActive
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  fontSize: isActive ? 14 : 14,
+                                      ? FontWeight.normal
+                                      : FontWeight.w300,
+                                  fontSize: 14,
                                 ),
                               ),
                             ),
@@ -124,7 +124,7 @@ class _MsgPageState extends State<MsgPage> {
                 ),
                 Center(
                   child: Text(
-                    "Community Page",
+                    "Stories Page",
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -136,7 +136,13 @@ class _MsgPageState extends State<MsgPage> {
                 ),
                 Center(
                   child: Text(
-                    "Stories Page",
+                    "Rooms Page",
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    "Calls Page",
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ),
