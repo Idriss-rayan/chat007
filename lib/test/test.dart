@@ -1,117 +1,79 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:like_button/like_button.dart';
 
-class PublicationCard extends StatelessWidget {
-  const PublicationCard({super.key});
+class SlidePages extends StatefulWidget {
+  const SlidePages({super.key});
+
+  @override
+  State<SlidePages> createState() => _SlidePagesState();
+}
+
+class _SlidePagesState extends State<SlidePages> {
+  final PageController _controller = PageController();
+  int _currentPage = 0;
+  final int _totalPages = 3;
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final width = size.width;
-    final height = size.height;
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(_totalPages, (index) {
+            final isActive = _currentPage == index;
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: TextButton(
+                onPressed: () {
+                  _controller.animateToPage(
+                    index,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
                 child: Text(
-                  "L’esclave qui n’est pas capable your son sort.",
+                  "P${index + 1}",
+                  style: TextStyle(
+                    fontSize: isActive ? 18 : 16,
+                    fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                    color: isActive ? Colors.blue : Colors.grey,
+                  ),
                 ),
               ),
-              Container(
-                width: double.infinity,
-                height: height * 0.4,
-                decoration: BoxDecoration(
-                  //color: Colors.amber,
-                  gradient: LinearGradient(
-                    colors: [Colors.pinkAccent, Colors.deepOrange],
-                  ),
-                  //border: Border.all(color: Colors.black),
-                ),
-              ),
-              Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    height: height * 0.07,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          LikeButton(
-                            size: 30,
-                            likeCount: 123,
-                            countBuilder: (count, isLiked, text) {
-                              return Text(
-                                text,
-                                style: TextStyle(
-                                  color: isLiked ? Colors.pink : Colors.grey,
-                                ),
-                              );
-                            },
-                          ),
-                          InkWell(
-                            onTap: () {},
-                            child: SvgPicture.asset(
-                              'assets/component/msg.svg',
-                              width: 30,
-                              height: 30,
-                              color: Colors.pink,
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {},
-                            child: SvgPicture.asset(
-                              'assets/component/Share.svg',
-                              width: 30,
-                              height: 30,
-                              color: Colors.pink,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Row(
-                      children: [
-                        const CircleAvatar(
-                          radius: 22,
-                          backgroundImage: NetworkImage(
-                              "https://i.pravatar.cc/150?img=8"), // fake avatar
-                        ),
-                        SizedBox(width: 10),
-                        Column(
-                          children: [
-                            Text(
-                              'Citation : la plus grande et l’une des meilleure!',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                            Text(
-                              'I.Rayan . 2M views . 10 years ago',
-                              textAlign: TextAlign.start,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            );
+          }),
         ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 1,
+      ),
+      body: PageView(
+        controller: _controller,
+        onPageChanged: (index) {
+          setState(() {
+            _currentPage = index;
+          });
+        },
+        children: const [
+          Center(
+            child: Text("Page 1",
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+          ),
+          Center(
+            child: Text("Page 2",
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+          ),
+          Center(
+            child: Text("Page 3",
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+          ),
+        ],
       ),
     );
   }
+}
+
+void main() {
+  runApp(const MaterialApp(
+    home: SlidePages(),
+  ));
 }
