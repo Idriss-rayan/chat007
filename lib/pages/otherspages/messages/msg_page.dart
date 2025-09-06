@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:simplechat/pages/otherspages/messages/card_msg.dart';
+import 'package:simplechat/pages/otherspages/messages/chat_list.dart';
 
 class MsgPage extends StatefulWidget {
   const MsgPage({super.key});
@@ -10,7 +12,7 @@ class MsgPage extends StatefulWidget {
 class _MsgPageState extends State<MsgPage> {
   final PageController _controller = PageController();
   int _currentPage = 0;
-  final List<String> _tabs = ["Chat", "Stories", "Feeds", "Rooms", "Calls"];
+  final List<String> _tabs = ["Chat", "Rooms", "Stories", "Feeds", "Calls"];
 
   @override
   Widget build(BuildContext context) {
@@ -115,10 +117,11 @@ class _MsgPageState extends State<MsgPage> {
                   _currentPage = index;
                 });
               },
-              children: const [
+              children: [
+                ChatList(),
                 Center(
                   child: Text(
-                    "Chat Page",
+                    "Rooms Page",
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -131,12 +134,6 @@ class _MsgPageState extends State<MsgPage> {
                 Center(
                   child: Text(
                     "Feeds Page",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    "Rooms Page",
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ),
