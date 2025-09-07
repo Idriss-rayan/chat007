@@ -1,35 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 class ChatDiscussion extends StatefulWidget {
   const ChatDiscussion({super.key});
-
   @override
   State<ChatDiscussion> createState() => _ChatDiscussionState();
 }
 
 class _ChatDiscussionState extends State<ChatDiscussion> {
   final TextEditingController _controller = TextEditingController();
-  final List<Map<String, dynamic>> _messages = [
-    {"text": "Salut ! Comment ça va ?", "isMe": false},
-    {"text": "Ça va bien, et toi ?", "isMe": true},
-    {"text": "Super ! Tu fais quoi aujourd'hui ?", "isMe": false},
-  ];
+  final FocusNode _focusNode = FocusNode();
+  bool _isTyping = false;
+  bool _showEmojiPicker = false;
+  final List<Map<String, dynamic>> _messages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      setState(() {
+        _isTyping = _controller.text.trim().isNotEmpty;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   void _sendMessage() {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
-
     setState(() {
       _messages.add({"text": text, "isMe": true});
       _controller.clear();
+      _isTyping = false;
     });
-
-    // Ici tu peux ajouter une réponse automatique pour tester
     Future.delayed(const Duration(milliseconds: 500), () {
       setState(() {
-        _messages.add({"text": "Message automatique", "isMe": false});
+        _messages.add({"text": "Réponse automatique", "isMe": false});
       });
+    });
+  }
+
+  void _toggleEmojiPicker() {
+    if (_showEmojiPicker) {
+      _focusNode.requestFocus();
+    } else {
+      _focusNode.unfocus();
+    }
+    setState(() {
+      _showEmojiPicker = !_showEmojiPicker;
     });
   }
 
@@ -37,94 +62,126 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(10, 244, 80, 30),
+        backgroundColor: Colors.green[700],
         title: Row(
           children: [
-            SvgPicture.asset(
-              'assets/component/avatar.svg',
-              width: 40,
-              height: 40,
-            ),
+            SvgPicture.asset('assets/component/avatar.svg',
+                width: 40, height: 40),
             const SizedBox(width: 12),
-            const Text("John Doe"),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text("John Doe",
+                    style: TextStyle(fontSize: 16, color: Colors.white)),
+                Text("en ligne",
+                    style: TextStyle(fontSize: 12, color: Colors.white70)),
+              ],
+            ),
           ],
         ),
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.call, color: Colors.white),
+              onPressed: () {}),
+          IconButton(
+              icon: const Icon(Icons.videocam, color: Colors.white),
+              onPressed: () {}),
+        ],
       ),
       body: Column(
         children: [
-          // Messages
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(12),
+              reverse: true,
               itemCount: _messages.length,
-              reverse: true, // Les messages récents en bas
               itemBuilder: (context, index) {
-                final message = _messages[_messages.length - 1 - index];
+                final msg = _messages[_messages.length - 1 - index];
                 return Align(
-                  alignment: message["isMe"]
+                  alignment: msg["isMe"]
                       ? Alignment.centerRight
                       : Alignment.centerLeft,
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     padding: const EdgeInsets.all(12),
                     constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.7,
-                    ),
+                        maxWidth: MediaQuery.of(context).size.width * 0.7),
                     decoration: BoxDecoration(
-                      color: message["isMe"]
-                          ? Colors.orange[100]
-                          : const Color.fromARGB(61, 244, 143, 177),
-                      borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(12),
-                        topRight: const Radius.circular(12),
-                        bottomLeft: message["isMe"]
-                            ? const Radius.circular(12)
-                            : Radius.zero,
-                        bottomRight: message["isMe"]
-                            ? Radius.zero
-                            : const Radius.circular(12),
-                      ),
+                      color: msg["isMe"] ? Colors.green[100] : Colors.grey[300],
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(message["text"]),
+                    child: Text(msg["text"]),
                   ),
                 );
               },
             ),
           ),
-
-          // Champ de saisie
           SafeArea(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              color: Colors.white,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _controller,
-                      decoration: const InputDecoration(
-                        hintText: "Tapez un message",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          borderSide: BorderSide.none,
+            child: Column(
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.emoji_emotions,
+                            color: Colors.grey),
+                        onPressed: _toggleEmojiPicker,
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: _controller,
+                          focusNode: _focusNode,
+                          minLines: 1,
+                          maxLines: 5,
+                          decoration: const InputDecoration(
+                              hintText: "Message", border: InputBorder.none),
+                          onTap: () {
+                            if (_showEmojiPicker) {
+                              setState(() => _showEmojiPicker = false);
+                            }
+                          },
                         ),
-                        fillColor: Colors.white,
-                        filled: true,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                      ),
+                      IconButton(
+                          icon:
+                              const Icon(Icons.attach_file, color: Colors.grey),
+                          onPressed: () {}),
+                      IconButton(
+                          icon:
+                              const Icon(Icons.camera_alt, color: Colors.grey),
+                          onPressed: () {}),
+                      _isTyping
+                          ? IconButton(
+                              icon: const Icon(Icons.send, color: Colors.green),
+                              onPressed: _sendMessage)
+                          : IconButton(
+                              icon: const Icon(Icons.mic, color: Colors.green),
+                              onPressed: () {}),
+                    ],
+                  ),
+                ),
+                if (_showEmojiPicker)
+                  SizedBox(
+                    height: 250,
+                    child: EmojiPicker(
+                      textEditingController: _controller,
+                      config: Config(
+                        height: 250,
+                        checkPlatformCompatibility: true,
+                        emojiViewConfig:
+                            const EmojiViewConfig(emojiSizeMax: 28.0),
+                        viewOrderConfig: const ViewOrderConfig(),
+                        skinToneConfig: const SkinToneConfig(),
+                        categoryViewConfig: const CategoryViewConfig(),
+                        bottomActionBarConfig: const BottomActionBarConfig(),
+                        searchViewConfig: const SearchViewConfig(),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  CircleAvatar(
-                    backgroundColor: Colors.orange[600],
-                    child: IconButton(
-                      icon: const Icon(Icons.send, color: Colors.white),
-                      onPressed: _sendMessage,
-                    ),
-                  ),
-                ],
-              ),
+              ],
             ),
           ),
         ],
