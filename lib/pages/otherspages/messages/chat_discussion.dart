@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class ChatDiscussion extends StatefulWidget {
   const ChatDiscussion({super.key});
@@ -36,13 +37,13 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(40, 244, 80, 30),
+        backgroundColor: const Color.fromARGB(10, 244, 80, 30),
         title: Row(
           children: [
-            const CircleAvatar(
-              radius: 20,
-              backgroundColor: Colors.grey,
-              child: Icon(Icons.person, color: Colors.white),
+            SvgPicture.asset(
+              'assets/component/avatar.svg',
+              width: 40,
+              height: 40,
             ),
             const SizedBox(width: 12),
             const Text("John Doe"),
