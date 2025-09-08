@@ -62,7 +62,7 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[700],
+        backgroundColor: const Color.fromARGB(15, 220, 54, 3),
         title: Row(
           children: [
             SvgPicture.asset('assets/component/avatar.svg',
@@ -72,19 +72,19 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
                 Text("John Doe",
-                    style: TextStyle(fontSize: 16, color: Colors.white)),
+                    style: TextStyle(fontSize: 16, color: Colors.black87)),
                 Text("en ligne",
-                    style: TextStyle(fontSize: 12, color: Colors.white70)),
+                    style: TextStyle(fontSize: 12, color: Colors.black54)),
               ],
             ),
           ],
         ),
         actions: [
           IconButton(
-              icon: const Icon(Icons.call, color: Colors.white),
+              icon: const Icon(Icons.call, color: Colors.black54),
               onPressed: () {}),
           IconButton(
-              icon: const Icon(Icons.videocam, color: Colors.white),
+              icon: const Icon(Icons.videocam, color: Colors.black54),
               onPressed: () {}),
         ],
       ),
@@ -107,7 +107,9 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                     constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.7),
                     decoration: BoxDecoration(
-                      color: msg["isMe"] ? Colors.green[100] : Colors.grey[300],
+                      color: msg["isMe"]
+                          ? const Color.fromARGB(69, 247, 95, 7)
+                          : Colors.pink[100],
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(msg["text"]),
@@ -155,10 +157,11 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                           onPressed: () {}),
                       _isTyping
                           ? IconButton(
-                              icon: const Icon(Icons.send, color: Colors.green),
+                              icon:
+                                  const Icon(Icons.send, color: Colors.orange),
                               onPressed: _sendMessage)
                           : IconButton(
-                              icon: const Icon(Icons.mic, color: Colors.green),
+                              icon: const Icon(Icons.mic, color: Colors.orange),
                               onPressed: () {}),
                     ],
                   ),
