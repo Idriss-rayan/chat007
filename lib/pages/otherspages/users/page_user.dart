@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:simplechat/pages/otherspages/users/list_user.dart';
 
 class PageUser extends StatefulWidget {
@@ -13,8 +14,12 @@ class _PageUserState extends State<PageUser> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // AppBar personnalisé avec gradient
         ClipRRect(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(16),
+            bottomRight: Radius.circular(16),
+          ),
           child: Container(
             width: double.infinity,
             height: 160,
@@ -41,14 +46,53 @@ class _PageUserState extends State<PageUser> {
                       shape: BoxShape.circle,
                       color: Colors.white.withOpacity(0.1),
                       border: Border.all(
-                          color: const Color.fromARGB(65, 255, 86, 34)),
+                        color: const Color.fromARGB(65, 255, 86, 34),
+                      ),
                     ),
+                  ),
+                ),
+
+                // Contenu AppBar
+                Positioned(
+                  top: 40,
+                  left: 16,
+                  right: 16,
+                  child: Row(
+                    children: [
+                      // Logo papachou.svg
+                      SvgPicture.asset(
+                        "assets/logo/PAPAchou.svg",
+                        height: 23,
+                        width: 23,
+                      ),
+
+                      const Spacer(),
+
+                      // Search
+                      IconButton(
+                        onPressed: () {
+                          // TODO: ouvrir recherche
+                        },
+                        icon: const Icon(Icons.search, color: Colors.black87),
+                      ),
+
+                      // Notifications
+                      IconButton(
+                        onPressed: () {
+                          // TODO: notifications
+                        },
+                        icon: const Icon(Icons.notifications,
+                            color: Colors.black87),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
         ),
+
+        // Liste des utilisateurs
         Expanded(
           child: ListUser(),
         ),
