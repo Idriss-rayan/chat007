@@ -8,7 +8,7 @@ class AnimatedGradientBorder extends StatefulWidget {
     this.height = 120,
     this.borderRadius = 12.0,
     this.strokeWidth = 4.0,
-    this.duration = const Duration(seconds: 4),
+    this.duration = const Duration(seconds: 3),
     this.colors = const [Colors.red, Colors.blue, Colors.green],
   });
 
