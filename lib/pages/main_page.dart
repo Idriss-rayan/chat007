@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:simplechat/pages/custom/animated_gradient_border.dart';
 import 'package:simplechat/pages/otherspages/messages/msg_page.dart';
 import 'package:simplechat/pages/otherspages/publication/pub_page.dart';
+import 'package:simplechat/pages/otherspages/users/page_user.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -17,7 +18,7 @@ class _PubPageState extends State<MainPage> {
   final List<Widget> pages = const [
     PubPage(),
     MsgPage(),
-    Center(child: Text("👥 Users", style: TextStyle(fontSize: 24))),
+    PageUser(),
     Center(child: Text("👤 Profil", style: TextStyle(fontSize: 24))),
   ];
 
