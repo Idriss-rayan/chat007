@@ -121,7 +121,7 @@ class _MsgPageState extends State<MsgPage> {
                 ChatList(),
                 Center(
                   child: Text(
-                    "Rooms Page",
+                    "group Page",
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ),
