@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:simplechat/pages/otherspages/messages/card_msg.dart';
 import 'package:simplechat/pages/otherspages/messages/chat_list.dart';
 
 class MsgPage extends StatefulWidget {
