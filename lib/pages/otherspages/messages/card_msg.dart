@@ -21,7 +21,16 @@ class _CardMsgState extends State<CardMsg> {
                 const ChatDiscussion(),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
-              return FadeTransition(opacity: animation, child: child);
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0.0, 0.2),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+              );
             },
           ),
         );
@@ -30,7 +39,8 @@ class _CardMsgState extends State<CardMsg> {
         margin: const EdgeInsets.symmetric(vertical: 8),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Color.fromARGB(7, 236, 34, 31),
+          //color: Color.fromARGB(7, 236, 34, 31),
+          color: Color.fromARGB(3, 236, 34, 31),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(

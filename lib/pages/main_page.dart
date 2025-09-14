@@ -4,6 +4,7 @@ import 'package:simplechat/pages/custom/animated_gradient_border.dart';
 import 'package:simplechat/pages/otherspages/messages/msg_page.dart';
 import 'package:simplechat/pages/otherspages/publication/pub_page.dart';
 import 'package:simplechat/pages/otherspages/users/page_user.dart';
+import 'package:flutter/services.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -30,7 +31,16 @@ class _PubPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent, // transparent, joli pour mobile
+        statusBarIconBrightness:
+            Brightness.dark, // icônes noires (sur fond clair)
+        statusBarBrightness: Brightness.light, // pour iOS
+      ),
+    );
     return Scaffold(
+      //systemOverlayStyle: SystemUiOverlayStyle.light,
       backgroundColor: Colors.white,
       body: pages[selectedIndex],
       bottomNavigationBar: Padding(
