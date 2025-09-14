@@ -134,6 +134,7 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                       ),
                       Expanded(
                         child: TextField(
+                          keyboardType: TextInputType.multiline,
                           controller: _controller,
                           focusNode: _focusNode,
                           minLines: 1,

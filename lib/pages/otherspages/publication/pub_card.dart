@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:like_button/like_button.dart';
 import 'package:simplechat/pages/otherspages/publication/comment_card.dart';
+import 'package:simplechat/pages/otherspages/publication/comment_field.dart';
 
 class PubCard extends StatefulWidget {
   const PubCard({super.key});
@@ -96,96 +97,50 @@ class _PubCardState extends State<PubCard> {
                               isScrollControlled: true,
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(20)),
+                                  top: Radius.circular(10),
+                                ),
                               ),
                               builder: (context) {
-                                return DraggableScrollableSheet(
-                                  expand: false,
-                                  initialChildSize: 0.8,
-                                  minChildSize: 0.4,
-                                  maxChildSize: 0.95,
-                                  builder: (context, scrollController) {
-                                    return Column(
-                                      children: [
-                                        // 🔹 Liste des commentaires
-                                        Expanded(
-                                          child: ListView(
-                                            controller: scrollController,
-                                            padding: const EdgeInsets.all(12),
-                                            children: const [
-                                              CommentCard(
-                                                username: "Rayan Idriss",
-                                                comment:
-                                                    "Super citation, ça m’inspire beaucoup !",
-                                                timeAgo: "il y a 2h",
-                                                avatarUrl:
-                                                    "https://i.pravatar.cc/150?img=10",
-                                              ),
-                                              CommentCard(
-                                                username: "Fatima",
-                                                comment:
-                                                    "Merci d’avoir partagé, très puissant 👌",
-                                                timeAgo: "il y a 30min",
-                                                avatarUrl:
-                                                    "https://i.pravatar.cc/150?img=12",
-                                              ),
-                                              CommentCard(
-                                                username: "Ali",
-                                                comment:
-                                                    "Magnifique, je vais le partager ✨",
-                                                timeAgo: "il y a 5min",
-                                                avatarUrl:
-                                                    "https://i.pravatar.cc/150?img=15",
-                                              ),
-                                            ],
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context)
+                                          .viewInsets
+                                          .bottom),
+                                  child: DraggableScrollableSheet(
+                                    expand: false,
+                                    initialChildSize: 0.5,
+                                    minChildSize: 0.3,
+                                    maxChildSize: 0.8,
+                                    builder: (context, scrollController) {
+                                      return Column(
+                                        children: [
+                                          SizedBox(height: 25),
+                                          Expanded(
+                                            child: ListView.builder(
+                                              controller: scrollController,
+                                              padding: const EdgeInsets.all(16),
+                                              itemCount: 6,
+                                              itemBuilder: (context, index) {
+                                                return const CommentCard(
+                                                  username: "Ali",
+                                                  comment:
+                                                      "Magnifique, je vais le partager ✨",
+                                                  timeAgo: "il y a 5min",
+                                                  avatarUrl:
+                                                      "https://i.pravatar.cc/150?img=12",
+                                                );
+                                              },
+                                            ),
                                           ),
-                                        ),
 
-                                        // 🔹 Zone d’écriture
-                                        SafeArea(
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 8),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              border: Border(
-                                                  top: BorderSide(
-                                                      color: Colors
-                                                          .grey.shade300)),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                const CircleAvatar(
-                                                    radius: 18,
-                                                    child: Icon(Icons.person)),
-                                                const SizedBox(width: 10),
-                                                Expanded(
-                                                  child: TextField(
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      hintText:
-                                                          "Écrire un commentaire...",
-                                                      border: InputBorder.none,
-                                                    ),
-                                                    onSubmitted: (value) {
-                                                      // TODO: ajouter le commentaire dynamiquement
-                                                    },
-                                                  ),
-                                                ),
-                                                IconButton(
-                                                  icon: const Icon(Icons.send,
-                                                      color: Colors.pink),
-                                                  onPressed: () {
-                                                    // TODO: ajouter le commentaire dynamiquement
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    );
-                                  },
+                                          // 🔹 Zone d’écriture
+                                          SafeArea(
+                                            child: CommentField(),
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  ),
                                 );
                               },
                             );
