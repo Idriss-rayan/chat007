@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:like_button/like_button.dart';
 import 'package:simplechat/pages/otherspages/publication/comment_card.dart';
 import 'package:simplechat/pages/otherspages/publication/comment_field.dart';
+import 'package:simplechat/pages/otherspages/publication/component/anonyme.dart';
+import 'package:simplechat/pages/otherspages/publication/component/anonyme_white.dart';
 import 'package:simplechat/pages/otherspages/publication/component/recent.dart';
 import 'package:simplechat/pages/otherspages/publication/component/recent_white.dart';
 import 'package:simplechat/pages/otherspages/publication/component/top.dart';
@@ -158,7 +160,7 @@ class _PubCardState extends State<PubCard> {
                                               ),
                                             ),
                                           ),
-
+                                          SizedBox(height: 20),
                                           // Tabs
                                           Row(
                                             mainAxisAlignment:
@@ -183,6 +185,16 @@ class _PubCardState extends State<PubCard> {
                                                 child: localSelectedTab == 1
                                                     ? RecentWhite()
                                                     : Recent(),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    localSelectedTab = 2;
+                                                  });
+                                                },
+                                                child: localSelectedTab == 2
+                                                    ? AnonymeWhite()
+                                                    : Anonyme(),
                                               ),
                                             ],
                                           ),
