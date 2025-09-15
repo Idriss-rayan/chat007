@@ -10,16 +10,21 @@ class CommentField extends StatefulWidget {
 class _CommentFieldState extends State<CommentField> {
   final TextEditingController _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>(); // pour validation
+  bool isTyped = false; // true = du texte présent
+  bool isVisible = true; // true = icône "visibility", false = "visibility_off"
 
   void _sendComment() {
     if (_formKey.currentState!.validate()) {
       final comment = _controller.text.trim();
       if (comment.isNotEmpty) {
-        // 🔹 Ici tu peux envoyer le commentaire à ton backend ou l’ajouter à la liste
         print("Commentaire envoyé : $comment");
 
-        // Réinitialiser le champ
+        // Réinitialiser le champ et l’état
         _controller.clear();
+        setState(() {
+          isTyped = false;
+          isVisible = true; // remettre par défaut
+        });
       }
     }
   }
@@ -32,25 +37,25 @@ class _CommentFieldState extends State<CommentField> {
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            // 👤 Avatar de l'utilisateur
-            const CircleAvatar(
-              radius: 20,
-              child: Icon(Icons.person, size: 20),
-            ),
-            const SizedBox(width: 10),
-
-            // 🔹 Champ de saisie comment
             Expanded(
               child: TextFormField(
+                onChanged: (value) {
+                  setState(() {
+                    isTyped = value.trim().isNotEmpty;
+                  });
+                },
                 maxLines: null,
                 controller: _controller,
                 cursorColor: Colors.black,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                   hintText: "Écrire un commentaire...",
-                  hintStyle: TextStyle(color: Colors.grey.shade600),
+                  hintStyle: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 14,
+                  ),
                   filled: true,
-                  fillColor: Colors.grey.shade100,
+                  fillColor: const Color.fromARGB(30, 255, 224, 178),
                   contentPadding: const EdgeInsets.symmetric(
                       vertical: 10.0, horizontal: 12.0),
                   enabledBorder: OutlineInputBorder(
@@ -91,11 +96,26 @@ class _CommentFieldState extends State<CommentField> {
               ),
             ),
 
-            // 🔹 Bouton envoyer
+            // Bouton envoyer
             IconButton(
-              icon: const Icon(Icons.send, color: Colors.deepOrange),
+              icon: const Icon(Icons.send, color: Colors.red),
               onPressed: _sendComment,
             ),
+
+            // Toggle visibilité seulement si texte présent
+            isTyped
+                ? IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isVisible = !isVisible; // inverse l’état
+                      });
+                    },
+                    icon: Icon(
+                      isVisible ? Icons.visibility : Icons.visibility_off,
+                      color: Colors.deepOrange,
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ],
         ),
       ),
