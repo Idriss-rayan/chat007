@@ -19,8 +19,6 @@ class PubCard extends StatefulWidget {
 
 class _PubCardState extends State<PubCard> {
   int selectedTab = 0;
-  int a = 0;
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -119,8 +117,6 @@ class _PubCardState extends State<PubCard> {
                           ),
                           builder: (context) {
                             int localSelectedTab = selectedTab;
-                            int anonym = a;
-
                             return StatefulBuilder(
                               builder: (context, setState) {
                                 return Padding(
