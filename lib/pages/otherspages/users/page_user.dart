@@ -62,8 +62,8 @@ class _PageUserState extends State<PageUser> {
                       // Logo papachou.svg
                       SvgPicture.asset(
                         "assets/logo/PAPAchou.svg",
-                        height: 23,
-                        width: 23,
+                        height: 20,
+                        width: 20,
                       ),
 
                       const Spacer(),
