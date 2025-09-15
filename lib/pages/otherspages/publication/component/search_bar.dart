@@ -12,11 +12,20 @@ class SearchBarCostum extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.transparent,
         border: Border.all(color: Colors.deepOrange),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(30),
       ),
       child: Row(
         children: [
-          const SizedBox(width: 8),
+          // 🔍 Bouton recherche
+          IconButton(
+            icon: const Icon(Icons.search, color: Colors.deepOrange),
+            onPressed: () {
+              // tu peux lancer la recherche ici si tu veux
+              debugPrint("Recherche lancée...");
+            },
+          ),
+
+          // Champ texte
           const Expanded(
             child: TextField(
               decoration: InputDecoration(
@@ -28,6 +37,8 @@ class SearchBarCostum extends StatelessWidget {
               ),
             ),
           ),
+
+          // ❌ Bouton fermer
           if (onClose != null)
             IconButton(
               icon: const Icon(Icons.close, color: Colors.deepOrange),
