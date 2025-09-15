@@ -22,59 +22,34 @@ class _InformationsState extends State<Informations> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: ListView(
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: ListView(
             children: [
+              // Logo
               Row(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: SvgPicture.asset(
-                      'assets/logo/PAPAchou.svg',
-                      width: 27,
-                      height: 27,
-                    ),
+                  SvgPicture.asset(
+                    'assets/logo/PAPAchou.svg',
+                    width: 20,
+                    height: 20,
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      FirstName(),
-                      LastName(),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Email(),
-                      Gender(),
-                    ],
-                  ),
-                  //Divider(),
-                  Row(
-                    children: [
-                      Country(),
-                      City(),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      // Address(),
-                      Phonenumber(),
-                    ],
-                  ),
-                  AccCondUtil(),
-                  Confirm(),
-                ],
-              ),
+              SizedBox(height: 30),
+              FirstName(),
+              LastName(),
+              Email(),
+              Country(),
+              City(),
+              Gender(),
+              Phonenumber(),
+              AccCondUtil(),
+              Confirm(),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
