@@ -19,6 +19,7 @@ class PubCard extends StatefulWidget {
 
 class _PubCardState extends State<PubCard> {
   int selectedTab = 0;
+  int a = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +119,7 @@ class _PubCardState extends State<PubCard> {
                           ),
                           builder: (context) {
                             int localSelectedTab = selectedTab;
+                            int anonym = a;
 
                             return StatefulBuilder(
                               builder: (context, setState) {
@@ -162,41 +164,35 @@ class _PubCardState extends State<PubCard> {
                                           ),
                                           SizedBox(height: 20),
                                           // Tabs
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    localSelectedTab = 0;
-                                                  });
-                                                },
-                                                child: localSelectedTab == 1
-                                                    ? TopWhite()
-                                                    : Top(),
-                                              ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    localSelectedTab = 1;
-                                                  });
-                                                },
-                                                child: localSelectedTab == 1
-                                                    ? RecentWhite()
-                                                    : Recent(),
-                                              ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    localSelectedTab = 2;
-                                                  });
-                                                },
-                                                child: localSelectedTab == 2
-                                                    ? AnonymeWhite()
-                                                    : Anonyme(),
-                                              ),
-                                            ],
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 20, right: 100),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      localSelectedTab = 0;
+                                                    });
+                                                  },
+                                                  child: localSelectedTab == 1
+                                                      ? TopWhite()
+                                                      : Top(),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      localSelectedTab = 1;
+                                                    });
+                                                  },
+                                                  child: localSelectedTab == 1
+                                                      ? RecentWhite()
+                                                      : Recent(),
+                                                ),
+                                              ],
+                                            ),
                                           ),
 
                                           // Comments list

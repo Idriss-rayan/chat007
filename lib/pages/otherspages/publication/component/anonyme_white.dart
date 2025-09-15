@@ -9,7 +9,7 @@ class AnonymeWhite extends StatelessWidget {
       width: 80,
       height: 30,
       decoration: BoxDecoration(
-        color: Colors.deepOrange,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(7),
       ),
       child: Center(
@@ -17,7 +17,7 @@ class AnonymeWhite extends StatelessWidget {
           'Anonymous',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.white,
+            color: Colors.deepOrange,
           ),
         ),
       ),
