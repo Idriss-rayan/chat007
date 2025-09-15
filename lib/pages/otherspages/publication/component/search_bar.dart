@@ -20,11 +20,12 @@ class SearchBarCostum extends StatelessWidget {
           const Expanded(
             child: TextField(
               decoration: InputDecoration(
-                  hintText: "Search...",
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(
-                    fontSize: 14,
-                  )),
+                hintText: "Search...",
+                border: InputBorder.none,
+                hintStyle: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
             ),
           ),
           if (onClose != null)
