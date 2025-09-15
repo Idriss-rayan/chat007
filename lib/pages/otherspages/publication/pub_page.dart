@@ -136,17 +136,6 @@ class _PubPageState extends State<PubPage> {
                 ],
               ),
             ),
-            // Row(
-            //   children: [
-            //     Spaces(),
-            //     Spaces(),
-            //     Spaces(),
-            //     Spaces(),
-            //     Spaces(),
-            //     Spaces(),
-            //   ],
-            // ),
-
             SizedBox(
               height: 50, // hauteur fixe pour le horizontal list
               child: ListView.builder(
