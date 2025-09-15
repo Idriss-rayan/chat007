@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:simplechat/pages/otherspages/publication/component/search_bar.dart';
 import 'package:simplechat/pages/otherspages/publication/pub_card.dart';
 
 class PubPage extends StatefulWidget {
@@ -11,6 +12,7 @@ class PubPage extends StatefulWidget {
 }
 
 class _PubPageState extends State<PubPage> {
+  bool IsPressed = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,38 +34,53 @@ class _PubPageState extends State<PubPage> {
                   ),
                 ),
               ),
-              // 🔹 Search + Notifications regroupés
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: SvgPicture.asset(
-                        "assets/component/search.svg",
-                        fit: BoxFit.contain,
-                        color: Colors.deepOrangeAccent,
+
+              // 🔹 Zone à droite (search + notifications)
+              IsPressed
+                  ? Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: SearchBarCostum(
+                          onClose: () {
+                            setState(() {
+                              IsPressed = false;
+                            });
+                          },
+                        ),
                       ),
+                    )
+                  : Row(
+                      children: [
+                        // Bouton recherche
+                        IconButton(
+                          icon: SvgPicture.asset(
+                            "assets/component/search.svg",
+                            width: 30,
+                            height: 30,
+                            color: Colors.deepOrangeAccent,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              IsPressed = true;
+                            });
+                          },
+                        ),
+                        // Bouton notifications
+                        IconButton(
+                          icon: SvgPicture.asset(
+                            "assets/component/notifications.svg",
+                            width: 30,
+                            height: 30,
+                            color: Colors.deepOrangeAccent,
+                          ),
+                          onPressed: () {},
+                        ),
+                      ],
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: SvgPicture.asset(
-                        "assets/component/notifications.svg",
-                        fit: BoxFit.contain,
-                        color: Colors.deepOrangeAccent,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
-          Divider(color: Colors.deepOrangeAccent),
+
+          // Liste principale
           Expanded(
             child: ListView.builder(
               itemCount: 5,

@@ -28,14 +28,17 @@ class _InformationsState extends State<Informations> {
           child: ListView(
             children: [
               // Logo
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/logo/PAPAchou.svg',
-                    width: 20,
-                    height: 20,
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.only(top: 25.0, bottom: 20),
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/logo/PAPAchou.svg',
+                      width: 20,
+                      height: 20,
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: 30),
               FirstName(),
