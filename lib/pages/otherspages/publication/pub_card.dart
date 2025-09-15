@@ -3,6 +3,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:like_button/like_button.dart';
 import 'package:simplechat/pages/otherspages/publication/comment_card.dart';
 import 'package:simplechat/pages/otherspages/publication/comment_field.dart';
+import 'package:simplechat/pages/otherspages/publication/component/recent.dart';
+import 'package:simplechat/pages/otherspages/publication/component/recent_white.dart';
+import 'package:simplechat/pages/otherspages/publication/component/top.dart';
+import 'package:simplechat/pages/otherspages/publication/component/top_white.dart';
 
 class PubCard extends StatefulWidget {
   const PubCard({super.key});
@@ -12,28 +16,33 @@ class PubCard extends StatefulWidget {
 }
 
 class _PubCardState extends State<PubCard> {
+  int selectedTab = 0;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 18.0),
       child: Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Header
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Row(
                 children: [
                   const CircleAvatar(
                     radius: 22,
-                    backgroundImage: NetworkImage(
-                        "https://i.pravatar.cc/150?img=8"), // fake avatar
+                    backgroundImage:
+                        NetworkImage("https://i.pravatar.cc/150?img=8"),
                   ),
                   SizedBox(width: 10),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Njutapmvoui Idriss rayan',
@@ -51,56 +60,65 @@ class _PubCardState extends State<PubCard> {
                 ],
               ),
             ),
+
+            // Description
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 '''L’esclave qui n’est pas capable d’assumer sa révolte ne mérite pas que l’on s’apitoie sur son sort. Voir plus''',
               ),
             ),
+
+            // Image / Video placeholder
             Container(
               width: double.infinity,
               height: height * 0.4,
               decoration: BoxDecoration(
-                //color: Colors.amber,
                 gradient: LinearGradient(
                   colors: [Colors.pinkAccent, Colors.deepOrange],
                 ),
-                //border: Border.all(color: Colors.black),
               ),
             ),
-            Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: height * 0.07,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        LikeButton(
-                          size: 30,
-                          likeCount: 99,
-                          countBuilder: (count, isLiked, text) {
-                            return Text(
-                              text,
-                              style: TextStyle(
-                                color: isLiked ? Colors.pink : Colors.grey,
-                              ),
-                            );
-                          },
-                        ),
-                        InkWell(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(10),
-                                ),
-                              ),
-                              builder: (context) {
+
+            // Buttons (Like, Comment, Share)
+            Container(
+              width: double.infinity,
+              height: height * 0.07,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Like button
+                    LikeButton(
+                      size: 30,
+                      likeCount: 99,
+                      countBuilder: (count, isLiked, text) {
+                        return Text(
+                          text,
+                          style: TextStyle(
+                            color: isLiked ? Colors.pink : Colors.grey,
+                          ),
+                        );
+                      },
+                    ),
+
+                    // Comment button
+                    InkWell(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(10),
+                            ),
+                          ),
+                          builder: (context) {
+                            int localSelectedTab = selectedTab;
+
+                            return StatefulBuilder(
+                              builder: (context, setState) {
                                 return Padding(
                                   padding: EdgeInsets.only(
                                       bottom: MediaQuery.of(context)
@@ -115,6 +133,61 @@ class _PubCardState extends State<PubCard> {
                                       return Column(
                                         children: [
                                           SizedBox(height: 25),
+                                          Container(
+                                            width: 50,
+                                            height: 5,
+                                            decoration: BoxDecoration(
+                                              color: const Color.fromARGB(
+                                                  157, 158, 158, 158),
+                                              borderRadius:
+                                                  BorderRadius.circular(25),
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 16),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                'Comment',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+
+                                          // Tabs
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    localSelectedTab = 0;
+                                                  });
+                                                },
+                                                child: localSelectedTab == 1
+                                                    ? TopWhite()
+                                                    : Top(),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    localSelectedTab = 1;
+                                                  });
+                                                },
+                                                child: localSelectedTab == 1
+                                                    ? RecentWhite()
+                                                    : Recent(),
+                                              ),
+                                            ],
+                                          ),
+
+                                          // Comments list
                                           Expanded(
                                             child: ListView.builder(
                                               controller: scrollController,
@@ -133,10 +206,10 @@ class _PubCardState extends State<PubCard> {
                                             ),
                                           ),
 
-                                          // 🔹 Zone d’écriture
+                                          // Comment input
                                           SafeArea(
                                             child: CommentField(),
-                                          )
+                                          ),
                                         ],
                                       );
                                     },
@@ -145,52 +218,55 @@ class _PubCardState extends State<PubCard> {
                               },
                             );
                           },
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: SvgPicture.asset(
-                                  'assets/component/msg.svg',
-                                  width: 30,
-                                  height: 30,
-                                  color: Colors.pink,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              const Text(
-                                '1027 comments',
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ],
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: SvgPicture.asset(
+                              'assets/component/msg.svg',
+                              width: 30,
+                              height: 30,
+                              color: Colors.pink,
+                            ),
                           ),
-                        ),
-                        InkWell(
-                          onTap: () {},
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: SvgPicture.asset(
-                                  'assets/component/Share.svg',
-                                  width: 30,
-                                  height: 30,
-                                  color: Colors.pink,
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                '107 repost',
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ],
+                          const SizedBox(height: 5),
+                          const Text(
+                            '1027 comments',
+                            style: TextStyle(fontSize: 10),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
+
+                    // Share button
+                    InkWell(
+                      onTap: () {},
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: SvgPicture.asset(
+                              'assets/component/Share.svg',
+                              width: 30,
+                              height: 30,
+                              color: Colors.pink,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            '107 repost',
+                            style: TextStyle(fontSize: 10),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
+
             Divider(),
           ],
         ),
