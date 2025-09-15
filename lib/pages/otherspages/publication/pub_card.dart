@@ -3,8 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:like_button/like_button.dart';
 import 'package:simplechat/pages/otherspages/publication/comment_card.dart';
 import 'package:simplechat/pages/otherspages/publication/comment_field.dart';
-import 'package:simplechat/pages/otherspages/publication/component/anonyme.dart';
-import 'package:simplechat/pages/otherspages/publication/component/anonyme_white.dart';
 import 'package:simplechat/pages/otherspages/publication/component/recent.dart';
 import 'package:simplechat/pages/otherspages/publication/component/recent_white.dart';
 import 'package:simplechat/pages/otherspages/publication/component/top.dart';
