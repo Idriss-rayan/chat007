@@ -268,7 +268,6 @@ class _PubCardState extends State<PubCard> {
                 ),
               ),
             ),
-
             Divider(),
           ],
         ),
