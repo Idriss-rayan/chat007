@@ -54,50 +54,48 @@ class _CityState extends State<City> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      child: Expanded(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: const [
-                      Text(
-                        'City',
-                        style: TextStyle(
-                          color: Color.fromARGB(128, 0, 0, 0),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  TextFormField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Color.fromARGB(5, 255, 109, 64),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(3),
-                        borderSide: const BorderSide(
-                          color: Color.fromARGB(5, 255, 109, 64),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(3),
-                        borderSide: const BorderSide(
-                          color: Color.fromARGB(5, 255, 109, 64),
-                        ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'City',
+                      style: TextStyle(
+                        color: Color.fromARGB(128, 0, 0, 0),
                       ),
                     ),
-                    validator: _validateCity,
+                  ],
+                ),
+                const SizedBox(height: 5),
+                TextFormField(
+                  controller: _controller,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Color.fromARGB(5, 255, 109, 64),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(3),
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(5, 255, 109, 64),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(3),
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(5, 255, 109, 64),
+                      ),
+                    ),
                   ),
-                ],
-              ),
+                  validator: _validateCity,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

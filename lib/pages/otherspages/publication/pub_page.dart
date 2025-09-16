@@ -34,7 +34,7 @@ class _PubPageState extends State<PubPage> {
                       width: 100,
                       height: 100,
                       child: SvgPicture.asset(
-                        "assets/logo/p.svg",
+                        "assets/logo/PAPAchou.svg",
                         fit: BoxFit.contain,
                       ),
                     ),
