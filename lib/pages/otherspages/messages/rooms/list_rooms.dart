@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'card_msg.dart';
+import 'package:simplechat/pages/otherspages/messages/rooms/card_rooms.dart';
 
-class ChatList extends StatelessWidget {
-  const ChatList({super.key});
+class ListRooms extends StatelessWidget {
+  const ListRooms({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +10,7 @@ class ChatList extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       itemCount: 50, // nombre de messages
       itemBuilder: (context, index) {
-        return const CardMsg();
+        return const CardRooms();
       },
     );
   }

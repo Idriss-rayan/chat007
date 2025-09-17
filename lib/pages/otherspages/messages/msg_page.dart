@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simplechat/pages/otherspages/messages/chat_list.dart';
+import 'package:simplechat/pages/otherspages/messages/rooms/list_rooms.dart';
 
 class MsgPage extends StatefulWidget {
   const MsgPage({super.key});
@@ -118,12 +119,7 @@ class _MsgPageState extends State<MsgPage> {
               },
               children: [
                 ChatList(),
-                Center(
-                  child: Text(
-                    "group Page",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                ),
+                ListRooms(),
                 Center(
                   child: Text(
                     "Stories Page",
