@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:simplechat/gate/informations.dart';
 import 'package:simplechat/gate/login_page.dart';
 import 'package:simplechat/pages/main_page.dart';
+import 'package:simplechat/pages/otherspages/users/card_user2.dart';
 import 'package:simplechat/test/test.dart';
 
 void main() {
@@ -15,8 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: LoginPage(),
-      //home: UiNavBar(),
-      //home: PublicationCard(),
+      //: Test(),
     );
   }
 }
