@@ -26,9 +26,9 @@ class StoriePages extends StatelessWidget {
         Align(
           alignment: Alignment.topLeft,
           child: Padding(
-            padding: const EdgeInsets.only(left: 30.0),
+            padding: const EdgeInsets.only(left: 30.0, bottom: 10),
             child: Text(
-              'stories already watch',
+              'Stories already watch',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
