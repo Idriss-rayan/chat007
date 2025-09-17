@@ -6,13 +6,16 @@ class ListNewStories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.all(16),
-      itemCount: 50, // nombre de messages
-      itemBuilder: (context, index) {
-        return StoriesCard();
-      },
+    return SizedBox(
+      height: 200,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.all(16),
+        itemCount: 50,
+        itemBuilder: (context, index) {
+          return StoriesCard();
+        },
+      ),
     );
   }
 }

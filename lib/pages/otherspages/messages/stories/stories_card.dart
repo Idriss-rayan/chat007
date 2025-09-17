@@ -12,23 +12,26 @@ class StoriesCard extends StatefulWidget {
 class _StoriesCardState extends State<StoriesCard> {
   @override
   Widget build(BuildContext context) {
-    return AnimatedGradientBorder(
-      width: 80,
-      height: 80,
-      strokeWidth: 1,
-      borderRadius: 20,
-      child: Container(
-        width: 80,
-        height: 80,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: AnimatedGradientBorder(
+            width: 100,
+            height: 100,
+            strokeWidth: 2,
+            borderRadius: 80,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                //color: Colors.amber,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
         ),
-        child: SvgPicture.asset(
-          'assets/component/avatar.svg',
-          width: 64,
-          height: 64,
-        ),
-      ),
+      ],
     );
   }
 }
