@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:simplechat/pages/otherspages/messages/chat_discussion.dart';
+import 'package:simplechat/pages/otherspages/messages/rooms/chat_rooms.dart';
 
 class CardRooms extends StatefulWidget {
   const CardRooms({super.key});
@@ -18,7 +19,7 @@ class _CardRoomsState extends State<CardRooms> {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
-                const ChatDiscussion(),
+                const ChatRooms(),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
               return SlideTransition(
