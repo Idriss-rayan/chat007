@@ -12,7 +12,7 @@ class _ListOldStoriesState extends State<ListOldStories> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      scrollDirection: Axis.vertical,
+      //scrollDirection: Axis.vertical,
       padding: const EdgeInsets.all(16),
       itemCount: 50,
       itemBuilder: (context, index) {
