@@ -17,9 +17,9 @@ class _StoriesCardState extends State<StoriesCard> {
         Padding(
           padding: const EdgeInsets.only(left: 10.0),
           child: AnimatedGradientBorder(
-            width: 100,
-            height: 100,
-            strokeWidth: 2,
+            width: 80,
+            height: 80,
+            strokeWidth: 1.5,
             borderRadius: 80,
             child: Container(
               width: 100,
