@@ -31,6 +31,13 @@ class _StoriesCardState extends State<StoriesCard> {
             ),
           ),
         ),
+        Text(
+          'idriss rayan',
+          style: TextStyle(
+              fontSize: 13,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w500),
+        )
       ],
     );
   }
