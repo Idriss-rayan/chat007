@@ -21,7 +21,9 @@ class _CardUserState extends State<CardUser> {
         decoration: BoxDecoration(
           color: Color.fromARGB(7, 236, 34, 31),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.deepOrange),
+          border: Border.all(
+            color: const Color.fromARGB(30, 255, 86, 34),
+          ),
         ),
         child: Row(
           children: [
