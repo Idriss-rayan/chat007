@@ -14,7 +14,9 @@ class _TestState extends State<Test> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Center(child: CardUser2()),
+        child: Center(
+          child: CardUser2(),
+        ),
       ),
     );
   }

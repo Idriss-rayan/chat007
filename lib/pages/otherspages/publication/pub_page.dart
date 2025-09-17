@@ -72,13 +72,23 @@ class _PubPageState extends State<PubPage> {
                                 },
                               ),
 
-                              // Bouton notifications avec menu
-                              PopupMenuButton<int>(
+                              IconButton(
                                 icon: SvgPicture.asset(
                                   "assets/component/notifications.svg",
                                   width: 28,
                                   height: 28,
                                   color: Colors.deepOrangeAccent,
+                                ), // ⋮ kebab menu
+                                onPressed: () {
+                                  // action à exécuter
+                                },
+                              ),
+
+                              // Bouton notifications avec menu
+                              PopupMenuButton<int>(
+                                icon: Icon(
+                                  Icons.more_vert,
+                                  color: Colors.deepOrange,
                                 ),
                                 color: Colors.orange.shade50,
                                 shape: RoundedRectangleBorder(
