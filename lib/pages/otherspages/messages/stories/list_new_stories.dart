@@ -7,7 +7,7 @@ class ListNewStories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 140,
+      height: 150,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.all(16),

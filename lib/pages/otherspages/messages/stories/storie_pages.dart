@@ -36,7 +36,13 @@ class StoriePages extends StatelessWidget {
             ),
           ),
         ),
-        ListOldStories(),
+        Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 30.0),
+            child: ListOldStories(),
+          ),
+        ),
       ],
     );
   }
