@@ -11,17 +11,13 @@ class ListOldStories extends StatefulWidget {
 class _ListOldStoriesState extends State<ListOldStories> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200,
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        padding: const EdgeInsets.all(16),
-        itemCount: 50,
-        itemBuilder: (context, index) {
-          return StoriesCard();
-        },
-      ),
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      padding: const EdgeInsets.all(16),
+      itemCount: 50,
+      itemBuilder: (context, index) {
+        return StoriesCard();
+      },
     );
-    ;
   }
 }

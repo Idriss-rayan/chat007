@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simplechat/pages/otherspages/messages/stories/list_new_stories.dart';
+import 'package:simplechat/pages/otherspages/messages/stories/list_old_stories.dart';
 
 class StoriePages extends StatelessWidget {
   const StoriePages({super.key});
@@ -35,6 +36,7 @@ class StoriePages extends StatelessWidget {
             ),
           ),
         ),
+        ListOldStories(),
       ],
     );
   }
