@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simplechat/pages/custom/animated_gradient_border.dart';
 import 'package:simplechat/pages/otherspages/users/card_user.dart';
 import 'package:simplechat/pages/otherspages/users/card_user2.dart';
 
@@ -26,22 +27,32 @@ class ListUser extends StatelessWidget {
           // Bloc horizontal actuel (0, 1, 2, ...)
           final int blockIndex = (index + 1) ~/ 10 - 1;
 
-          return SizedBox(
-            height: 150,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: cardUser2PerRow,
-              itemBuilder: (context, i) {
-                // Calculer l’index global de CardUser2
-                final int cardUser2Index = blockIndex * cardUser2PerRow + i;
+          return AnimatedGradientBorder(
+            borderRadius: 7,
+            strokeWidth: 2,
+            height: 200,
+            colors: [Colors.yellow, Colors.pink, Colors.white],
+            child: Padding(
+              padding:
+                  const EdgeInsets.only(top: 18.0, left: 18.0, bottom: 18.0),
+              child: SizedBox(
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: cardUser2PerRow,
+                  itemBuilder: (context, i) {
+                    // Calculer l’index global de CardUser2
+                    final int cardUser2Index = blockIndex * cardUser2PerRow + i;
 
-                if (cardUser2Index >= totalCardUser2) return const SizedBox();
+                    if (cardUser2Index >= totalCardUser2)
+                      return const SizedBox();
 
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: CardUser2(), // ici tu peux aussi passer l’index
-                );
-              },
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: CardUser2(), // ici tu peux aussi passer l’index
+                    );
+                  },
+                ),
+              ),
             ),
           );
         }
