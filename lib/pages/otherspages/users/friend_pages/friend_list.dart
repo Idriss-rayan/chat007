@@ -1,0 +1,17 @@
+import 'package:flutter/material.dart';
+import 'package:simplechat/pages/otherspages/users/friend_pages/friend_card.dart';
+
+class FriendList extends StatelessWidget {
+  const FriendList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: 50, // nombre de messages
+      itemBuilder: (context, index) {
+        return const FriendCard();
+      },
+    );
+  }
+}
