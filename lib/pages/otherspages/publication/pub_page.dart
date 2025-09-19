@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:simplechat/pages/custom/animated_gradient_border.dart';
 import 'package:simplechat/pages/otherspages/publication/component/search_bar.dart';
 import 'package:simplechat/pages/otherspages/publication/pub_card.dart';
 import 'package:simplechat/pages/otherspages/publication/spaces/spaces.dart';
@@ -39,7 +38,6 @@ class _PubPageState extends State<PubPage> {
                       ),
                     ),
                   ),
-
                   // Zone à droite (expand pour occuper tout l’espace restant)
                   Expanded(
                     child: isSearchActive
