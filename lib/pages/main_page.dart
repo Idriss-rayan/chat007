@@ -5,6 +5,7 @@ import 'package:simplechat/pages/otherspages/messages/msg_page.dart';
 import 'package:simplechat/pages/otherspages/publication/pub_page.dart';
 import 'package:flutter/services.dart';
 import 'package:simplechat/pages/otherspages/users/addusers/page_user.dart';
+import 'package:simplechat/pages/otherspages/users/main_user_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -19,7 +20,8 @@ class _PubPageState extends State<MainPage> {
   final List<Widget> pages = const [
     PubPage(),
     MsgPage(),
-    PageUser(),
+    //PageUser(),
+    MainUserPage(),
     Center(child: Text("👤 Profil", style: TextStyle(fontSize: 24))),
   ];
 
