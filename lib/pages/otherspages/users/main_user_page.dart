@@ -12,7 +12,7 @@ class MainUserPage extends StatefulWidget {
 class _MainUserPageState extends State<MainUserPage> {
   final PageController _controller = PageController();
   int _currentPage = 0;
-  final List<String> _tabs = ["Add friends", "Friends", "Contact"];
+  final List<String> _tabs = ["Follow", "Followers", "Friends"];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,10 +152,10 @@ class _MainUserPageState extends State<MainUserPage> {
               children: [
                 ListUser(),
                 Center(
-                  child: Text('friends'),
+                  child: Text('followers'),
                 ),
                 Center(
-                  child: Text('contact'),
+                  child: Text('Friends'),
                 ),
               ],
             ),
