@@ -38,6 +38,7 @@ dependencies:
   flutter_svg: ^2.0.9
   flutter_reaction_button: ^3.0.0
   vibration: ^1.9.0
+  file_picker: ^6.0.5
   
 
   # The following adds the Cupertino Icons font to your application.
