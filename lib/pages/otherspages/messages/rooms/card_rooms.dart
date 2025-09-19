@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:simplechat/pages/otherspages/messages/chat_discussion.dart';
 import 'package:simplechat/pages/otherspages/messages/rooms/chat_rooms.dart';
 
 class CardRooms extends StatefulWidget {
