@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:vibration/vibration.dart'; // 👈 package vibration
 
 class PageCalls extends StatefulWidget {
   final String name;
@@ -19,6 +20,34 @@ class _PageCallsState extends State<PageCalls> {
   bool isCalling = true;
   bool isMuted = false;
   bool isSpeakerOn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _startRingtoneVibration();
+  }
+
+  @override
+  void dispose() {
+    Vibration.cancel(); // stop vibration quand on quitte la page
+    super.dispose();
+  }
+
+  /// Lance une vibration type sonnerie
+  void _startRingtoneVibration() async {
+    if (await Vibration.hasVibrator() ?? false) {
+      List<int> pattern = [
+        0, // délai avant de commencer
+        500, // vibre 0.5s
+        400,
+        500, // vibre 0.5s
+        2000,
+      ];
+
+      // repeat: 0 → recommence à l’index 0 = vibration infinie
+      Vibration.vibrate(pattern: pattern, repeat: 0);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +131,7 @@ class _PageCallsState extends State<PageCalls> {
                       size: 70,
                       onTap: () {
                         setState(() => isCalling = false);
+                        Vibration.cancel(); // stop la vibration au raccrochage
                         Future.delayed(const Duration(milliseconds: 600), () {
                           Navigator.pop(context);
                         });
@@ -153,13 +183,6 @@ class _PageCallsState extends State<PageCalls> {
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
-          // boxShadow: [
-          //   BoxShadow(
-          //     color: Colors.black.withOpacity(0.3),
-          //     blurRadius: 10,
-          //     offset: const Offset(0, 4),
-          //   ),
-          // ],
         ),
         child: Icon(icon, color: Colors.white, size: 28),
       ),
