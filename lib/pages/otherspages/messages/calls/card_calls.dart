@@ -11,28 +11,6 @@ class CardCalls extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8.0),
       child: GestureDetector(
         onTap: () {
-          // Navigator.push(
-          //   context,
-          //   PageRouteBuilder(
-          //     pageBuilder: (context, animation, secondaryAnimation) =>
-          //         const PageCalls(
-          //       name: 'rayan',
-          //     ),
-          //     transitionsBuilder:
-          //         (context, animation, secondaryAnimation, child) {
-          //       return SlideTransition(
-          //         position: Tween<Offset>(
-          //           begin: const Offset(0.0, 0.2),
-          //           end: Offset.zero,
-          //         ).animate(animation),
-          //         child: FadeTransition(
-          //           opacity: animation,
-          //           child: child,
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // );
           showDialog(
             context: context,
             barrierDismissible: true,
