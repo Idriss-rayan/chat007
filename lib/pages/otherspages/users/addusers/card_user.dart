@@ -56,7 +56,7 @@ class _CardUserState extends State<CardUser> {
                         },
                         child: istype
                             ? SvgPicture.asset(
-                                'assets/component/pend.svg',
+                                'assets/component/pending.svg',
                                 width: 33,
                                 height: 33,
                               )
