@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:simplechat/pages/custom/animated_gradient_border.dart';
 import 'package:simplechat/pages/otherspages/messages/message/msg_page.dart';
+import 'package:simplechat/pages/otherspages/profile/profile.dart';
 import 'package:simplechat/pages/otherspages/publication/pub_page.dart';
 import 'package:flutter/services.dart';
 import 'package:simplechat/pages/otherspages/users/main_user_page.dart';
@@ -19,9 +20,8 @@ class _PubPageState extends State<MainPage> {
   final List<Widget> pages = const [
     PubPage(),
     MsgPage(),
-    //PageUser(),
     MainUserPage(),
-    Center(child: Text("👤 Profil", style: TextStyle(fontSize: 24))),
+    Profile(),
   ];
 
   void onItemTapped(int index) {
