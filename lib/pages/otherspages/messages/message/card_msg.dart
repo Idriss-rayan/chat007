@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:simplechat/pages/otherspages/messages/chat_discussion.dart';
+import 'package:simplechat/pages/otherspages/messages/message/chat_discussion.dart';
 
 class CardMsg extends StatefulWidget {
   const CardMsg({super.key});
