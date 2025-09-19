@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:simplechat/pages/otherspages/users/followers_pages/card_follow.dart';
 
-class ChatList extends StatelessWidget {
-  const ChatList({super.key});
+class FollowList extends StatelessWidget {
+  const FollowList({super.key});
 
   @override
   Widget build(BuildContext context) {

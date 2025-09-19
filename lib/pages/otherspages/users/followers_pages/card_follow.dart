@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:simplechat/pages/custom/animated_gradient_border.dart';
 
 class CardFollow extends StatefulWidget {
   const CardFollow({super.key});
@@ -56,12 +55,12 @@ class _CardFollowState extends State<CardFollow> {
                         },
                         child: istype
                             ? SvgPicture.asset(
-                                'assets/component/pend.svg',
+                                'assets/component/my_friends.svg',
                                 width: 33,
                                 height: 33,
                               )
                             : SvgPicture.asset(
-                                'assets/component/add.svg',
+                                'assets/component/friends.svg',
                                 width: 33,
                                 height: 33,
                               ),
