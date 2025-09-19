@@ -16,7 +16,9 @@ class PageCalls extends StatefulWidget {
 }
 
 class _PageCallsState extends State<PageCalls> {
-  bool isCalling = true; // true = en appel, false = raccroché
+  bool isCalling = true;
+  bool isMuted = false;
+  bool isSpeakerOn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class _PageCallsState extends State<PageCalls> {
         height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFFFB744), Color(0xFFFF6464)], // joli dégradé
+            colors: [Color(0xFFFFB744), Color(0xFFFF6464)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -40,16 +42,11 @@ class _PageCallsState extends State<PageCalls> {
                 padding: const EdgeInsets.only(top: 60.0),
                 child: Column(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: ClipOval(
-                        child: SvgPicture.asset(
-                          widget.avatarPath,
-                          width: 120,
-                          height: 120,
-                        ),
+                    ClipOval(
+                      child: SvgPicture.asset(
+                        widget.avatarPath,
+                        width: 120,
+                        height: 120,
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -81,24 +78,18 @@ class _PageCallsState extends State<PageCalls> {
                   children: [
                     // Bouton mute
                     _buildActionButton(
-                      icon: Icons.mic_off,
-                      color: Colors.grey[800]!,
+                      icon: isMuted ? Icons.mic : Icons.mic_off,
+                      color: isMuted
+                          ? const Color.fromARGB(155, 33, 149, 243)
+                          : const Color.fromARGB(150, 249, 168, 37)!,
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Center(child: Text("Micro coupé")),
-                            behavior: SnackBarBehavior
-                                .floating, // 👈 le rend flottant
-                            margin: const EdgeInsets.all(
-                                16), // marges pour qu'il flotte
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(12), // arrondi moderne
-                            ),
-                            backgroundColor:
-                                const Color.fromARGB(153, 64, 195, 255),
-                            duration: const Duration(seconds: 2),
-                          ),
+                        setState(() => isMuted = !isMuted);
+
+                        _showModernSnackBar(
+                          context,
+                          isMuted ? "Micro activé" : "Micro coupé",
+                          icon: isMuted ? Icons.mic : Icons.mic_off,
+                          color: isMuted ? Colors.blue : Colors.blue[700]!,
                         );
                       },
                     ),
@@ -121,10 +112,19 @@ class _PageCallsState extends State<PageCalls> {
                     // Bouton haut-parleur
                     _buildActionButton(
                       icon: Icons.volume_up,
-                      color: Colors.grey[800]!,
+                      color: isSpeakerOn
+                          ? Colors.green
+                          : const Color.fromARGB(150, 249, 168, 37)!,
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Haut-parleur activé")),
+                        setState(() => isSpeakerOn = !isSpeakerOn);
+
+                        _showModernSnackBar(
+                          context,
+                          isSpeakerOn
+                              ? "Haut-parleur activé"
+                              : "Haut-parleur désactivé",
+                          icon: Icons.volume_up,
+                          color: isSpeakerOn ? Colors.green : Colors.grey[700]!,
                         );
                       },
                     ),
@@ -138,7 +138,7 @@ class _PageCallsState extends State<PageCalls> {
     );
   }
 
-  /// Widget réutilisable pour les boutons circulaires
+  /// Widget bouton circulaire
   Widget _buildActionButton({
     required IconData icon,
     required Color color,
@@ -153,15 +153,45 @@ class _PageCallsState extends State<PageCalls> {
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Colors.black.withOpacity(0.3),
+          //     blurRadius: 10,
+          //     offset: const Offset(0, 4),
+          //   ),
+          // ],
+        ),
+        child: Icon(icon, color: Colors.white, size: 28),
+      ),
+    );
+  }
+
+  /// SnackBar moderne et flottant
+  void _showModernSnackBar(
+    BuildContext context,
+    String message, {
+    required IconData icon,
+    required Color color,
+  }) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: color.withOpacity(0.9),
+        content: Row(
+          children: [
+            Icon(icon, color: Colors.white),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                message,
+                style: const TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),
-        child: Icon(icon, color: Colors.white, size: 28),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
