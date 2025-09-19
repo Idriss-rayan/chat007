@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:simplechat/pages/otherspages/messages/calls/list_calls.dart';
 import 'package:simplechat/pages/otherspages/messages/chat_list.dart';
 import 'package:simplechat/pages/otherspages/messages/rooms/list_rooms.dart';
@@ -53,6 +54,40 @@ class _MsgPageState extends State<MsgPage> {
                         border: Border.all(
                             color: const Color.fromARGB(65, 255, 86, 34)),
                       ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 40,
+                    left: 16,
+                    right: 16,
+                    child: Row(
+                      children: [
+                        // Logo papachou.svg
+                        SvgPicture.asset(
+                          "assets/logo/PAPAchou.svg",
+                          height: 20,
+                          width: 20,
+                        ),
+
+                        const Spacer(),
+
+                        // Search
+                        IconButton(
+                          onPressed: () {
+                            // TODO: ouvrir recherche
+                          },
+                          icon: const Icon(Icons.search, color: Colors.black87),
+                        ),
+
+                        // Notifications
+                        IconButton(
+                          onPressed: () {
+                            // TODO: notifications
+                          },
+                          icon: const Icon(Icons.notifications,
+                              color: Colors.black87),
+                        ),
+                      ],
                     ),
                   ),
                   // Boutons avec underline animée
