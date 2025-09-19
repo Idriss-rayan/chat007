@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simplechat/pages/succesfull_page.dart';
+import 'package:simplechat/pages/otherspages/messages/message/succesfull_page.dart';
 
 class Confirm extends StatefulWidget {
   const Confirm({super.key});
