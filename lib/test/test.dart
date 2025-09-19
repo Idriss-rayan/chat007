@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simplechat/pages/otherspages/users/card_user2.dart';
+import 'package:simplechat/pages/otherspages/users/addusers/card_user2.dart';
 
 class Test extends StatefulWidget {
   const Test({super.key});

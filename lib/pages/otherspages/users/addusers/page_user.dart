@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:simplechat/pages/otherspages/users/list_user.dart';
+import 'package:simplechat/pages/otherspages/users/addusers/list_user.dart';
 
 class PageUser extends StatefulWidget {
   const PageUser({super.key});

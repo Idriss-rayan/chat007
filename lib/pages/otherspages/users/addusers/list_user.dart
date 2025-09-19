@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:simplechat/pages/custom/animated_gradient_border.dart';
-import 'package:simplechat/pages/otherspages/users/card_user.dart';
-import 'package:simplechat/pages/otherspages/users/card_user2.dart';
+import 'package:simplechat/pages/otherspages/users/addusers/card_user.dart';
+import 'package:simplechat/pages/otherspages/users/addusers/card_user2.dart';
 
 class ListUser extends StatelessWidget {
   const ListUser({super.key});

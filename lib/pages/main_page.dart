@@ -3,8 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:simplechat/pages/custom/animated_gradient_border.dart';
 import 'package:simplechat/pages/otherspages/messages/msg_page.dart';
 import 'package:simplechat/pages/otherspages/publication/pub_page.dart';
-import 'package:simplechat/pages/otherspages/users/page_user.dart';
 import 'package:flutter/services.dart';
+import 'package:simplechat/pages/otherspages/users/addusers/page_user.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
