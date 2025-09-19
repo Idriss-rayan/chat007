@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:simplechat/pages/otherspages/users/addusers/list_user.dart';
 import 'package:simplechat/pages/otherspages/users/followers_pages/follow_list.dart';
+import 'package:simplechat/pages/otherspages/users/friend_pages/friend_list.dart';
 
 class MainUserPage extends StatefulWidget {
   const MainUserPage({super.key});
@@ -153,9 +154,7 @@ class _MainUserPageState extends State<MainUserPage> {
               children: [
                 ListUser(),
                 FollowList(),
-                Center(
-                  child: Text('Friends'),
-                ),
+                FriendList(),
               ],
             ),
           ),

@@ -61,7 +61,7 @@ class _CardUserState extends State<CardUser> {
                                 height: 33,
                               )
                             : SvgPicture.asset(
-                                'assets/component/add.svg',
+                                'assets/component/follow.svg',
                                 width: 33,
                                 height: 33,
                               ),

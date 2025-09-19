@@ -8,7 +8,7 @@ class FriendList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: 50, // nombre de messages
+      itemCount: 15, // nombre de messages
       itemBuilder: (context, index) {
         return const FriendCard();
       },
