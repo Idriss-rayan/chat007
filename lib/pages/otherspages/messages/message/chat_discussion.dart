@@ -379,9 +379,9 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                         },
                       ),
                       IconButton(
-                          icon:
-                              const Icon(Icons.camera_alt, color: Colors.grey),
-                          onPressed: () {}),
+                        icon: const Icon(Icons.camera_alt, color: Colors.grey),
+                        onPressed: () {},
+                      ),
                       _isTyping
                           ? IconButton(
                               icon:
@@ -389,7 +389,8 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                               onPressed: _sendMessage)
                           : IconButton(
                               icon: const Icon(Icons.mic, color: Colors.orange),
-                              onPressed: () {}),
+                              onPressed: () {},
+                            ),
                     ],
                   ),
                 ),
