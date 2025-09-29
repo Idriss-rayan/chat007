@@ -297,12 +297,12 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                       _handleRecordedAudio(
                           _previewAudioPath!, _previewAudioDuration!);
                     }
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Audio envoyé !"),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   const SnackBar(
+                    //     content: Text("Audio envoyé !"),
+                    //     backgroundColor: Colors.green,
+                    //   ),
+                    // );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,

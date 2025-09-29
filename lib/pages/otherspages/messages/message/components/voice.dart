@@ -197,12 +197,6 @@ class _VoiceState extends State<Voice> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    // Si on a un audio en prévisualisation, afficher les boutons d'action
-    if (_lastRecordedPath != null) {
-      return _buildPreviewActions();
-    }
-
-    // Bouton d'enregistrement avec animation de scale
     return GestureDetector(
       onTapDown: (_) => _startRecording(),
       onTapUp: (_) => _stopRecording(),
@@ -218,19 +212,6 @@ class _VoiceState extends State<Voice> with SingleTickerProviderStateMixin {
               decoration: BoxDecoration(
                 color: _isRecording ? Colors.red : Colors.orange,
                 shape: BoxShape.circle,
-                boxShadow: [
-                  if (_isRecording)
-                    BoxShadow(
-                      color: Colors.red.withOpacity(0.5),
-                      blurRadius: 8,
-                      spreadRadius: 2,
-                    ),
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
               ),
               child: Stack(
                 alignment: Alignment.center,
@@ -276,74 +257,6 @@ class _VoiceState extends State<Voice> with SingleTickerProviderStateMixin {
         shape: BoxShape.circle,
         color:
             Colors.red.withOpacity(_isRecording ? 0.2 - (index * 0.05) : 0.0),
-      ),
-    );
-  }
-
-  // Widget pour les boutons de prévisualisation
-  Widget _buildPreviewActions() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.green[50],
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: Colors.green),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Bouton écouter
-          IconButton(
-            onPressed: () {
-              if (_lastRecordedPath != null && _lastRecordedDuration != null) {
-                widget.onPreview
-                    ?.call(_lastRecordedPath!, _lastRecordedDuration!);
-              }
-            },
-            icon: const Icon(Icons.play_arrow, color: Colors.green, size: 20),
-            tooltip: "Écouter l'audio",
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-          ),
-
-          // Durée de l'audio
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Text(
-              _formatDuration(_lastRecordedDuration ?? 0),
-              style: const TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-              ),
-            ),
-          ),
-
-          // Bouton envoyer
-          IconButton(
-            onPressed: _sendRecording,
-            icon: const Icon(Icons.send, color: Colors.green, size: 18),
-            tooltip: "Envoyer l'audio",
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-          ),
-
-          // Bouton annuler
-          IconButton(
-            onPressed: _cancelRecording,
-            icon: const Icon(Icons.close, color: Colors.red, size: 18),
-            tooltip: "Supprimer l'audio",
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-          ),
-        ],
       ),
     );
   }
