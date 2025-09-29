@@ -7,6 +7,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:simplechat/pages/otherspages/messages/calls/page_calls.dart';
 import 'package:simplechat/pages/otherspages/messages/message/components/attach.dart';
+import 'package:simplechat/pages/otherspages/messages/message/components/audio_msg.dart';
 import 'package:simplechat/pages/otherspages/messages/message/components/voice.dart';
 
 class ChatDiscussion extends StatefulWidget {
@@ -63,6 +64,19 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
     }
     setState(() {
       _showEmojiPicker = !_showEmojiPicker;
+    });
+  }
+
+  void _handleRecordedAudio(String path, int duration) {
+    debugPrint("🎤 Audio enregistré: $path");
+    debugPrint("⏱️ Durée: $duration secondes");
+
+    setState(() {
+      _messages.add({
+        "audio": path,
+        "duration": duration,
+        "isMe": true,
+      });
     });
   }
 
@@ -129,19 +143,19 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                             size: 60,
                           ),
                           const SizedBox(height: 16),
-                          Text(
+                          const Text(
                             "Appel vers Rayan",
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 10),
-                          Text(
+                          const Text(
                             "Tu es sur le point d'appeler Rayan. Veux-tu continuer ?",
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               color: Colors.white70,
                             ),
@@ -248,16 +262,14 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                             child: Image.file(
                               msg["image"],
                               fit: BoxFit.cover,
+                              width: 200,
+                              height: 150,
                             ),
                           )
                         : msg.containsKey("audio")
-                            ? Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.play_arrow,
-                                      color: Colors.black),
-                                  Text("Audio message"),
-                                ],
+                            ? AudioMsg(
+                                path: msg["audio"],
+                                duration: msg["duration"] ?? 0,
                               )
                             : Text(msg["text"] ?? ""),
                   ),
@@ -295,7 +307,7 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                           },
                         ),
                       ),
-                      Attach(),
+                      const Attach(),
                       IconButton(
                         icon: const Icon(Icons.camera_alt, color: Colors.grey),
                         onPressed: () async {
@@ -319,23 +331,7 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                               icon:
                                   const Icon(Icons.send, color: Colors.orange),
                               onPressed: _sendMessage)
-                          : Voice(
-                              onRecordStateChanged: (isRecording) {
-                                if (isRecording) {
-                                  print("🎤 Début d'enregistrement");
-                                } else {
-                                  print("🛑 Fin d'enregistrement");
-                                }
-                              },
-                              onRecorded: (path) {
-                                setState(() {
-                                  _messages.add({
-                                    "audio": path,
-                                    "isMe": true,
-                                  });
-                                });
-                              },
-                            )
+                          : Voice(onRecorded: _handleRecordedAudio),
                     ],
                   ),
                 ),

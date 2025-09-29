@@ -5,9 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class Voice extends StatefulWidget {
-  final Function(bool)? onRecordStateChanged;
-  final Function(String path)? onRecorded;
-  const Voice({super.key, this.onRecordStateChanged, this.onRecorded});
+  final Function(String path, int duration)? onRecorded;
+  const Voice({super.key, this.onRecorded});
 
   @override
   State<Voice> createState() => _VoiceState();
@@ -19,6 +18,7 @@ class _VoiceState extends State<Voice> {
   bool _isRecording = false;
   Timer? _timer;
   int _recordDuration = 0;
+  int _startTime = 0;
 
   @override
   void initState() {
@@ -27,62 +27,118 @@ class _VoiceState extends State<Voice> {
   }
 
   Future<void> _initRecorder() async {
-    // Vérifie et demande la permission micro
-    var status = await Permission.microphone.request();
+    try {
+      // Vérifie et demande la permission micro
+      var status = await Permission.microphone.request();
 
-    if (status != PermissionStatus.granted) {
-      debugPrint("❌ Permission micro refusée");
-      return;
+      if (status != PermissionStatus.granted) {
+        debugPrint("❌ Permission micro refusée");
+        return;
+      }
+
+      await _recorder.openRecorder();
+
+      if (mounted) {
+        setState(() {
+          _isRecorderReady = true;
+        });
+      }
+
+      debugPrint("✅ Recorder initialisé avec succès");
+    } catch (e) {
+      debugPrint("❌ Erreur initialisation recorder: $e");
     }
-
-    await _recorder.openRecorder();
-    setState(() {
-      _isRecorderReady = true;
-    });
   }
 
   Future<void> _startRecording() async {
-    if (!_isRecorderReady) return;
+    if (!_isRecorderReady || _isRecording) return;
 
-    await _recorder.startRecorder(toFile: 'voice.aac');
-    setState(() {
-      _isRecording = true;
-      _recordDuration = 0;
-    });
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      setState(() {
-        _recordDuration++;
+    try {
+      // Générer un nom de fichier unique avec timestamp
+      final fileName = 'voice_${DateTime.now().millisecondsSinceEpoch}.aac';
+      _startTime = DateTime.now().millisecondsSinceEpoch;
+
+      await _recorder.startRecorder(toFile: fileName);
+
+      if (mounted) {
+        setState(() {
+          _isRecording = true;
+          _recordDuration = 0;
+        });
+      }
+
+      // Annuler tout timer existant
+      _timer?.cancel();
+
+      // Démarrer un nouveau timer
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (mounted) {
+          setState(() {
+            _recordDuration =
+                (DateTime.now().millisecondsSinceEpoch - _startTime) ~/ 1000;
+          });
+        }
       });
-    });
 
-    widget.onRecordStateChanged?.call(true);
+      debugPrint("🎤 Début enregistrement: $fileName");
+    } catch (e) {
+      debugPrint("❌ Erreur démarrage enregistrement: $e");
+    }
   }
 
   Future<void> _stopRecording() async {
-    if (!_isRecorderReady) return;
+    if (!_isRecorderReady || !_isRecording) return;
 
-    String? path =
-        await _recorder.stopRecorder(); // ✅ c’est ici que tu récupères path
-    _timer?.cancel();
+    try {
+      // Arrêter l'enregistrement
+      String? path = await _recorder.stopRecorder();
+      _timer?.cancel();
 
-    setState(() {
-      _isRecording = false;
-      _recordDuration = 0;
-    });
+      // Calculer la durée exacte
+      final int durationInSeconds = _recordDuration;
 
-    if (path != null) {
-      debugPrint("🎤 Fichier audio enregistré : $path");
-      widget.onRecorded?.call(path); // ✅ tu envoies le path au parent
+      if (mounted) {
+        setState(() {
+          _isRecording = false;
+          _recordDuration = 0;
+        });
+      }
+
+      if (path != null) {
+        debugPrint("✅ Enregistrement terminé:");
+        debugPrint("📁 Fichier: $path");
+        debugPrint("⏱️ Durée: ${durationInSeconds}s");
+
+        // Appeler le callback avec le chemin et la durée
+        widget.onRecorded?.call(path, durationInSeconds);
+      } else {
+        debugPrint("❌ Erreur: Chemin du fichier null");
+      }
+    } catch (e) {
+      debugPrint("❌ Erreur arrêt enregistrement: $e");
     }
-
-    widget.onRecordStateChanged?.call(false);
   }
 
   String _formatDuration(int seconds) {
     final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
     final secs = (seconds % 60).toString().padLeft(2, '0');
     return "$minutes:$secs";
+  }
+
+  Future<void> _cancelRecording() async {
+    if (_isRecording) {
+      _timer?.cancel();
+      await _recorder.stopRecorder();
+
+      if (mounted) {
+        setState(() {
+          _isRecording = false;
+          _recordDuration = 0;
+        });
+      }
+
+      debugPrint("❌ Enregistrement annulé");
+    }
   }
 
   @override
@@ -94,54 +150,33 @@ class _VoiceState extends State<Voice> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        GestureDetector(
-          onTap: _startRecording,
-          onTapCancel: _stopRecording,
-          child: Container(
-            width: 50, // largeur du container
-            height: 50, // hauteur du container
-            padding: const EdgeInsets.all(
-                0), // on supprime le padding pour que le SVG remplisse
-            decoration: BoxDecoration(
-              color: _isRecording ? Colors.white : Colors.orange,
-              shape: BoxShape.circle,
-            ),
-            child: _isRecording
-                ? SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: SvgPicture.asset(
-                      'assets/component/stop.svg',
-                      width: double.infinity,
-                      height: double.infinity,
-                      //fit: BoxFit.fill, // remplit tout le container
-                    ),
-                  )
-                : Icon(
-                    Icons.mic,
-                    color: Colors.white,
-                    size: 28,
-                  ),
-          ),
+    return GestureDetector(
+      onTapDown: (_) => _startRecording(),
+      onTapUp: (_) => _stopRecording(),
+      onTapCancel: _cancelRecording,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: _isRecording ? Colors.red : Colors.orange,
+          shape: BoxShape.circle,
         ),
-
-        // Minuteur affiché uniquement quand ça enregistre
-        if (_isRecording)
-          Positioned(
-            bottom: 0,
-            child: Text(
-              _formatDuration(_recordDuration),
-              style: const TextStyle(
+        child: _isRecording
+            ? SizedBox(
+                height: 16,
+                width: 16,
+                child: SvgPicture.asset(
+                  'assets/component/stop.svg',
+                  color: Colors.white,
+                ),
+              )
+            : const Icon(
+                Icons.mic,
                 color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
+                size: 20,
               ),
-            ),
-          ),
-      ],
+      ),
     );
   }
 }
