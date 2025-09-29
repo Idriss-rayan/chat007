@@ -423,7 +423,18 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              // Bouton Oui
+                              // Bouton Fermer
+                              ElevatedButton(
+                                onPressed: () => Navigator.pop(context),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const Text("Fermer"),
+                              ),
                               ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(context); // fermer le dialog
@@ -459,19 +470,6 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                                   ),
                                 ),
                                 child: const Text("Continuer"),
-                              ),
-
-                              // Bouton Fermer
-                              ElevatedButton(
-                                onPressed: () => Navigator.pop(context),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                child: const Text("Fermer"),
                               ),
                             ],
                           ),
@@ -599,7 +597,11 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(20),
                                 border: _isRecording
-                                    ? Border.all(color: Colors.red, width: 1)
+                                    ? Border.all(
+                                        color: const Color.fromARGB(
+                                            0, 244, 67, 54),
+                                        width: 0,
+                                      )
                                     : null,
                               ),
                               padding:
@@ -638,7 +640,7 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                                   : TextField(
                                       keyboardType: TextInputType.multiline,
                                       controller: _controller,
-                                      focusNode: _focusNode,
+                                      //focusNode: _focusNode,
                                       minLines: 1,
                                       maxLines: 5,
                                       decoration: const InputDecoration(
@@ -648,7 +650,8 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                                       onTap: () {
                                         if (_showEmojiPicker) {
                                           setState(
-                                              () => _showEmojiPicker = false);
+                                            () => _showEmojiPicker = false,
+                                          );
                                         }
                                       },
                                     ),

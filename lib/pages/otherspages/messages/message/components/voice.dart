@@ -115,11 +115,13 @@ class _VoiceState extends State<Voice> with SingleTickerProviderStateMixin {
     if (!_isRecorderReady || !_isRecording) return;
 
     try {
-      // Arrêter l'animation
       _animationController.reverse();
 
       String? path = await _recorder.stopRecorder();
+
+      // Stoppe le timer
       _timer?.cancel();
+      _timer = null;
 
       final int durationInSeconds = _recordDuration;
 
@@ -128,6 +130,7 @@ class _VoiceState extends State<Voice> with SingleTickerProviderStateMixin {
           _isRecording = false;
           _lastRecordedPath = path;
           _lastRecordedDuration = durationInSeconds;
+          _recordDuration = 0; // reset compteur
         });
       }
 
@@ -210,7 +213,7 @@ class _VoiceState extends State<Voice> with SingleTickerProviderStateMixin {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: _isRecording ? Colors.red : Colors.orange,
+                color: _isRecording ? Colors.orange : Colors.orange,
                 shape: BoxShape.circle,
               ),
               child: Stack(
