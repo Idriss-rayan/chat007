@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,6 +22,9 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
   bool _isTyping = false;
   bool _showEmojiPicker = false;
   final List<Map<String, dynamic>> _messages = [];
+  String? _previewAudioPath;
+  int? _previewAudioDuration;
+  bool _showPreviewModal = false;
 
   @override
   void initState() {
@@ -68,7 +70,7 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
   }
 
   void _handleRecordedAudio(String path, int duration) {
-    debugPrint("🎤 Audio enregistré: $path");
+    debugPrint("🎤 Audio envoyé: $path");
     debugPrint("⏱️ Durée: $duration secondes");
 
     setState(() {
@@ -77,7 +79,214 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
         "duration": duration,
         "isMe": true,
       });
+      _previewAudioPath = null;
+      _previewAudioDuration = null;
     });
+
+    // Réponse automatique simulée
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        _messages.add({
+          "text": "J'ai bien reçu ton message audio !",
+          "isMe": false,
+        });
+      });
+    });
+  }
+
+  void _handleAudioPreview(String path, int duration) {
+    debugPrint("🎧 Prévisualisation audio: $path");
+    debugPrint("⏱️ Durée: $duration secondes");
+
+    setState(() {
+      _previewAudioPath = path;
+      _previewAudioDuration = duration;
+    });
+
+    // Afficher la modal de prévisualisation automatiquement
+    _showAudioPreviewModal();
+  }
+
+  void _showAudioPreviewModal() {
+    if (_previewAudioPath == null || _previewAudioDuration == null) return;
+
+    setState(() {
+      _showPreviewModal = true;
+    });
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _buildPreviewModal(),
+    ).then((_) {
+      setState(() {
+        _showPreviewModal = false;
+      });
+    });
+  }
+
+  Widget _buildPreviewModal() {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Header
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Prévisualisation audio",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          // Visualisation audio stylée
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.blue[50],
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(color: Colors.blue),
+            ),
+            child: Column(
+              children: [
+                const Icon(
+                  Icons.audiotrack,
+                  size: 50,
+                  color: Colors.blue,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Durée: ${_formatDuration(_previewAudioDuration ?? 0)}",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Lecteur audio de prévisualisation
+                if (_previewAudioPath != null && _previewAudioDuration != null)
+                  AudioMsg(
+                    path: _previewAudioPath!,
+                    duration: _previewAudioDuration!,
+                    color: Colors.blue,
+                    height: 8,
+                  ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 30),
+
+          // Boutons d'action
+          Row(
+            children: [
+              // Bouton Annuler
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      _previewAudioPath = null;
+                      _previewAudioDuration = null;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Audio supprimé"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.delete),
+                      SizedBox(width: 8),
+                      Text("Supprimer"),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 16),
+
+              // Bouton Envoyer
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    if (_previewAudioPath != null &&
+                        _previewAudioDuration != null) {
+                      _handleRecordedAudio(
+                          _previewAudioPath!, _previewAudioDuration!);
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Audio envoyé !"),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.send),
+                      SizedBox(width: 8),
+                      Text("Envoyer"),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 10),
+        ],
+      ),
+    );
+  }
+
+  String _formatDuration(int seconds) {
+    final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
+    final secs = (seconds % 60).toString().padLeft(2, '0');
+    return "$minutes:$secs";
   }
 
   @override
@@ -232,129 +441,179 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
           ),
         ],
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(12),
-              reverse: true,
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final msg = _messages[_messages.length - 1 - index];
-                return Align(
-                  alignment: msg["isMe"]
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    padding: const EdgeInsets.all(12),
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.7),
-                    decoration: BoxDecoration(
-                      color: msg["isMe"]
-                          ? const Color.fromARGB(69, 247, 95, 7)
-                          : Colors.pink[100],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: msg.containsKey("image")
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.file(
-                              msg["image"],
-                              fit: BoxFit.cover,
-                              width: 200,
-                              height: 150,
-                            ),
-                          )
-                        : msg.containsKey("audio")
-                            ? AudioMsg(
-                                path: msg["audio"],
-                                duration: msg["duration"] ?? 0,
+          Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(12),
+                  reverse: true,
+                  itemCount: _messages.length,
+                  itemBuilder: (context, index) {
+                    final msg = _messages[_messages.length - 1 - index];
+                    return Align(
+                      alignment: msg["isMe"]
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.all(12),
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.7),
+                        decoration: BoxDecoration(
+                          color: msg["isMe"]
+                              ? const Color.fromARGB(69, 247, 95, 7)
+                              : Colors.pink[100],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: msg.containsKey("image")
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.file(
+                                  msg["image"],
+                                  fit: BoxFit.cover,
+                                  width: 200,
+                                  height: 150,
+                                ),
                               )
-                            : Text(msg["text"] ?? ""),
-                  ),
-                );
-              },
-            ),
-          ),
-          SafeArea(
-            child: Column(
-              children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  color: Colors.white,
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.emoji_emotions,
-                            color: Colors.grey),
-                        onPressed: _toggleEmojiPicker,
+                            : msg.containsKey("audio")
+                                ? AudioMsg(
+                                    path: msg["audio"],
+                                    duration: msg["duration"] ?? 0,
+                                  )
+                                : Text(msg["text"] ?? ""),
                       ),
-                      Expanded(
-                        child: TextField(
-                          keyboardType: TextInputType.multiline,
-                          controller: _controller,
-                          focusNode: _focusNode,
-                          minLines: 1,
-                          maxLines: 5,
-                          decoration: const InputDecoration(
-                              hintText: "Message", border: InputBorder.none),
-                          onTap: () {
-                            if (_showEmojiPicker) {
-                              setState(() => _showEmojiPicker = false);
-                            }
-                          },
+                    );
+                  },
+                ),
+              ),
+              SafeArea(
+                child: Column(
+                  children: [
+                    // Indicateur de prévisualisation audio
+                    if (_previewAudioPath != null && !_showPreviewModal)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        color: Colors.blue[50],
+                        child: Row(
+                          children: [
+                            const Icon(Icons.audiotrack,
+                                color: Colors.blue, size: 20),
+                            const SizedBox(width: 8),
+                            Text(
+                              "Audio en attente (${_formatDuration(_previewAudioDuration ?? 0)})",
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Spacer(),
+                            TextButton(
+                              onPressed: _showAudioPreviewModal,
+                              child: const Text(
+                                "Écouter",
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _previewAudioPath = null;
+                                  _previewAudioDuration = null;
+                                });
+                              },
+                              icon: const Icon(Icons.close, size: 16),
+                              color: Colors.red,
+                            ),
+                          ],
                         ),
                       ),
-                      const Attach(),
-                      IconButton(
-                        icon: const Icon(Icons.camera_alt, color: Colors.grey),
-                        onPressed: () async {
-                          // Ouvre la caméra
-                          final XFile? photo = await _picker.pickImage(
-                              source: ImageSource.camera);
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      color: Colors.white,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.emoji_emotions,
+                                color: Colors.grey),
+                            onPressed: _toggleEmojiPicker,
+                          ),
+                          Expanded(
+                            child: TextField(
+                              keyboardType: TextInputType.multiline,
+                              controller: _controller,
+                              focusNode: _focusNode,
+                              minLines: 1,
+                              maxLines: 5,
+                              decoration: const InputDecoration(
+                                  hintText: "Message",
+                                  border: InputBorder.none),
+                              onTap: () {
+                                if (_showEmojiPicker) {
+                                  setState(() => _showEmojiPicker = false);
+                                }
+                              },
+                            ),
+                          ),
+                          const Attach(),
+                          IconButton(
+                            icon: const Icon(Icons.camera_alt,
+                                color: Colors.grey),
+                            onPressed: () async {
+                              // Ouvre la caméra
+                              final XFile? photo = await _picker.pickImage(
+                                  source: ImageSource.camera);
 
-                          if (photo != null) {
-                            // Ajoute l'image à la liste des messages
-                            setState(() {
-                              _messages.add({
-                                "image": File(photo.path),
-                                "isMe": true,
-                              });
-                            });
-                          }
-                        },
-                      ),
-                      _isTyping
-                          ? IconButton(
-                              icon:
-                                  const Icon(Icons.send, color: Colors.orange),
-                              onPressed: _sendMessage)
-                          : Voice(onRecorded: _handleRecordedAudio),
-                    ],
-                  ),
-                ),
-                if (_showEmojiPicker)
-                  SizedBox(
-                    height: 250,
-                    child: EmojiPicker(
-                      textEditingController: _controller,
-                      config: Config(
-                        height: 250,
-                        checkPlatformCompatibility: true,
-                        emojiViewConfig:
-                            const EmojiViewConfig(emojiSizeMax: 28.0),
-                        viewOrderConfig: const ViewOrderConfig(),
-                        skinToneConfig: const SkinToneConfig(),
-                        categoryViewConfig: const CategoryViewConfig(),
-                        bottomActionBarConfig: const BottomActionBarConfig(),
-                        searchViewConfig: const SearchViewConfig(),
+                              if (photo != null) {
+                                // Ajoute l'image à la liste des messages
+                                setState(() {
+                                  _messages.add({
+                                    "image": File(photo.path),
+                                    "isMe": true,
+                                  });
+                                });
+                              }
+                            },
+                          ),
+                          _isTyping
+                              ? IconButton(
+                                  icon: const Icon(Icons.send,
+                                      color: Colors.orange),
+                                  onPressed: _sendMessage)
+                              : Voice(
+                                  onRecorded: _handleRecordedAudio,
+                                  onPreview: _handleAudioPreview,
+                                ),
+                        ],
                       ),
                     ),
-                  ),
-              ],
-            ),
+                    if (_showEmojiPicker)
+                      SizedBox(
+                        height: 250,
+                        child: EmojiPicker(
+                          textEditingController: _controller,
+                          config: Config(
+                            height: 250,
+                            checkPlatformCompatibility: true,
+                            emojiViewConfig:
+                                const EmojiViewConfig(emojiSizeMax: 28.0),
+                            viewOrderConfig: const ViewOrderConfig(),
+                            skinToneConfig: const SkinToneConfig(),
+                            categoryViewConfig: const CategoryViewConfig(),
+                            bottomActionBarConfig:
+                                const BottomActionBarConfig(),
+                            searchViewConfig: const SearchViewConfig(),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
