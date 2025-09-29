@@ -7,7 +7,10 @@ import 'package:permission_handler/permission_handler.dart';
 class Voice extends StatefulWidget {
   final Function(String path, int duration)? onRecorded;
   final Function(String path, int duration)? onPreview;
-  const Voice({super.key, this.onRecorded, this.onPreview});
+  final VoidCallback?
+      onRecordingStarted; // Nouveau callback pour le début d'enregistrement
+  const Voice(
+      {super.key, this.onRecorded, this.onPreview, this.onRecordingStarted});
 
   @override
   State<Voice> createState() => _VoiceState();
@@ -23,7 +26,7 @@ class _VoiceState extends State<Voice> with SingleTickerProviderStateMixin {
   String? _lastRecordedPath;
   int? _lastRecordedDuration;
 
-  // Animation controller pour le grossissement - initialisé dans initState
+  // Animation controller pour le grossissement
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
 
@@ -74,6 +77,9 @@ class _VoiceState extends State<Voice> with SingleTickerProviderStateMixin {
     try {
       // Démarrer l'animation de grossissement
       _animationController.forward();
+
+      // Notifier le parent que l'enregistrement a démarré
+      widget.onRecordingStarted?.call();
 
       final fileName = 'voice_${DateTime.now().millisecondsSinceEpoch}.aac';
       _startTime = DateTime.now().millisecondsSinceEpoch;
@@ -231,12 +237,14 @@ class _VoiceState extends State<Voice> with SingleTickerProviderStateMixin {
                 children: [
                   // Icone principale
                   _isRecording
-                      ? SizedBox(
+                      ? Container(
                           height: 20,
                           width: 20,
-                          child: SvgPicture.asset(
-                            'assets/component/stop.svg',
+                          decoration: BoxDecoration(
                             color: Colors.white,
+                            border: Border.all(
+                                color: const Color.fromARGB(45, 0, 0, 0)),
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         )
                       : const Icon(

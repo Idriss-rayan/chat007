@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,11 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
   int? _previewAudioDuration;
   bool _showPreviewModal = false;
 
+  // Nouvelle variable pour suivre l'état d'enregistrement
+  bool _isRecording = false;
+  int _recordingDuration = 0;
+  Timer? _recordingTimer;
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +46,7 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
+    _recordingTimer?.cancel();
     super.dispose();
   }
 
@@ -69,6 +76,35 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
     });
   }
 
+  // Nouvelle méthode pour démarrer l'indicateur d'enregistrement
+  void _startRecordingIndicator(int duration) {
+    setState(() {
+      _isRecording = true;
+      _recordingDuration = duration;
+    });
+
+    // Mettre à jour la durée chaque seconde
+    _recordingTimer?.cancel();
+    _recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (mounted) {
+        setState(() {
+          _recordingDuration++;
+        });
+      }
+    });
+  }
+
+  // Nouvelle méthode pour arrêter l'indicateur d'enregistrement
+  void _stopRecordingIndicator() {
+    _recordingTimer?.cancel();
+    if (mounted) {
+      setState(() {
+        _isRecording = false;
+        _recordingDuration = 0;
+      });
+    }
+  }
+
   void _handleRecordedAudio(String path, int duration) {
     debugPrint("🎤 Audio envoyé: $path");
     debugPrint("⏱️ Durée: $duration secondes");
@@ -82,6 +118,9 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
       _previewAudioPath = null;
       _previewAudioDuration = null;
     });
+
+    // Arrêter l'indicateur d'enregistrement
+    _stopRecordingIndicator();
 
     // Réponse automatique simulée
     Future.delayed(const Duration(seconds: 2), () {
@@ -103,8 +142,16 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
       _previewAudioDuration = duration;
     });
 
+    // Démarrer l'indicateur d'enregistrement
+    _startRecordingIndicator(duration);
+
     // Afficher la modal de prévisualisation automatiquement
     _showAudioPreviewModal();
+  }
+
+  // Nouveau callback pour le début d'enregistrement
+  void _handleRecordingStarted() {
+    _startRecordingIndicator(0);
   }
 
   void _showAudioPreviewModal() {
@@ -211,6 +258,7 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                       _previewAudioPath = null;
                       _previewAudioDuration = null;
                     });
+                    _stopRecordingIndicator();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Audio supprimé"),
@@ -524,6 +572,7 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                                   _previewAudioPath = null;
                                   _previewAudioDuration = null;
                                 });
+                                _stopRecordingIndicator();
                               },
                               icon: const Icon(Icons.close, size: 16),
                               color: Colors.red,
@@ -543,20 +592,66 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                             onPressed: _toggleEmojiPicker,
                           ),
                           Expanded(
-                            child: TextField(
-                              keyboardType: TextInputType.multiline,
-                              controller: _controller,
-                              focusNode: _focusNode,
-                              minLines: 1,
-                              maxLines: 5,
-                              decoration: const InputDecoration(
-                                  hintText: "Message",
-                                  border: InputBorder.none),
-                              onTap: () {
-                                if (_showEmojiPicker) {
-                                  setState(() => _showEmojiPicker = false);
-                                }
-                              },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: _isRecording
+                                    ? Colors.red[50]
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(20),
+                                border: _isRecording
+                                    ? Border.all(color: Colors.red, width: 1)
+                                    : null,
+                              ),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              child: _isRecording
+                                  ? Row(
+                                      children: [
+                                        const Icon(Icons.mic,
+                                            color: Colors.red, size: 20),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          // ← AJOUT DE EXPANDED ICI
+                                          child: Text(
+                                            " ${_formatDuration(_recordingDuration)}",
+                                            style: const TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        // Animation de pulsation rouge
+                                        AnimatedContainer(
+                                          duration:
+                                              const Duration(milliseconds: 500),
+                                          width: 12,
+                                          height: 12,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.red,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : TextField(
+                                      keyboardType: TextInputType.multiline,
+                                      controller: _controller,
+                                      focusNode: _focusNode,
+                                      minLines: 1,
+                                      maxLines: 5,
+                                      decoration: const InputDecoration(
+                                        hintText: "Message",
+                                        border: InputBorder.none,
+                                      ),
+                                      onTap: () {
+                                        if (_showEmojiPicker) {
+                                          setState(
+                                              () => _showEmojiPicker = false);
+                                        }
+                                      },
+                                    ),
                             ),
                           ),
                           const Attach(),
@@ -583,10 +678,14 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                               ? IconButton(
                                   icon: const Icon(Icons.send,
                                       color: Colors.orange),
-                                  onPressed: _sendMessage)
+                                  onPressed: _sendMessage,
+                                )
                               : Voice(
                                   onRecorded: _handleRecordedAudio,
                                   onPreview: _handleAudioPreview,
+                                  onRecordingStarted: () {
+                                    _handleRecordingStarted();
+                                  },
                                 ),
                         ],
                       ),
