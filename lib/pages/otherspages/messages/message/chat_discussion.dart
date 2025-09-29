@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:simplechat/pages/otherspages/messages/calls/page_calls.dart';
 import 'package:simplechat/pages/otherspages/messages/message/components/attach.dart';
 import 'package:simplechat/pages/otherspages/messages/message/components/voice.dart';
@@ -15,6 +16,7 @@ class ChatDiscussion extends StatefulWidget {
 }
 
 class _ChatDiscussionState extends State<ChatDiscussion> {
+  final ImagePicker _picker = ImagePicker();
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool _isTyping = false;
@@ -240,7 +242,15 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                           : Colors.pink[100],
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(msg["text"]),
+                    child: msg.containsKey("image")
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.file(
+                              msg["image"],
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Text(msg["text"] ?? ""),
                   ),
                 );
               },
@@ -279,15 +289,20 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                       Attach(),
                       IconButton(
                         icon: const Icon(Icons.camera_alt, color: Colors.grey),
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true, // permet d’agrandir
+                        onPressed: () async {
+                          // Ouvre la caméra
+                          final XFile? photo = await _picker.pickImage(
+                              source: ImageSource.camera);
 
-                            builder: (BuildContext context) {
-                              return Text('data');
-                            },
-                          );
+                          if (photo != null) {
+                            // Ajoute l'image à la liste des messages
+                            setState(() {
+                              _messages.add({
+                                "image": File(photo.path),
+                                "isMe": true,
+                              });
+                            });
+                          }
                         },
                       ),
                       _isTyping
