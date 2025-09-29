@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class Voice extends StatefulWidget {
-  const Voice({super.key});
+  final Function(bool)? onRecordStateChanged;
+  final Function(String path)? onRecorded;
+  const Voice({super.key, this.onRecordStateChanged, this.onRecorded});
 
   @override
   State<Voice> createState() => _VoiceState();
@@ -46,19 +49,21 @@ class _VoiceState extends State<Voice> {
       _isRecording = true;
       _recordDuration = 0;
     });
-
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
         _recordDuration++;
       });
     });
+
+    widget.onRecordStateChanged?.call(true);
   }
 
   Future<void> _stopRecording() async {
     if (!_isRecorderReady) return;
 
-    String? path = await _recorder.stopRecorder();
+    String? path =
+        await _recorder.stopRecorder(); // ✅ c’est ici que tu récupères path
     _timer?.cancel();
 
     setState(() {
@@ -68,7 +73,10 @@ class _VoiceState extends State<Voice> {
 
     if (path != null) {
       debugPrint("🎤 Fichier audio enregistré : $path");
+      widget.onRecorded?.call(path); // ✅ tu envoies le path au parent
     }
+
+    widget.onRecordStateChanged?.call(false);
   }
 
   String _formatDuration(int seconds) {
@@ -93,23 +101,37 @@ class _VoiceState extends State<Voice> {
           onTap: _startRecording,
           onTapCancel: _stopRecording,
           child: Container(
-            padding: const EdgeInsets.all(12),
+            width: 50, // largeur du container
+            height: 50, // hauteur du container
+            padding: const EdgeInsets.all(
+                0), // on supprime le padding pour que le SVG remplisse
             decoration: BoxDecoration(
-              color: _isRecording ? Colors.red : Colors.orange,
+              color: _isRecording ? Colors.white : Colors.orange,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              _isRecording ? Icons.stop : Icons.mic,
-              color: Colors.white,
-              size: 28,
-            ),
+            child: _isRecording
+                ? SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: SvgPicture.asset(
+                      'assets/component/stop.svg',
+                      width: double.infinity,
+                      height: double.infinity,
+                      //fit: BoxFit.fill, // remplit tout le container
+                    ),
+                  )
+                : Icon(
+                    Icons.mic,
+                    color: Colors.white,
+                    size: 28,
+                  ),
           ),
         ),
 
         // Minuteur affiché uniquement quand ça enregistre
         if (_isRecording)
           Positioned(
-            bottom: 4,
+            bottom: 0,
             child: Text(
               _formatDuration(_recordDuration),
               style: const TextStyle(

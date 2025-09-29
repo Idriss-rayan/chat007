@@ -250,7 +250,16 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                               fit: BoxFit.cover,
                             ),
                           )
-                        : Text(msg["text"] ?? ""),
+                        : msg.containsKey("audio")
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.play_arrow,
+                                      color: Colors.black),
+                                  Text("Audio message"),
+                                ],
+                              )
+                            : Text(msg["text"] ?? ""),
                   ),
                 );
               },
@@ -310,7 +319,23 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                               icon:
                                   const Icon(Icons.send, color: Colors.orange),
                               onPressed: _sendMessage)
-                          : Voice(),
+                          : Voice(
+                              onRecordStateChanged: (isRecording) {
+                                if (isRecording) {
+                                  print("🎤 Début d'enregistrement");
+                                } else {
+                                  print("🛑 Fin d'enregistrement");
+                                }
+                              },
+                              onRecorded: (path) {
+                                setState(() {
+                                  _messages.add({
+                                    "audio": path,
+                                    "isMe": true,
+                                  });
+                                });
+                              },
+                            )
                     ],
                   ),
                 ),
