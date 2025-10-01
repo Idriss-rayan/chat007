@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:simplechat/pages/otherspages/messages/calls/page_calls.dart';
 import 'package:simplechat/pages/otherspages/messages/message/chat_discussion.dart';
 import 'package:simplechat/pages/otherspages/messages/message/components/display_profile.dart';
 
@@ -52,20 +53,18 @@ class _CardMsgState extends State<CardMsg> {
                   PageRouteBuilder(
                     opaque: false,
                     barrierColor: Colors.black.withOpacity(0.5),
-                    transitionDuration: const Duration(milliseconds: 800),
+                    transitionDuration: const Duration(milliseconds: 300),
                     pageBuilder: (context, animation, secondaryAnimation) {
                       return GestureDetector(
-                        onTap: () =>
-                            Navigator.pop(context), // ← tap sur le fond ferme
+                        onTap: () => Navigator.pop(context),
                         child: Container(
-                          color: Colors
-                              .transparent, // nécessaire pour détecter le tap
+                          color: Colors.transparent,
                           child: Center(
                             child: Hero(
                               tag: "profile",
                               child: Container(
-                                width: 200,
-                                height: 200,
+                                width: 250,
+                                height: 250,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(20),
@@ -79,11 +78,140 @@ class _CardMsgState extends State<CardMsg> {
                                 ),
                                 alignment: Alignment.center,
                                 child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: SvgPicture.asset(
-                                    'assets/component/avatar.svg',
-                                    width: 120, // avatar plus grand
-                                    height: 120,
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/bg.png', // chemin de ton image
+                                        width: 250,
+                                        height: 200,
+                                        fit: BoxFit
+                                            .fill, // pour que l'image remplisse le cadre correctement
+                                      ),
+                                      Spacer(),
+                                      Container(
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                            color: Colors.deepOrange,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              IconButton(
+                                                color: Colors.white,
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                  Navigator.push(
+                                                    context,
+                                                    PageRouteBuilder(
+                                                      pageBuilder: (context,
+                                                              animation,
+                                                              secondaryAnimation) =>
+                                                          const ChatDiscussion(),
+                                                      transitionsBuilder:
+                                                          (context,
+                                                              animation,
+                                                              secondaryAnimation,
+                                                              child) {
+                                                        return SlideTransition(
+                                                          position:
+                                                              Tween<Offset>(
+                                                            begin: const Offset(
+                                                                0.0, 0.2),
+                                                            end: Offset.zero,
+                                                          ).animate(animation),
+                                                          child: FadeTransition(
+                                                            opacity: animation,
+                                                            child: child,
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                  );
+                                                },
+                                                icon: Icon(Icons.message),
+                                              ),
+                                              IconButton(
+                                                color: Colors.white,
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                  Navigator.push(
+                                                    context,
+                                                    PageRouteBuilder(
+                                                      pageBuilder: (context,
+                                                              animation,
+                                                              secondaryAnimation) =>
+                                                          const PageCalls(
+                                                        name: 'rayan',
+                                                      ),
+                                                      transitionsBuilder:
+                                                          (context,
+                                                              animation,
+                                                              secondaryAnimation,
+                                                              child) {
+                                                        return SlideTransition(
+                                                          position:
+                                                              Tween<Offset>(
+                                                            begin: const Offset(
+                                                                0.0, 0.2),
+                                                            end: Offset.zero,
+                                                          ).animate(animation),
+                                                          child: FadeTransition(
+                                                            opacity: animation,
+                                                            child: child,
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                  );
+                                                },
+                                                icon: Icon(Icons.call),
+                                              ),
+                                              IconButton(
+                                                color: Colors.white,
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                  Navigator.push(
+                                                    context,
+                                                    PageRouteBuilder(
+                                                      pageBuilder: (context,
+                                                              animation,
+                                                              secondaryAnimation) =>
+                                                          DisplayProfile(
+                                                        userName:
+                                                            'idriss rayan',
+                                                        phoneNumber:
+                                                            '+237 690545256',
+                                                      ),
+                                                      transitionsBuilder:
+                                                          (context,
+                                                              animation,
+                                                              secondaryAnimation,
+                                                              child) {
+                                                        return SlideTransition(
+                                                          position:
+                                                              Tween<Offset>(
+                                                            begin: const Offset(
+                                                                0.0, 0.2),
+                                                            end: Offset.zero,
+                                                          ).animate(animation),
+                                                          child: FadeTransition(
+                                                            opacity: animation,
+                                                            child: child,
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                  );
+                                                },
+                                                icon: Icon(Icons.info),
+                                              ),
+                                            ],
+                                          ))
+                                    ],
                                   ),
                                 ),
                               ),
