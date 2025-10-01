@@ -54,30 +54,38 @@ class _CardMsgState extends State<CardMsg> {
                     barrierColor: Colors.black.withOpacity(0.5),
                     transitionDuration: const Duration(milliseconds: 800),
                     pageBuilder: (context, animation, secondaryAnimation) {
-                      return Center(
-                        child: Hero(
-                          tag: "profile",
-                          child: Container(
-                            width: 200,
-                            height: 200,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 4),
+                      return GestureDetector(
+                        onTap: () =>
+                            Navigator.pop(context), // ← tap sur le fond ferme
+                        child: Container(
+                          color: Colors
+                              .transparent, // nécessaire pour détecter le tap
+                          child: Center(
+                            child: Hero(
+                              tag: "profile",
+                              child: Container(
+                                width: 200,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 10,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            alignment: Alignment.center,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: SvgPicture.asset(
-                                'assets/component/avatar.svg',
-                                width: 120, // ← plus grand à l’ouverture
-                                height: 120,
+                                alignment: Alignment.center,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: SvgPicture.asset(
+                                    'assets/component/avatar.svg',
+                                    width: 120, // avatar plus grand
+                                    height: 120,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
