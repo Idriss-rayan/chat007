@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:simplechat/pages/otherspages/messages/message/chat_discussion.dart';
+import 'package:simplechat/pages/otherspages/messages/message/components/display_profile.dart';
 
 class CardMsg extends StatefulWidget {
   const CardMsg({super.key});
@@ -12,7 +13,7 @@ class CardMsg extends StatefulWidget {
 class _CardMsgState extends State<CardMsg> {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
@@ -40,15 +41,79 @@ class _CardMsgState extends State<CardMsg> {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           //color: Color.fromARGB(7, 236, 34, 31),
-          color: Color.fromARGB(3, 236, 34, 31),
+          color: Color.fromARGB(0, 236, 34, 31),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           children: [
-            SvgPicture.asset(
-              'assets/component/avatar.svg',
-              width: 64,
-              height: 64,
+            InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  PageRouteBuilder(
+                    opaque: false,
+                    barrierColor: Colors.black.withOpacity(0.5),
+                    transitionDuration: const Duration(milliseconds: 800),
+                    pageBuilder: (context, animation, secondaryAnimation) {
+                      return Center(
+                        child: Hero(
+                          tag: "profile",
+                          child: Container(
+                            width: 200,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            alignment: Alignment.center,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: SvgPicture.asset(
+                                'assets/component/avatar.svg',
+                                width: 120, // ← plus grand à l’ouverture
+                                height: 120,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+              child: Hero(
+                tag: "profile",
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  alignment: Alignment.center,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(40),
+                    child: SvgPicture.asset(
+                      'assets/component/avatar.svg',
+                      width: 60,
+                      height: 60,
+                    ),
+                  ),
+                ),
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
