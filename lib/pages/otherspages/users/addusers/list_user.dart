@@ -48,7 +48,10 @@ class ListUser extends StatelessWidget {
         }
 
         // Sinon -> CardUser normal
-        return CardUser();
+        return CardUser(
+          userName: 'Idriss rayan',
+          country: 'cmr',
+        );
       },
     );
   }

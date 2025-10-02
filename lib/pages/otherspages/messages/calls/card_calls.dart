@@ -21,7 +21,7 @@ class CardCalls extends StatelessWidget {
                 ),
                 child: Container(
                   width: 300,
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     gradient: const LinearGradient(
@@ -141,67 +141,65 @@ class CardCalls extends StatelessWidget {
                   color: Colors.transparent,
                   borderRadius: BorderRadius.circular(7),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/component/avatar.svg',
-                        // width: 80,
-                        // height: 80,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "John Doe",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(195, 0, 0, 0),
-                            ),
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/component/avatar.svg',
+                      width: 70,
+                      height: 70,
+                    ),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "John Doe",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(195, 0, 0, 0),
                           ),
-                          SizedBox(height: 4),
-                          Text(
-                            "Yesterday, 3:53",
-                            style: TextStyle(color: Colors.black54),
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                      IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      const PageCalls(
-                                name: 'rayan',
-                              ),
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                return SlideTransition(
-                                  position: Tween<Offset>(
-                                    begin: const Offset(0.0, 0.2),
-                                    end: Offset.zero,
-                                  ).animate(animation),
-                                  child: FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                        },
-                        icon: Icon(
-                          Icons.phone_callback,
-                          color: Colors.black45,
                         ),
+                        SizedBox(height: 4),
+                        Text(
+                          "Yesterday, 3:53",
+                          style: TextStyle(color: Colors.black54),
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    const PageCalls(
+                              name: 'rayan',
+                            ),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              return SlideTransition(
+                                position: Tween<Offset>(
+                                  begin: const Offset(0.0, 0.2),
+                                  end: Offset.zero,
+                                ).animate(animation),
+                                child: FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.phone_callback,
+                        color: Colors.black45,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

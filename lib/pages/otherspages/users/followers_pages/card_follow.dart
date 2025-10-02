@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CardFollow extends StatefulWidget {
   const CardFollow({super.key});
@@ -8,86 +8,155 @@ class CardFollow extends StatefulWidget {
   State<CardFollow> createState() => _CardFollowState();
 }
 
-class _CardFollowState extends State<CardFollow> {
-  bool istype = false;
+class _CardFollowState extends State<CardFollow>
+    with SingleTickerProviderStateMixin {
+  bool isFollowed = false;
+
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    _scaleAnimation =
+        Tween<double>(begin: 1.0, end: 1.2).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void toggleFollow() {
+    setState(() {
+      isFollowed = !isFollowed;
+      if (isFollowed) {
+        _controller.forward().then((value) => _controller.reverse());
+      } else {
+        _controller.forward().then((value) => _controller.reverse());
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Color.fromARGB(7, 236, 34, 31),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: const Color.fromARGB(30, 255, 86, 34),
+          gradient: LinearGradient(
+            colors: [Colors.orange.shade100, Colors.pink.shade50],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8,
+              offset: Offset(0, 4),
+            ),
+          ],
+          border: Border.all(color: Colors.orange.shade200),
         ),
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
-            SvgPicture.asset(
-              'assets/component/avatar.svg',
+            // Avatar
+            Container(
               width: 80,
               height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [Colors.orange.shade300, Colors.pink.shade200],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: ClipOval(
+                  child: SvgPicture.asset(
+                    'assets/component/avatar.svg',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             ),
             const SizedBox(width: 12),
+            // Info
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Name + Follow Button
                   Row(
                     children: [
-                      Text(
-                        "Idriss Rayan".toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(195, 0, 0, 0),
+                      Expanded(
+                        child: Text(
+                          "Idriss Rayan".toUpperCase(),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                            letterSpacing: 0.5,
+                          ),
                         ),
                       ),
-                      Spacer(),
                       GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            istype = !istype;
-                          });
-                        },
-                        child: istype
-                            ? SvgPicture.asset(
-                                'assets/component/my_friends.svg',
-                                width: 33,
-                                height: 33,
-                              )
-                            : SvgPicture.asset(
-                                'assets/component/friends.svg',
-                                width: 33,
-                                height: 33,
-                              ),
+                        onTap: toggleFollow,
+                        child: ScaleTransition(
+                          scale: _scaleAnimation,
+                          child: Container(
+                            padding: EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: isFollowed
+                                  ? Colors.transparent
+                                  : Colors.transparent,
+                            ),
+                            child: SvgPicture.asset(
+                              isFollowed
+                                  ? 'assets/component/my_friends.svg'
+                                  : 'assets/component/friends.svg',
+                              width: 28,
+                              height: 28,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 6),
+                  // Location
                   Row(
                     children: [
                       SvgPicture.asset(
-                        color: Colors.orange,
                         'assets/component/loc.svg',
-                        width: 20,
-                        height: 20,
+                        width: 18,
+                        height: 18,
+                        color: Colors.orange,
                       ),
+                      const SizedBox(width: 6),
                       Text(
                         "Cameroun",
                         style: TextStyle(
                           color: Colors.black54,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 6),
                       SvgPicture.asset(
                         'assets/component/cmr.svg',
-                        width: 10,
-                        height: 10,
+                        width: 12,
+                        height: 12,
                       ),
                     ],
                   ),

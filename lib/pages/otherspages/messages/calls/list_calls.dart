@@ -7,7 +7,7 @@ class ListCalls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(left: 16, right: 16),
       itemCount: 50, // nombre de messages
       itemBuilder: (context, index) {
         return const CardCalls();
