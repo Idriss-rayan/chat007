@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:simplechat/pages/custom/animated_gradient_border.dart';
-import 'package:simplechat/pages/otherspages/messages/message/msg_page.dart';
+import 'package:simplechat/pages/otherspages/messages/msg_page.dart';
 import 'package:simplechat/pages/otherspages/profile/profile.dart';
 import 'package:simplechat/pages/otherspages/publication/pub_page.dart';
 import 'package:flutter/services.dart';

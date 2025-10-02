@@ -55,6 +55,18 @@ class _PubPageState extends State<PubPage> {
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              IconButton(
+                                icon: SvgPicture.asset(
+                                  "assets/component/addpub.svg",
+                                  width: 28,
+                                  height: 28,
+                                  color: Colors.deepOrangeAccent,
+                                ), // ⋮ kebab menu
+                                onPressed: () {
+                                  // action à exécuter
+                                },
+                              ),
+
                               // Bouton recherche
                               IconButton(
                                 icon: SvgPicture.asset(
@@ -67,18 +79,6 @@ class _PubPageState extends State<PubPage> {
                                   setState(() {
                                     isSearchActive = true;
                                   });
-                                },
-                              ),
-
-                              IconButton(
-                                icon: SvgPicture.asset(
-                                  "assets/component/notifications.svg",
-                                  width: 28,
-                                  height: 28,
-                                  color: Colors.deepOrangeAccent,
-                                ), // ⋮ kebab menu
-                                onPressed: () {
-                                  // action à exécuter
                                 },
                               ),
 
