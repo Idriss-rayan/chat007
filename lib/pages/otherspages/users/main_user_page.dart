@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:simplechat/pages/otherspages/publication/component/search_bar.dart';
 import 'package:simplechat/pages/otherspages/users/addusers/list_user.dart';
+import 'package:simplechat/pages/otherspages/users/component/search_bar2.dart';
 import 'package:simplechat/pages/otherspages/users/followers_pages/follow_list.dart';
 import 'package:simplechat/pages/otherspages/users/friend_pages/friend_list.dart';
 
@@ -13,8 +15,10 @@ class MainUserPage extends StatefulWidget {
 
 class _MainUserPageState extends State<MainUserPage> {
   final PageController _controller = PageController();
+  bool isSearchActive = false;
   int _currentPage = 0;
-  final List<String> _tabs = ["Follow", "Followers", "Friends"];
+  final List<String> _tabs = ["Follow", "Followers", "List of contact"];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,45 +53,79 @@ class _MainUserPageState extends State<MainUserPage> {
                         shape: BoxShape.circle,
                         color: Colors.white.withOpacity(0.1),
                         border: Border.all(
-                            color: const Color.fromARGB(65, 255, 86, 34)),
+                          color: const Color.fromARGB(65, 255, 86, 34),
+                        ),
                       ),
                     ),
                   ),
+
+                  // Header (logo ou search bar)
                   Positioned(
                     top: 40,
                     left: 16,
                     right: 16,
                     child: Row(
                       children: [
-                        // Logo papachou.svg
-                        SvgPicture.asset(
-                          "assets/logo/PAPAchou.svg",
-                          height: 20,
-                          width: 20,
-                        ),
-
-                        const Spacer(),
-
-                        // Search
-                        IconButton(
-                          onPressed: () {
-                            // TODO: ouvrir recherche
-                          },
-                          icon: const Icon(Icons.search, color: Colors.black87),
-                        ),
-
-                        // Notifications
-                        IconButton(
-                          onPressed: () {
-                            // TODO: notifications
-                          },
-                          icon: const Icon(Icons.notifications,
-                              color: Colors.black87),
+                        Expanded(
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            switchInCurve: Curves.easeInOut,
+                            switchOutCurve: Curves.easeInOut,
+                            transitionBuilder: (child, animation) =>
+                                FadeTransition(
+                              opacity: animation,
+                              child: SizeTransition(
+                                sizeFactor: animation,
+                                axis: Axis.horizontal,
+                                child: child,
+                              ),
+                            ),
+                            child: isSearchActive
+                                ? SearchBar2(
+                                    key: const ValueKey("searchbar"),
+                                    onClose: () {
+                                      setState(() {
+                                        isSearchActive = false;
+                                      });
+                                    },
+                                  )
+                                : Row(
+                                    key: const ValueKey("logoRow"),
+                                    children: [
+                                      // Logo
+                                      SvgPicture.asset(
+                                        "assets/logo/PAPAchou.svg",
+                                        height: 20,
+                                        width: 20,
+                                      ),
+                                      const Spacer(),
+                                      // Icône recherche
+                                      IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            isSearchActive = true;
+                                          });
+                                        },
+                                        icon: const Icon(Icons.search,
+                                            color: Colors.black87),
+                                      ),
+                                      // Icône notifications
+                                      IconButton(
+                                        onPressed: () {
+                                          // TODO: notifications
+                                        },
+                                        icon: const Icon(Icons.notifications,
+                                            color: Colors.black87),
+                                      ),
+                                    ],
+                                  ),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  // Boutons avec underline animée
+
+                  // Tabs avec underline animée
                   Positioned(
                     bottom: 12,
                     left: 20,
@@ -120,7 +158,6 @@ class _MainUserPageState extends State<MainUserPage> {
                                 ),
                               ),
                             ),
-                            // Barre animée
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 400),
                               curve: Curves.easeInOut,
@@ -142,7 +179,8 @@ class _MainUserPageState extends State<MainUserPage> {
               ),
             ),
           ),
-          /////////////-------------------///////////
+
+          // Pages
           Expanded(
             child: PageView(
               controller: _controller,
@@ -151,7 +189,7 @@ class _MainUserPageState extends State<MainUserPage> {
                   _currentPage = index;
                 });
               },
-              children: [
+              children: const [
                 ListUser(),
                 FollowList(),
                 FriendList(),

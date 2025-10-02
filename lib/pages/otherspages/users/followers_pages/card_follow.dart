@@ -119,8 +119,8 @@ class _CardFollowState extends State<CardFollow>
                             ),
                             child: SvgPicture.asset(
                               isFollowed
-                                  ? 'assets/component/my_friends.svg'
-                                  : 'assets/component/friends.svg',
+                                  ? 'assets/component/contact.svg'
+                                  : 'assets/component/friends 1.svg',
                               width: 28,
                               height: 28,
                             ),
