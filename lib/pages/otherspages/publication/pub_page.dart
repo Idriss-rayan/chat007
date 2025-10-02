@@ -57,10 +57,10 @@ class _PubPageState extends State<PubPage> {
                             children: [
                               IconButton(
                                 icon: SvgPicture.asset(
-                                  "assets/component/addpub.svg",
+                                  "assets/component/addPub1.svg",
                                   width: 28,
                                   height: 28,
-                                  color: Colors.deepOrangeAccent,
+                                  //color: Colors.deepOrangeAccent,
                                 ), // ⋮ kebab menu
                                 onPressed: () {
                                   // action à exécuter
