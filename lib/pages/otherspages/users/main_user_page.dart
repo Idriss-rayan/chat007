@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:simplechat/pages/otherspages/publication/component/search_bar.dart';
 import 'package:simplechat/pages/otherspages/users/addusers/list_user.dart';
 import 'package:simplechat/pages/otherspages/users/component/search_bar2.dart';
 import 'package:simplechat/pages/otherspages/users/followers_pages/follow_list.dart';
@@ -110,12 +109,67 @@ class _MainUserPageState extends State<MainUserPage> {
                                             color: Colors.black87),
                                       ),
                                       // Icône notifications
-                                      IconButton(
-                                        onPressed: () {
-                                          // TODO: notifications
+                                      PopupMenuButton<int>(
+                                        icon: Icon(
+                                          Icons.more_vert,
+                                          color: Colors.black,
+                                        ),
+                                        color: Colors.orange.shade50,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        elevation: 6,
+                                        onSelected: (value) {
+                                          if (value == 1) {
+                                            debugPrint(
+                                                "Voir les notifications");
+                                          } else if (value == 2) {
+                                            debugPrint(
+                                                "Paramètres des notifications");
+                                          } else if (value == 3) {
+                                            debugPrint("Tout marquer comme lu");
+                                          }
                                         },
-                                        icon: const Icon(Icons.notifications,
-                                            color: Colors.black87),
+                                        itemBuilder: (context) => [
+                                          const PopupMenuItem(
+                                            value: 1,
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.notifications,
+                                                  color: Colors.deepOrange,
+                                                ),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  "Voir les notifications",
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const PopupMenuItem(
+                                            value: 2,
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.settings,
+                                                    color: Colors.deepOrange),
+                                                SizedBox(width: 8),
+                                                Text("Paramètres"),
+                                              ],
+                                            ),
+                                          ),
+                                          const PopupMenuItem(
+                                            value: 3,
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.done_all,
+                                                    color: Colors.deepOrange),
+                                                SizedBox(width: 8),
+                                                Text("Tout marquer comme lu"),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
