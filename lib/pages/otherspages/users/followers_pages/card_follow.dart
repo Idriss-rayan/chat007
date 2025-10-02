@@ -74,11 +74,6 @@ class _CardFollowState extends State<CardFollow>
               height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [Colors.orange.shade300, Colors.pink.shade200],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(6.0),
