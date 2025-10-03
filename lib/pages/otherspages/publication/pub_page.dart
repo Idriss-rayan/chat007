@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:simplechat/pages/otherspages/publication/component/search_bar.dart';
+import 'package:simplechat/pages/otherspages/publication/createPost/create_post_main_page.dart';
 import 'package:simplechat/pages/otherspages/publication/pub_card.dart';
 import 'package:simplechat/pages/otherspages/publication/spaces/spaces.dart';
 
@@ -63,7 +64,31 @@ class _PubPageState extends State<PubPage> {
                                   //color: Colors.deepOrangeAccent,
                                 ), // ⋮ kebab menu
                                 onPressed: () {
-                                  // action à exécuter
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                              secondaryAnimation) =>
+                                          const CreatePostMainPage(),
+                                      transitionsBuilder: (context, animation,
+                                          secondaryAnimation, child) {
+                                        const begin = Offset(
+                                            1.0, 0.0); // 👈 commence à droite
+                                        const end =
+                                            Offset.zero; // 👈 finit au centre
+                                        const curve = Curves.ease;
+
+                                        var tween = Tween(
+                                                begin: begin, end: end)
+                                            .chain(CurveTween(curve: curve));
+
+                                        return SlideTransition(
+                                          position: animation.drive(tween),
+                                          child: child,
+                                        );
+                                      },
+                                    ),
+                                  );
                                 },
                               ),
 
