@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:simplechat/pages/custom/animated_gradient_border.dart';
@@ -17,7 +19,7 @@ class MainPage extends StatefulWidget {
 class _PubPageState extends State<MainPage> {
   int selectedIndex = 0;
 
-  final List<Widget> pages = const [
+  final List<Widget> pages = [
     PubPage(),
     MsgPage(),
     MainUserPage(),

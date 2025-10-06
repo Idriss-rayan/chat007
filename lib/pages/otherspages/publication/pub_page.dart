@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import 'package:simplechat/model/provider_model.dart';
 import 'package:simplechat/pages/otherspages/publication/component/search_bar.dart';
 import 'package:simplechat/pages/otherspages/publication/createPost/create_post_main_page.dart';
 import 'package:simplechat/pages/otherspages/publication/pub_card.dart';
 import 'package:simplechat/pages/otherspages/publication/spaces/spaces.dart';
+// ton modèle Post
 
 class PubPage extends StatefulWidget {
   const PubPage({super.key});
@@ -17,6 +20,10 @@ class _PubPageState extends State<PubPage> {
 
   @override
   Widget build(BuildContext context) {
+    // ✅ récupère la liste de posts depuis le provider
+    final postProvider = Provider.of<PostProvider>(context);
+    final posts = postProvider.posts;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -27,7 +34,6 @@ class _PubPageState extends State<PubPage> {
               height: 60,
               child: Row(
                 children: [
-                  // Logo à gauche
                   Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: SizedBox(
@@ -39,7 +45,6 @@ class _PubPageState extends State<PubPage> {
                       ),
                     ),
                   ),
-                  // Zone à droite (expand pour occuper tout l’espace restant)
                   Expanded(
                     child: isSearchActive
                         ? Padding(
@@ -61,8 +66,7 @@ class _PubPageState extends State<PubPage> {
                                   "assets/component/addPub1.svg",
                                   width: 28,
                                   height: 28,
-                                  //color: Colors.deepOrangeAccent,
-                                ), // ⋮ kebab menu
+                                ),
                                 onPressed: () {
                                   Navigator.push(
                                     context,
@@ -72,16 +76,12 @@ class _PubPageState extends State<PubPage> {
                                           const CreatePostMainPage(),
                                       transitionsBuilder: (context, animation,
                                           secondaryAnimation, child) {
-                                        const begin = Offset(
-                                            1.0, 0.0); // 👈 commence à droite
-                                        const end =
-                                            Offset.zero; // 👈 finit au centre
+                                        const begin = Offset(1.0, 0.0);
+                                        const end = Offset.zero;
                                         const curve = Curves.ease;
-
                                         var tween = Tween(
                                                 begin: begin, end: end)
                                             .chain(CurveTween(curve: curve));
-
                                         return SlideTransition(
                                           position: animation.drive(tween),
                                           child: child,
@@ -91,8 +91,6 @@ class _PubPageState extends State<PubPage> {
                                   );
                                 },
                               ),
-
-                              // Bouton recherche
                               IconButton(
                                 icon: SvgPicture.asset(
                                   "assets/component/search.svg",
@@ -106,26 +104,21 @@ class _PubPageState extends State<PubPage> {
                                   });
                                 },
                               ),
-
-                              // Bouton notifications avec menu
                               PopupMenuButton<int>(
-                                icon: Icon(
-                                  Icons.more_vert,
-                                  color: Colors.deepOrange,
-                                ),
+                                icon: Icon(Icons.more_vert,
+                                    color: Colors.deepOrange),
                                 color: Colors.orange.shade50,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 elevation: 6,
                                 onSelected: (value) {
-                                  if (value == 1) {
+                                  if (value == 1)
                                     debugPrint("Voir les notifications");
-                                  } else if (value == 2) {
+                                  if (value == 2)
                                     debugPrint("Paramètres des notifications");
-                                  } else if (value == 3) {
+                                  if (value == 3)
                                     debugPrint("Tout marquer comme lu");
-                                  }
                                 },
                                 itemBuilder: (context) => [
                                   const PopupMenuItem(
@@ -170,7 +163,7 @@ class _PubPageState extends State<PubPage> {
               ),
             ),
             SizedBox(
-              height: 50, // hauteur fixe pour le horizontal list
+              height: 50,
               child: ListView.builder(
                 itemCount: 50,
                 scrollDirection: Axis.horizontal,
@@ -186,9 +179,13 @@ class _PubPageState extends State<PubPage> {
               child: Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: ListView.builder(
-                  itemCount: 5,
+                  itemCount: posts.length,
                   itemBuilder: (context, index) {
-                    return const PubCard();
+                    final post = posts[index];
+                    return PubCard(
+                      text: post.text,
+                      imageFile: post.image,
+                    );
                   },
                 ),
               ),

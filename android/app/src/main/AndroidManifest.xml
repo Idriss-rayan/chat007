@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.simplechat"> <!-- remplace par ton package -->
+    package="com.example.simplechat">
 
     <!-- Permissions existantes pour FlutterSound -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -18,6 +18,7 @@
         android:label="simplechat"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -35,6 +36,18 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!-- 👇 AJOUT pour Flutter Quill -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+        <!-- 👆 FIN de l’ajout -->
 
         <!-- Don't delete the meta-data below -->
         <meta-data
