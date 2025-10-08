@@ -132,63 +132,179 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(15),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Container(
-          width: double.infinity,
-          constraints: BoxConstraints(
-            maxHeight: 500,
-            minHeight: 200,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                "Public Discussion",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepOrange,
-                ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Expanded(
-                child: GridView.builder(
-                  itemCount: 900,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 1,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
+      builder: (context) {
+        // Controllers pour les champs
+        final TextEditingController nameController = TextEditingController();
+        double duration = 5; // durée par défaut (en minutes)
+        double limit = 10; // nombre de participants par défaut
+
+        return StatefulBuilder(
+          builder: (context, setState) => Padding(
+            padding: EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 16,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+            ),
+            child: Container(
+              width: double.infinity,
+              constraints: const BoxConstraints(maxHeight: 600, minHeight: 300),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Petit indicateur de drag
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        color: Colors.white,
-                        shape: BoxShape.circle,
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Center(
-                        child: Text(
-                          "${index + 1}",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  const Center(
+                    child: Text(
+                      "🎙️ Customize Discussion",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepOrange,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 25),
+
+                  // Champ Nom du Space
+                  const Text(
+                    "Space Name",
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      hintText: "Enter the name of your space...",
+                      filled: true,
+                      fillColor: Colors.grey.shade100,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 25),
+
+                  // Durée par utilisateur
+                  const Text(
+                    "Duration per Speaker (minutes)",
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Slider(
+                          value: duration,
+                          min: 1,
+                          max: 30,
+                          divisions: 29,
+                          activeColor: Colors.deepOrange,
+                          label: "${duration.toInt()} min",
+                          onChanged: (val) => setState(() => duration = val),
                         ),
                       ),
-                    );
-                    ;
-                  },
-                ),
+                      Container(
+                        width: 50,
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          "${duration.toInt()}m",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 25),
+
+                  // Nombre limite de participants
+                  const Text(
+                    "Maximum Participants",
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Slider(
+                          value: limit,
+                          min: 2,
+                          max: 1000,
+                          divisions: 98,
+                          activeColor: Colors.deepOrange,
+                          label: "${limit.toInt()} users",
+                          onChanged: (val) => setState(() => limit = val),
+                        ),
+                      ),
+                      Container(
+                        width: 50,
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          "${limit.toInt()}",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  // Bouton de validation
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepOrange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        elevation: 2,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        // Tu pourras ici traiter les données:
+                        // nameController.text, duration, limit
+                      },
+                      child: const Text(
+                        "Start Discussion",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -423,7 +539,16 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
                 color: Colors.grey.shade800,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(
+                height:
+                    16), ///////////////////////////////////====================////////////////////////
+            Center(
+              child: Image.asset(
+                "assets/images/mic.png",
+                width: 200,
+                height: 200,
+              ),
+            ),
             Center(
               child: InkWell(
                 onTap: _showDiscussionModal,
