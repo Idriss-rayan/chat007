@@ -539,9 +539,7 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
                 color: Colors.grey.shade800,
               ),
             ),
-            const SizedBox(
-                height:
-                    16), ///////////////////////////////////====================////////////////////////
+            const SizedBox(height: 16),
             Center(
               child: Image.asset(
                 "assets/images/mic.png",
