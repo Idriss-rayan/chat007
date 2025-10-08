@@ -285,9 +285,12 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
                         elevation: 2,
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
-                        // Tu pourras ici traiter les données:
-                        // nameController.text, duration, limit
+                        Navigator.pop(context, {
+                          'name': nameController.text,
+                          'duration': duration,
+                          'limit': limit,
+                        });
+                        Navigator.pop(context, {});
                       },
                       child: const Text(
                         "Start Discussion",
