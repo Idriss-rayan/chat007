@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:simplechat/model/post_model.dart';
 import 'package:simplechat/model/provider_model.dart';
+import 'package:simplechat/pages/otherspages/publication/createPost/spaces_page.dart';
 import 'package:simplechat/pages/otherspages/publication/createPost/spaces_params.dart';
 
 class CreatePostMainPage extends StatefulWidget {
@@ -52,53 +53,6 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
     });
 
     Navigator.pop(context);
-  }
-
-  void _handleDiscussionData(Map<String, dynamic> data) {
-    // Vérifier que le nom n'est pas vide
-    if (data['name'] == null || data['name'].toString().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Veuillez entrer un nom pour le space")),
-      );
-      return;
-    }
-
-    // Afficher les données récupérées (pour test)
-    print("Données du discussion:");
-    print("Nom: ${data['name']}");
-    print("Durée: ${data['duration']} minutes");
-    print("Limite: ${data['limit']} participants");
-
-    // 🔥 ICI VOUS POUVEZ UTILISER LES DONNÉES COMME VOUS LE SOUHAITEZ :
-
-    // Option 1: Naviguer vers une nouvelle page
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SpacesParams(
-          spaceName: data['name']!,
-          duration: data['duration']!,
-          namespace: '',
-          limit: null,
-        ),
-      ),
-    );
-
-    // Option 2: Créer un espace de discussion dans votre provider
-    // final newSpace = DiscussionSpace(
-    //   name: data['name']!,
-    //   duration: data['duration']!,
-    //   participantLimit: data['limit']!,
-    // );
-    // Provider.of<SpaceProvider>(context, listen: false).createSpace(newSpace);
-
-    // Option 3: Afficher un message de confirmation
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Discussion '${data['name']}' créée avec succès!"),
-        backgroundColor: Colors.green,
-      ),
-    );
   }
 
   // --- 🔥 Affichage du premier BottomSheet (choix public/private) ---
@@ -174,7 +128,6 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
   }
 
   // --- Modal Public Discussion ---
-  // --- Modal Public Discussion CORRIGÉ ---
   void _showPublicDiscussionModal() {
     showModalBottomSheet(
       context: context,
@@ -184,9 +137,10 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
+        // Controllers pour les champs
         final TextEditingController nameController = TextEditingController();
-        double duration = 5;
-        double limit = 10;
+        double duration = 5; // durée par défaut (en minutes)
+        double limit = 10; // nombre de participants par défaut
 
         return StatefulBuilder(
           builder: (context, setState) => Padding(
@@ -203,11 +157,124 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ... (votre contenu existant reste le même)
+                  // Petit indicateur de drag
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  const Center(
+                    child: Text(
+                      "🎙️ Customize Discussion",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepOrange,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 25),
+
+                  // Champ Nom du Space
+                  const Text(
+                    "Space Name",
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      hintText: "Enter the name of your space...",
+                      filled: true,
+                      fillColor: Colors.grey.shade100,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 25),
+
+                  // Durée par utilisateur
+                  const Text(
+                    "Duration per Speaker (minutes)",
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Slider(
+                          value: duration,
+                          min: 1,
+                          max: 30,
+                          divisions: 29,
+                          activeColor: Colors.deepOrange,
+                          label: "${duration.toInt()} min",
+                          onChanged: (val) => setState(() => duration = val),
+                        ),
+                      ),
+                      Container(
+                        width: 50,
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          "${duration.toInt()}m",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 25),
+
+                  // Nombre limite de participants
+                  const Text(
+                    "Maximum Participants",
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Slider(
+                          value: limit,
+                          min: 2,
+                          max: 1000,
+                          divisions: 98,
+                          activeColor: Colors.deepOrange,
+                          label: "${limit.toInt()} users",
+                          onChanged: (val) => setState(() => limit = val),
+                        ),
+                      ),
+                      Container(
+                        width: 50,
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          "${limit.toInt()}",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                      ),
+                    ],
+                  ),
 
                   const SizedBox(height: 30),
 
-                  // Bouton de validation CORRIGÉ
+                  // Bouton de validation
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -220,12 +287,33 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
                         elevation: 2,
                       ),
                       onPressed: () {
-                        // 🔥 CORRECTION : Retourner les données et fermer UNIQUEMENT ce modal
-                        Navigator.pop(context, {
-                          'name': nameController.text,
-                          'duration': duration,
-                          'limit': limit,
-                        });
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    SpacesPage(
+                              name: nameController.text,
+                              duration: duration,
+                              limit: limit,
+                            ),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              const begin =
+                                  Offset(1.0, 0.0); // commence à droite
+                              const end = Offset.zero; // finit au centre
+                              const curve = Curves.easeInOut;
+
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
+
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
                       },
                       child: const Text(
                         "Start Discussion",
@@ -243,12 +331,7 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
           ),
         );
       },
-    ).then((result) {
-      // 🔥 Récupérer les données ici et les utiliser
-      if (result != null) {
-        _handleDiscussionData(result);
-      }
-    });
+    );
   }
 
   // --- Modal Private Discussion ---
