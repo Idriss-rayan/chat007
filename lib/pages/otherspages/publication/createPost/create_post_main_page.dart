@@ -299,21 +299,22 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
                             ),
                             transitionsBuilder: (context, animation,
                                 secondaryAnimation, child) {
-                              const begin =
-                                  Offset(1.0, 0.0); // commence à droite
-                              const end = Offset.zero; // finit au centre
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
                               const curve = Curves.easeInOut;
 
                               var tween = Tween(begin: begin, end: end)
                                   .chain(CurveTween(curve: curve));
-
                               return SlideTransition(
-                                position: animation.drive(tween),
-                                child: child,
-                              );
+                                  position: animation.drive(tween),
+                                  child: child);
                             },
                           ),
-                        );
+                        ).then((_) {
+                          // Exécuté quand SpacesPage est fermée
+                          int count = 0;
+                          Navigator.popUntil(context, (route) => count++ == 2);
+                        });
                       },
                       child: const Text(
                         "Start Discussion",
@@ -420,185 +421,247 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text("Create Post"),
+        title: const Text(
+          "Create Post",
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        centerTitle: true,
         backgroundColor: Colors.deepOrangeAccent.shade100,
-        elevation: 0,
+        elevation: 3,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+        ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // --- En-tête ---
             Text(
-              "Create your own post",
+              "Share your thoughts 💭",
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 26,
                 fontWeight: FontWeight.bold,
                 color: Colors.grey.shade800,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 8),
+            Text(
+              "Write, add media, or start a live discussion.",
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 15),
+            ),
+            const SizedBox(height: 24),
 
-            // --- Zone de texte ---
+            // --- Zone de texte stylisée ---
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                      color: Colors.grey.shade300,
-                      blurRadius: 10,
-                      offset: const Offset(0, 4))
+                    color: Colors.grey.shade300,
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
                 ],
               ),
               child: TextField(
                 controller: _postController,
                 maxLines: 6,
-                decoration: const InputDecoration(
-                  hintText: "Write something...",
+                style: const TextStyle(fontSize: 16),
+                decoration: InputDecoration(
+                  hintText: "What's on your mind?",
+                  hintStyle: TextStyle(color: Colors.grey.shade500),
                   border: InputBorder.none,
                 ),
               ),
             ),
+
             const SizedBox(height: 20),
 
-            // --- Image sélectionnée ---
+            // --- Image affichée ---
             if (_selectedImage != null)
               Stack(
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(18),
                     child: Image.file(
                       File(_selectedImage!.path),
                       width: size.width,
-                      height: size.width * 0.6,
+                      height: size.width * 0.55,
                       fit: BoxFit.cover,
                     ),
                   ),
                   Positioned(
-                    top: 8,
-                    right: 8,
-                    child: GestureDetector(
+                    top: 10,
+                    right: 10,
+                    child: InkWell(
                       onTap: () {
                         setState(() {
                           _selectedImage = null;
                         });
                       },
+                      borderRadius: BorderRadius.circular(20),
                       child: Container(
-                        decoration: const BoxDecoration(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
                           color: Colors.black54,
-                          shape: BoxShape.circle,
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const Icon(Icons.close, color: Colors.white),
+                        child: const Icon(Icons.close,
+                            color: Colors.white, size: 18),
                       ),
                     ),
                   ),
                 ],
               ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 25),
 
-            // --- Boutons Image/Audio/Post ---
+            // --- Boutons d’action modernisés ---
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton.icon(
-                  onPressed: _pickImage,
-                  icon: const Icon(Icons.image, color: Colors.black54),
-                  label: const Text("Add Image",
-                      style: TextStyle(color: Colors.black)),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    side: const BorderSide(
-                      color: Colors.deepOrange,
-                      width: 1,
-                    ),
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.audio_file, color: Colors.black54),
-                  label: const Text("Add Audio",
-                      style: TextStyle(color: Colors.black)),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    side: const BorderSide(
-                      color: Colors.pink,
-                      width: 1,
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: _submitPost,
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: const Color.fromARGB(126, 64, 195, 255),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text("Post",
-                      style: TextStyle(color: Colors.black54)),
-                ),
-              ],
-            ),
-            const Divider(height: 40),
-
-            // --- Section Start Discussion ---
-            Text(
-              "Create discussion stream audio",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey.shade800,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Center(
-              child: Image.asset(
-                "assets/images/mic.png",
-                width: 200,
-                height: 200,
-              ),
-            ),
-            Center(
-              child: InkWell(
-                onTap: _showDiscussionModal,
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  width: 200,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    gradient: const LinearGradient(
-                      colors: [Colors.pinkAccent, Colors.orangeAccent],
-                    ),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Start',
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _pickImage,
+                    icon: const Icon(Icons.image_outlined,
+                        color: Colors.deepOrange),
+                    label: const Text(
+                      "Image",
                       style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                          color: Colors.deepOrange,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        side: const BorderSide(color: Colors.deepOrangeAccent),
                       ),
                     ),
                   ),
                 ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.audiotrack_rounded,
+                        color: Colors.pinkAccent),
+                    label: const Text(
+                      "Audio",
+                      style: TextStyle(
+                          color: Colors.pinkAccent,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        side: const BorderSide(color: Colors.pinkAccent),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _submitPost,
+                    icon: const Icon(Icons.send_rounded, color: Colors.white),
+                    label: const Text(
+                      "Post",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 2,
+                      backgroundColor: Colors.deepOrangeAccent,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 30),
+            Divider(color: Colors.grey.shade300, thickness: 1.2),
+            const SizedBox(height: 20),
+
+            // --- Discussion Audio Section ---
+            Center(
+              child: Column(
+                children: [
+                  Text(
+                    "🎙️ Start a live discussion",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey.shade800,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Host a live audio conversation with your followers.",
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                  const SizedBox(height: 25),
+                  Hero(
+                    tag: "micHero",
+                    child: Image.asset(
+                      "assets/images/mic.png",
+                      width: 160,
+                      height: 160,
+                    ),
+                  ),
+                  const SizedBox(height: 25),
+                  InkWell(
+                    onTap: _showDiscussionModal,
+                    borderRadius: BorderRadius.circular(50),
+                    child: Container(
+                      width: 180,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        gradient: const LinearGradient(
+                          colors: [Colors.deepOrangeAccent, Colors.pinkAccent],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.pinkAccent.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "Start Now",
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            )
+            ),
           ],
         ),
       ),
