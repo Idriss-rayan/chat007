@@ -108,10 +108,10 @@ class _SpacesPageState extends State<SpacesPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          _infoTile(
-                              'Durée', '${widget.duration} min', Icons.timer),
-                          _infoTile(
-                              'Limite', '${widget.limit} pers', Icons.people),
+                          _infoTile('Durée', '${widget.duration.round()} min',
+                              Icons.timer),
+                          _infoTile('Limite', '${widget.limit.round()} pers',
+                              Icons.people),
                           _infoTile(
                               'En direct', getDurationText(), Icons.podcasts),
                         ],
@@ -183,10 +183,13 @@ class _SpacesPageState extends State<SpacesPage> {
                 ),
               ),
             )
-          : Center(
-              child: Text(
-                'Le Space "${widget.name}" est terminé 🚫',
-                style: const TextStyle(fontSize: 18, color: Colors.black54),
+          : Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Center(
+                child: Text(
+                  'Le Space "${widget.name}" est terminé 🚫',
+                  style: const TextStyle(fontSize: 18, color: Colors.black54),
+                ),
               ),
             ),
     );

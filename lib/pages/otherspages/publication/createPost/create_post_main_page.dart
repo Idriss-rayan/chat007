@@ -161,7 +161,7 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
                   Center(
                     child: Container(
                       width: 40,
-                      height: 4,
+                      height: 5,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade300,
                         borderRadius: BorderRadius.circular(10),
@@ -170,6 +170,7 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
                   ),
                   const SizedBox(height: 20),
 
+                  // Titre
                   const Center(
                     child: Text(
                       "🎙️ Customize Discussion",
@@ -213,26 +214,38 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
                   ),
                   const SizedBox(height: 8),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: Slider(
-                          value: duration,
-                          min: 1,
-                          max: 30,
-                          divisions: 29,
-                          activeColor: Colors.deepOrange,
-                          label: "${duration.toInt()} min",
-                          onChanged: (val) => setState(() => duration = val),
+                        child: SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            activeTrackColor: Colors.deepOrange,
+                            inactiveTrackColor: Colors.grey.shade300,
+                            thumbColor: Colors.deepOrangeAccent,
+                            overlayColor: Colors.deepOrange.withOpacity(0.2),
+                            trackHeight: 5,
+                            valueIndicatorColor:
+                                Colors.deepOrangeAccent, // couleur bulle
+                            valueIndicatorTextStyle: const TextStyle(
+                              color: Colors.white, // texte du label
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          child: Slider(
+                            value: duration,
+                            min: 1,
+                            max: 30,
+                            divisions: 29,
+                            label: "${duration.toInt()} min",
+                            onChanged: (val) => setState(() => duration = val),
+                          ),
                         ),
                       ),
-                      Container(
-                        width: 50,
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          "${duration.toInt()}m",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15),
+                      Text(
+                        "${duration.toInt()}m",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Colors.deepOrange,
                         ),
                       ),
                     ],
@@ -247,26 +260,38 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
                   ),
                   const SizedBox(height: 8),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: Slider(
-                          value: limit,
-                          min: 2,
-                          max: 1000,
-                          divisions: 98,
-                          activeColor: Colors.deepOrange,
-                          label: "${limit.toInt()} users",
-                          onChanged: (val) => setState(() => limit = val),
+                        child: SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            activeTrackColor: Colors.pinkAccent,
+                            inactiveTrackColor: Colors.grey.shade300,
+                            thumbColor: Colors.pinkAccent,
+                            overlayColor: Colors.pinkAccent.withOpacity(0.2),
+                            trackHeight: 5,
+                            valueIndicatorColor:
+                                Colors.pinkAccent, // couleur bulle
+                            valueIndicatorTextStyle: const TextStyle(
+                              color: Colors.white, // texte du label
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          child: Slider(
+                            value: limit,
+                            min: 2,
+                            max: 1000,
+                            divisions: 98,
+                            label: "${limit.toInt()} users",
+                            onChanged: (val) => setState(() => limit = val),
+                          ),
                         ),
                       ),
-                      Container(
-                        width: 50,
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          "${limit.toInt()}",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15),
+                      Text(
+                        "${limit.toInt()}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Colors.pinkAccent,
                         ),
                       ),
                     ],
@@ -306,8 +331,9 @@ class _CreatePostMainPageState extends State<CreatePostMainPage> {
                               var tween = Tween(begin: begin, end: end)
                                   .chain(CurveTween(curve: curve));
                               return SlideTransition(
-                                  position: animation.drive(tween),
-                                  child: child);
+                                position: animation.drive(tween),
+                                child: child,
+                              );
                             },
                           ),
                         ).then((_) {
