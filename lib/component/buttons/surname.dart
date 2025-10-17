@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
-class ConfirmPassword extends StatefulWidget {
-  const ConfirmPassword({super.key});
+class Surname extends StatefulWidget {
+  final TextEditingController controller;
+  const Surname({super.key, required this.controller});
 
   @override
-  State<ConfirmPassword> createState() => _ConfirmPasswordState();
+  State<Surname> createState() => _SurnameState();
 }
 
-class _ConfirmPasswordState extends State<ConfirmPassword> {
+class _SurnameState extends State<Surname> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _controller = TextEditingController();
-  bool _obscurePassword = true;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -21,8 +20,7 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
       child: Form(
         key: _formKey,
         child: TextFormField(
-          controller: _controller,
-          obscureText: _obscurePassword,
+          controller: widget.controller,
           autovalidateMode: AutovalidateMode.onUserInteraction,
 
           // 🔹 Style du texte que l'utilisateur entre
@@ -34,7 +32,7 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
           keyboardType: TextInputType.emailAddress,
 
           decoration: InputDecoration(
-            labelText: "confirm Password",
+            labelText: "Enter your surname",
 
             // Bordures
             border: OutlineInputBorder(
@@ -62,19 +60,6 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
               borderSide: const BorderSide(color: Colors.red, width: 2),
             ),
 
-            // Icône pour voir / cacher le mot de passe
-            suffixIcon: IconButton(
-              onPressed: () {
-                setState(() {
-                  _obscurePassword = !_obscurePassword;
-                });
-              },
-              icon: Icon(
-                _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                color: Colors.white54,
-              ),
-            ),
-
             // Fond et labels
             filled: true,
             fillColor: const Color.fromARGB(28, 255, 255, 255),
@@ -85,7 +70,7 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
           // Validation
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return "Please enter your password";
+              return "Please enter your surname";
             }
             if (value.length < 6) {
               return "At least 6 characters";

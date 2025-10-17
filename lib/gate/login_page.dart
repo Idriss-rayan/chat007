@@ -10,7 +10,7 @@ import 'package:simplechat/component/buttons/forgot_pass.dart';
 import 'package:simplechat/component/buttons/google_btn.dart';
 import 'package:simplechat/component/buttons/password_button.dart';
 import 'package:simplechat/component/buttons/login_button.dart';
-import 'package:simplechat/pages/main_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -36,8 +36,12 @@ class _LoginPageState extends State<LoginPage> {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      String token = data['token'];
       print("Connexion réussie !");
       print("Token JWT : ${data['token']}");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('jwt_token', token);
+
       return true; // ✅ login OK
     } else {
       print("Erreur : ${response.body}");
