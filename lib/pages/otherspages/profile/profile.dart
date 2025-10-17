@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -50,6 +51,12 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<void> logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('jwt_token'); // 🔐 Supprime le token
+    Navigator.pushReplacementNamed(context, '/login'); // retourne à login
   }
 
   void _showEditProfileDialog() {
@@ -1081,8 +1088,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
-              onPressed: () {
+              onPressed: () async {
                 Navigator.pop(context);
+                await logout(context);
                 _showSuccessSnackbar("Déconnexion réussie");
                 // Action de déconnexion réelle
               },
