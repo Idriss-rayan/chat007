@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:simplechat/gate/informations.dart';
 
 class LoginButton extends StatefulWidget {
-  final Future<void> Function()? onLogin;
+  final Future<bool> Function()? onLogin;
   const LoginButton({
     super.key,
     this.onLogin,
@@ -27,19 +27,13 @@ class _LoginButtonState extends State<LoginButton> {
         child: InkWell(
           onTap: () async {
             if (widget.onLogin != null) {
-              await widget.onLogin!(); // ⚡️ attendre que le login se termine
-              // 🔹 Ensuite, si login réussi, naviguer
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) =>
-                      const Informations(),
-                  transitionsBuilder:
-                      (context, animation, secondaryAnimation, child) {
-                    return FadeTransition(opacity: animation, child: child);
-                  },
-                ),
-              );
+              bool success = await widget.onLogin!();
+              if (success) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Informations()),
+                );
+              }
             }
           },
           splashColor: Colors.white.withOpacity(0.3),

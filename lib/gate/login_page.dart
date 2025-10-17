@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   // voici la fonction pour faire une inscription ...
-  Future<void> loginUser() async {
+  Future<bool> loginUser() async {
     final url = Uri.parse('http://192.168.0.169:3000/api/auth/login');
     final response = await http.post(
       url,
@@ -38,17 +38,13 @@ class _LoginPageState extends State<LoginPage> {
       final data = jsonDecode(response.body);
       print("Connexion réussie !");
       print("Token JWT : ${data['token']}");
-
-      // 🔹 Naviguer vers la page principale
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainPage()),
-      );
+      return true; // ✅ login OK
     } else {
       print("Erreur : ${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Erreur : ${response.body}")),
       );
+      return false; // ❌ login échoué
     }
   }
 
