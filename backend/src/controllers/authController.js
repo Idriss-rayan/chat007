@@ -34,6 +34,7 @@ export const login = (req, res) => {
         const isMatch = bcrypt.compareSync(password, user.password);
 
         if (!isMatch)
+
             return res.status(401).json({ message: "Mot de passe incorrect" });
 
         const token = jwt.sign(

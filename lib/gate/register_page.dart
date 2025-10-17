@@ -17,6 +17,8 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -80,8 +82,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               child: Column(
                                 children: [
-                                  EmailButton(),
-                                  PasswordButton(),
+                                  EmailButton(controller: emailController),
+                                  PasswordButton(
+                                      controller: passwordController),
                                   ConfirmPassword(),
                                   ForgotPass(),
                                   LoginButton(),

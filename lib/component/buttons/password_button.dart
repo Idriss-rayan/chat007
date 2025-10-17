@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class PasswordButton extends StatefulWidget {
-  const PasswordButton({super.key});
+  final TextEditingController controller;
+  const PasswordButton({
+    super.key,
+    required this.controller,
+  });
 
   @override
   State<PasswordButton> createState() => _PasswordButtonState();
@@ -9,7 +13,6 @@ class PasswordButton extends StatefulWidget {
 
 class _PasswordButtonState extends State<PasswordButton> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _controller = TextEditingController();
   bool _obscurePassword = true;
 
   @override
@@ -20,7 +23,7 @@ class _PasswordButtonState extends State<PasswordButton> {
     return Form(
       key: _formKey,
       child: TextFormField(
-        controller: _controller,
+        controller: widget.controller,
         obscureText: _obscurePassword,
         autovalidateMode: AutovalidateMode.onUserInteraction,
 

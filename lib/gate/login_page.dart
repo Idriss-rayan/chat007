@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:simplechat/component/buttons/dont_have_account.dart';
 import 'package:simplechat/component/buttons/email_button.dart';
 import 'package:simplechat/component/buttons/facebook_btn.dart';
@@ -8,6 +10,7 @@ import 'package:simplechat/component/buttons/forgot_pass.dart';
 import 'package:simplechat/component/buttons/google_btn.dart';
 import 'package:simplechat/component/buttons/password_button.dart';
 import 'package:simplechat/component/buttons/login_button.dart';
+import 'package:simplechat/pages/main_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,6 +20,38 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  // voici la fonction pour faire une inscription ...
+  Future<void> loginUser() async {
+    final url = Uri.parse('http://192.168.0.169:3000/api/auth/login');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': emailController.text,
+        'password': passwordController.text,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print("Connexion réussie !");
+      print("Token JWT : ${data['token']}");
+
+      // 🔹 Naviguer vers la page principale
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainPage()),
+      );
+    } else {
+      print("Erreur : ${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erreur : ${response.body}")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -80,10 +115,16 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               child: Column(
                                 children: [
-                                  EmailButton(),
-                                  PasswordButton(),
+                                  EmailButton(
+                                    controller: emailController,
+                                  ),
+                                  PasswordButton(
+                                    controller: passwordController,
+                                  ),
                                   ForgotPass(),
-                                  LoginButton(),
+                                  LoginButton(
+                                    onLogin: loginUser,
+                                  ),
                                   Divider(color: Colors.white30),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,

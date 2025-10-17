@@ -47,7 +47,7 @@ class _InformationsState extends State<Informations> {
               Country(),
               City(),
               Gender(),
-              Phonenumber(),
+              //Phonenumber(),
               AccCondUtil(),
               Confirm(),
             ],

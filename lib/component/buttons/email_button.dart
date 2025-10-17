@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
 
 class EmailButton extends StatefulWidget {
-  const EmailButton({super.key});
+  final TextEditingController controller;
+  const EmailButton({
+    super.key,
+    required this.controller,
+  });
 
   @override
   State<EmailButton> createState() => _EmailButtonState();
 }
 
 class _EmailButtonState extends State<EmailButton> {
-  final TextEditingController _emailController = TextEditingController();
   @override
   void initState() {
     super.initState();
 
     // 🔸 écouter les changements en temps réel
-    _emailController.addListener(() {
-      print("Texte actuel: ${_emailController.text}");
+    widget.controller.addListener(() {
+      print("Texte actuel: ${widget.controller.text}");
       // Ici tu peux faire une validation live, ou activer un bouton
     });
   }
 
   @override
   void dispose() {
-    _emailController.dispose(); // bonne pratique pour libérer la mémoire
+    widget.controller.dispose(); // bonne pratique pour libérer la mémoire
     super.dispose();
   }
 
@@ -34,7 +37,7 @@ class _EmailButtonState extends State<EmailButton> {
     return Padding(
       padding: EdgeInsets.only(bottom: width * 0.08),
       child: TextFormField(
-        controller: _emailController,
+        controller: widget.controller,
         style: const TextStyle(
           color: Colors.white,
           fontSize: 16,
