@@ -422,7 +422,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.deepOrange,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.deepOrange.shade300,
         foregroundColor: Colors.white,
         elevation: 0,
         title: const Text(

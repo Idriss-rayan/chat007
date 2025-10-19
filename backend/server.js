@@ -115,9 +115,16 @@ app.post('/user-info', authenticateToken, (req, res) => {
     if (genderValue.toLowerCase() === 'male') genderValue = 'Homme';
 
     const sql = `
-    INSERT INTO user_infos (user_id, first_name, last_name, email, country, city, gender)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `;
+      INSERT INTO user_infos (user_id, first_name, last_name, email, country, city, gender)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        first_name = VALUES(first_name),
+        last_name = VALUES(last_name),
+        email = VALUES(email),
+        country = VALUES(country),
+        city = VALUES(city),
+        gender = VALUES(gender)
+    `;
 
     db.query(sql, [user_id, first_name, last_name, email, country || null, city || null, genderValue], (err, results) => {
         if (err) {
@@ -127,6 +134,28 @@ app.post('/user-info', authenticateToken, (req, res) => {
         res.status(201).json({ message: 'Infos utilisateur enregistrées avec succès' });
     });
 });
+//------------------------------------------------
+// Récupérer les infos de l'utilisateur connecté
+//________________________________________________
+
+app.get('/user-info', authenticateToken, (req, res) => {
+    const user_id = req.user.id;
+
+    const sql = 'SELECT * FROM user_infos WHERE user_id = ?';
+    db.query(sql, [user_id], (err, results) => {
+        if (err) {
+            console.error('Erreur MySQL:', err);
+            return res.status(500).json({ message: 'Erreur serveur', error: err });
+        }
+
+        if (results.length === 0) {
+            return res.json({ hasInfo: false });
+        }
+
+        res.json({ hasInfo: true, data: results[0] });
+    });
+});
+
 
 
 
