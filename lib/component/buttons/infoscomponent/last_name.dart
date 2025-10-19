@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class LastName extends StatefulWidget {
-  const LastName({super.key});
+  final TextEditingController controller;
+  const LastName({super.key, required this.controller});
 
   @override
   State<LastName> createState() => _LastNameState();
@@ -33,6 +34,7 @@ class _LastNameState extends State<LastName> {
                 ),
                 SizedBox(height: 5),
                 TextFormField(
+                  controller: widget.controller,
                   cursorColor: const Color.fromARGB(133, 0, 0, 0),
                   keyboardType: TextInputType.emailAddress,
                   autovalidateMode: AutovalidateMode.onUserInteraction,

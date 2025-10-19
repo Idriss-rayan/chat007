@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 
 class City extends StatefulWidget {
-  const City({super.key});
+  final TextEditingController controller;
+  const City({super.key, required this.controller});
 
   @override
   State<City> createState() => _CityState();
 }
 
 class _CityState extends State<City> {
-  final _controller = TextEditingController();
-
   @override
   void dispose() {
-    _controller.dispose();
+    widget.controller.dispose();
     super.dispose();
   }
 
@@ -73,7 +72,7 @@ class _CityState extends State<City> {
                 ),
                 const SizedBox(height: 5),
                 TextFormField(
-                  controller: _controller,
+                  controller: widget.controller,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Color.fromARGB(5, 255, 109, 64),

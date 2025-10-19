@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simplechat/gate/informations.dart';
 import 'package:simplechat/gate/login_page.dart';
 import 'package:simplechat/pages/main_page.dart';
 

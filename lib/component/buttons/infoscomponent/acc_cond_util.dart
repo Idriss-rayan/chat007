@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 class AccCondUtil extends StatefulWidget {
-  const AccCondUtil({super.key});
+  final ValueChanged<bool>? onChanged;
+  const AccCondUtil({super.key, this.onChanged});
 
   @override
   State<AccCondUtil> createState() => _AccCondUtilState();
 }
 
 class _AccCondUtilState extends State<AccCondUtil> {
-  bool IsChecked = false;
+  bool _isChecked = false;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,14 +24,17 @@ class _AccCondUtilState extends State<AccCondUtil> {
             hoverColor: Colors.green,
             focusColor: Colors.green,
             activeColor: Colors.green,
-            value: IsChecked,
+            value: _isChecked,
             onChanged: (bool? value) {
               setState(() {
-                IsChecked = value ?? false;
+                _isChecked = value ?? false;
               });
+              // Notifier le parent du changement
+              if (widget.onChanged != null) {
+                widget.onChanged!(_isChecked);
+              }
             },
           ),
-          //SizedBox(width: 10),
           Text(
             "Allow PAPAchou",
             style: TextStyle(color: Colors.black54),

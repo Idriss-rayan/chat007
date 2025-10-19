@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Gender extends StatefulWidget {
-  const Gender({super.key});
+  final TextEditingController? controller;
+  const Gender({super.key, this.controller});
 
   @override
   State<Gender> createState() => _GenderState();
@@ -9,6 +10,15 @@ class Gender extends StatefulWidget {
 
 class _GenderState extends State<Gender> {
   String? _selectedGender;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialiser avec la valeur du controller si elle existe
+    if (widget.controller != null && widget.controller!.text.isNotEmpty) {
+      _selectedGender = widget.controller!.text;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +38,12 @@ class _GenderState extends State<Gender> {
                 ),
               ],
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             DropdownButtonFormField<String>(
               value: _selectedGender,
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Color.fromARGB(5, 255, 109, 64),
+                fillColor: const Color.fromARGB(5, 255, 109, 64),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -45,19 +55,18 @@ class _GenderState extends State<Gender> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(3),
-                  borderSide: BorderSide(
-                    color: const Color.fromARGB(5, 255, 109, 64),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(5, 255, 109, 64),
                   ),
                 ),
-                //prefixIcon: Icon(Icons.person),
               ),
               items: ['Male', 'Female']
                   .map((gender) => DropdownMenuItem<String>(
                         value: gender,
                         child: Text(
                           gender,
-                          style: TextStyle(
-                              color: const Color.fromARGB(213, 0, 0, 0)),
+                          style: const TextStyle(
+                              color: Color.fromARGB(213, 0, 0, 0)),
                         ),
                       ))
                   .toList(),
@@ -65,6 +74,10 @@ class _GenderState extends State<Gender> {
                 setState(() {
                   _selectedGender = value;
                 });
+                // Mettre à jour le controller externe si fourni
+                if (widget.controller != null) {
+                  widget.controller!.text = value ?? '';
+                }
               },
               validator: (value) => value == null || value.isEmpty
                   ? "Please select a gender"
