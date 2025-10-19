@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplechat/component/buttons/infoscomponent/acc_cond_util.dart';
 import 'package:simplechat/component/buttons/infoscomponent/city.dart';
 import 'package:simplechat/component/buttons/infoscomponent/confirm.dart';
@@ -24,6 +28,7 @@ class _InformationsState extends State<Informations> {
   late TextEditingController citycontroller;
   late TextEditingController gendercontroller;
   bool _areConditionsAccepted = false; // ✅ Corrigé le nom et initialisé
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -36,6 +41,58 @@ class _InformationsState extends State<Informations> {
     citycontroller = TextEditingController();
     gendercontroller = TextEditingController();
     _areConditionsAccepted = false;
+  }
+
+  // ✅ MÉTHODE POST pour ENVOYER les données
+  Future<bool> _saveUserInfos() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('jwt_token');
+
+      if (token == null) {
+        print("Token non trouvé");
+        return false;
+      }
+
+      final response = await http.post(
+        Uri.parse('http://192.168.43.198:3000/user-info'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'first_name': firstnamecontroller.text,
+          'last_name': lastnamecontroller.text,
+          'email': emailcontroller.text,
+          'country': countrycontroller.text,
+          'city': citycontroller.text,
+          'gender': gendercontroller.text,
+        }),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print("✅ Données sauvegardées avec succès!");
+        return true;
+      } else {
+        print("❌ Erreur sauvegarde: ${response.statusCode} - ${response.body}");
+        return false;
+      }
+    } catch (e) {
+      print("❌ Erreur: $e");
+      return false;
+    }
+  }
+
+  // Méthode pour pré-remplir le formulaire
+  void _populateForm(Map<String, dynamic> userData) {
+    setState(() {
+      firstnamecontroller.text = userData['first_name'] ?? '';
+      lastnamecontroller.text = userData['last_name'] ?? '';
+      emailcontroller.text = userData['email'] ?? '';
+      countrycontroller.text = userData['country'] ?? '';
+      citycontroller.text = userData['city'] ?? '';
+      gendercontroller.text = userData['gender'] ?? 'Autre';
+    });
   }
 
   @override
@@ -110,6 +167,7 @@ class _InformationsState extends State<Informations> {
                   'gender': gendercontroller,
                 },
                 areConditionsAccepted: _areConditionsAccepted,
+                onSave: _saveUserInfos,
               ),
             ],
           ),

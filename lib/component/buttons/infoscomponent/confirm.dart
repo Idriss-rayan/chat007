@@ -4,11 +4,13 @@ import 'package:simplechat/pages/otherspages/messages/message/succesfull_page.da
 class Confirm extends StatefulWidget {
   final Map<String, TextEditingController> controllers;
   final bool areConditionsAccepted;
+  final Future<bool> Function() onSave;
 
   const Confirm({
     super.key,
     required this.controllers,
     required this.areConditionsAccepted,
+    required this.onSave,
   });
 
   @override
@@ -16,7 +18,7 @@ class Confirm extends StatefulWidget {
 }
 
 class _ConfirmState extends State<Confirm> {
-  void _submitForm() {
+  Future<void> _submitForm() async {
     // Vérifier si les conditions sont acceptées
     if (!widget.areConditionsAccepted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -49,17 +51,28 @@ class _ConfirmState extends State<Confirm> {
     print("Conditions acceptées: ${widget.areConditionsAccepted}");
     print("=============================");
 
+    bool success = await widget.onSave();
+
     // Si tout est valide, naviguer vers la page de succès
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const SuccesfullPage(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-      ),
-    );
+    if (success) {
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const SuccesfullPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Erreur lors de la sauvegarde"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
