@@ -446,412 +446,406 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           ),
         ],
       ),
-      body: FadeTransition(
-        opacity: _fadeIn,
-        child: SlideTransition(
-          position: _slideIn,
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                const SizedBox(height: 24),
+      body: ListView(
+        children: [
+          Column(
+            children: [
+              const SizedBox(height: 24),
 
-                // Photo de profil avec statistiques
-                Stack(
-                  children: [
-                    Container(
-                      width: 130,
-                      height: 130,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.deepOrange,
-                          width: 3,
-                        ),
+              // Photo de profil avec statistiques
+              Stack(
+                children: [
+                  Container(
+                    width: 130,
+                    height: 130,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.deepOrange,
+                        width: 3,
                       ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          "assets/component/avatar.png",
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.deepOrange.shade100,
-                              child: Icon(
-                                Icons.person,
-                                size: 60,
-                                color: Colors.deepOrange,
-                              ),
-                            );
-                          },
+                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        "assets/component/avatar.png",
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.deepOrange.shade100,
+                            child: Icon(
+                              Icons.person,
+                              size: 60,
+                              color: Colors.deepOrange,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: _changeProfilePhoto,
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: Colors.deepOrange,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 3,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 18,
                         ),
                       ),
                     ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: GestureDetector(
-                        onTap: _changeProfilePhoto,
-                        child: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: Colors.deepOrange,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 3,
-                            ),
-                          ),
-                          child: const Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                            size: 18,
-                          ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+
+              // Nom et informations principales
+              Text(
+                userName,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                phoneNumber,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.deepOrange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  status,
+                  style: TextStyle(
+                    color: Colors.deepOrange,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  bio,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                joinDate,
+                style: TextStyle(
+                  color: Colors.grey.shade500,
+                  fontSize: 12,
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Statistiques
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    _buildStatCard(
+                        "Contacts", "$totalContacts", Icons.contacts),
+                    const SizedBox(width: 10),
+                    _buildStatCard("Groupes", "$groupsCount", Icons.group),
+                    const SizedBox(width: 10),
+                    _buildStatCard(
+                        "En ligne", lastSeen, Icons.online_prediction),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 32),
+
+              // Section informations personnelles
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        "Informations personnelles",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
+                      ),
+                    ),
+                    _buildMenuItem(
+                      icon: Icons.phone,
+                      title: "Téléphone",
+                      subtitle: phoneNumber,
+                      onTap: () {
+                        _showContactActionSheet(
+                            phoneNumber, "Numéro de téléphone");
+                      },
+                      color: Colors.deepOrange,
+                    ),
+                    Divider(height: 1, color: Colors.grey.shade200),
+                    _buildMenuItem(
+                      icon: Icons.email,
+                      title: "Email",
+                      subtitle: email,
+                      onTap: () {
+                        _showContactActionSheet(email, "Adresse email");
+                      },
+                      color: Colors.deepOrange,
+                    ),
+                    Divider(height: 1, color: Colors.grey.shade200),
+                    _buildMenuItem(
+                      icon: Icons.description,
+                      title: "Bio",
+                      subtitle:
+                          bio.length > 40 ? "${bio.substring(0, 40)}..." : bio,
+                      onTap: () => _editField("Bio", bio),
+                      color: Colors.deepOrange,
+                    ),
+                    Divider(height: 1, color: Colors.grey.shade200),
+                    _buildMenuItem(
+                      icon: Icons.cake,
+                      title: "Date d'anniversaire",
+                      subtitle: "Non définie",
+                      onTap: () => _editField("Anniversaire", "Non définie"),
+                      color: Colors.deepOrange,
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Section paramètres
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        "Paramètres",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    _buildMenuItem(
+                      icon: Icons.notifications,
+                      title: "Notifications",
+                      subtitle: "Personnaliser les notifications",
+                      onTap: () {
+                        _showSettingsPage("Notifications");
+                      },
+                      color: Colors.deepOrange,
+                    ),
+                    Divider(height: 1, color: Colors.grey.shade200),
+                    _buildMenuItem(
+                      icon: Icons.lock,
+                      title: "Confidentialité",
+                      subtitle: "Contrôler votre vie privée",
+                      onTap: () {
+                        _showSettingsPage("Confidentialité");
+                      },
+                      color: Colors.deepOrange,
+                    ),
+                    Divider(height: 1, color: Colors.grey.shade200),
+                    _buildMenuItem(
+                      icon: Icons.storage,
+                      title: "Stockage et données",
+                      subtitle: "Gérer l'espace de stockage",
+                      onTap: () {
+                        _showSettingsPage("Stockage");
+                      },
+                      color: Colors.deepOrange,
+                    ),
+                    Divider(height: 1, color: Colors.grey.shade200),
+                    _buildMenuItem(
+                      icon: Icons.language,
+                      title: "Langue",
+                      subtitle: "Français",
+                      onTap: () {
+                        _showLanguageSelection();
+                      },
+                      color: Colors.deepOrange,
+                    ),
+                    Divider(height: 1, color: Colors.grey.shade200),
+                    _buildMenuItem(
+                      icon: Icons.help,
+                      title: "Aide",
+                      subtitle: "Centre d'aide et support",
+                      onTap: () {
+                        _showSettingsPage("Aide");
+                      },
+                      color: Colors.deepOrange,
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Section compte
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        "Compte",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    _buildMenuItem(
+                      icon: Icons.group_add,
+                      title: "Inviter des amis",
+                      subtitle: "Partager l'application",
+                      onTap: () {
+                        _showSuccessSnackbar("Lien d'invitation copié");
+                      },
+                      color: Colors.deepOrange,
+                    ),
+                    Divider(height: 1, color: Colors.grey.shade200),
+                    _buildMenuItem(
+                      icon: Icons.security,
+                      title: "Sécurité",
+                      subtitle: "Verrouillage de l'application",
+                      onTap: () {
+                        _showSettingsPage("Sécurité");
+                      },
+                      color: Colors.deepOrange,
+                    ),
+                    Divider(height: 1, color: Colors.grey.shade200),
+                    _buildMenuItem(
+                      icon: Icons.backup,
+                      title: "Sauvegarde",
+                      subtitle: "Sauvegarder vos conversations",
+                      onTap: () {
+                        _showBackupOptions();
+                      },
+                      color: Colors.deepOrange,
+                    ),
+                    Divider(height: 1, color: Colors.grey.shade200),
+                    _buildMenuItem(
+                      icon: Icons.delete,
+                      title: "Supprimer le compte",
+                      subtitle: "Supprimer définitivement votre compte",
+                      onTap: _showDeleteAccountDialog,
+                      color: Colors.red,
+                      isDestructive: true,
+                    ),
+                    Divider(height: 1, color: Colors.grey.shade200),
+                    _buildMenuItem(
+                      icon: Icons.exit_to_app,
+                      title: "Déconnexion",
+                      subtitle: "Se déconnecter de ce compte",
+                      onTap: _showLogoutDialog,
+                      color: Colors.red,
+                      isDestructive: true,
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 40),
+
+              // Version de l'application
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Column(
+                  children: [
+                    Text(
+                      "SimpleChat v2.1.0",
+                      style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Dernière mise à jour: 15 Mars 2024",
+                      style: TextStyle(
+                        color: Colors.grey.shade400,
+                        fontSize: 12,
                       ),
                     ),
                   ],
                 ),
-
-                const SizedBox(height: 16),
-
-                // Nom et informations principales
-                Text(
-                  userName,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  phoneNumber,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.deepOrange.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    status,
-                    style: TextStyle(
-                      color: Colors.deepOrange,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    bio,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  joinDate,
-                  style: TextStyle(
-                    color: Colors.grey.shade500,
-                    fontSize: 12,
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // Statistiques
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      _buildStatCard(
-                          "Contacts", "$totalContacts", Icons.contacts),
-                      const SizedBox(width: 10),
-                      _buildStatCard("Groupes", "$groupsCount", Icons.group),
-                      const SizedBox(width: 10),
-                      _buildStatCard(
-                          "En ligne", lastSeen, Icons.online_prediction),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 32),
-
-                // Section informations personnelles
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text(
-                          "Informations personnelles",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ),
-                      _buildMenuItem(
-                        icon: Icons.phone,
-                        title: "Téléphone",
-                        subtitle: phoneNumber,
-                        onTap: () {
-                          _showContactActionSheet(
-                              phoneNumber, "Numéro de téléphone");
-                        },
-                        color: Colors.deepOrange,
-                      ),
-                      Divider(height: 1, color: Colors.grey.shade200),
-                      _buildMenuItem(
-                        icon: Icons.email,
-                        title: "Email",
-                        subtitle: email,
-                        onTap: () {
-                          _showContactActionSheet(email, "Adresse email");
-                        },
-                        color: Colors.deepOrange,
-                      ),
-                      Divider(height: 1, color: Colors.grey.shade200),
-                      _buildMenuItem(
-                        icon: Icons.description,
-                        title: "Bio",
-                        subtitle: bio.length > 40
-                            ? "${bio.substring(0, 40)}..."
-                            : bio,
-                        onTap: () => _editField("Bio", bio),
-                        color: Colors.deepOrange,
-                      ),
-                      Divider(height: 1, color: Colors.grey.shade200),
-                      _buildMenuItem(
-                        icon: Icons.cake,
-                        title: "Date d'anniversaire",
-                        subtitle: "Non définie",
-                        onTap: () => _editField("Anniversaire", "Non définie"),
-                        color: Colors.deepOrange,
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                // Section paramètres
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text(
-                          "Paramètres",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ),
-                      _buildMenuItem(
-                        icon: Icons.notifications,
-                        title: "Notifications",
-                        subtitle: "Personnaliser les notifications",
-                        onTap: () {
-                          _showSettingsPage("Notifications");
-                        },
-                        color: Colors.deepOrange,
-                      ),
-                      Divider(height: 1, color: Colors.grey.shade200),
-                      _buildMenuItem(
-                        icon: Icons.lock,
-                        title: "Confidentialité",
-                        subtitle: "Contrôler votre vie privée",
-                        onTap: () {
-                          _showSettingsPage("Confidentialité");
-                        },
-                        color: Colors.deepOrange,
-                      ),
-                      Divider(height: 1, color: Colors.grey.shade200),
-                      _buildMenuItem(
-                        icon: Icons.storage,
-                        title: "Stockage et données",
-                        subtitle: "Gérer l'espace de stockage",
-                        onTap: () {
-                          _showSettingsPage("Stockage");
-                        },
-                        color: Colors.deepOrange,
-                      ),
-                      Divider(height: 1, color: Colors.grey.shade200),
-                      _buildMenuItem(
-                        icon: Icons.language,
-                        title: "Langue",
-                        subtitle: "Français",
-                        onTap: () {
-                          _showLanguageSelection();
-                        },
-                        color: Colors.deepOrange,
-                      ),
-                      Divider(height: 1, color: Colors.grey.shade200),
-                      _buildMenuItem(
-                        icon: Icons.help,
-                        title: "Aide",
-                        subtitle: "Centre d'aide et support",
-                        onTap: () {
-                          _showSettingsPage("Aide");
-                        },
-                        color: Colors.deepOrange,
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                // Section compte
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text(
-                          "Compte",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ),
-                      _buildMenuItem(
-                        icon: Icons.group_add,
-                        title: "Inviter des amis",
-                        subtitle: "Partager l'application",
-                        onTap: () {
-                          _showSuccessSnackbar("Lien d'invitation copié");
-                        },
-                        color: Colors.deepOrange,
-                      ),
-                      Divider(height: 1, color: Colors.grey.shade200),
-                      _buildMenuItem(
-                        icon: Icons.security,
-                        title: "Sécurité",
-                        subtitle: "Verrouillage de l'application",
-                        onTap: () {
-                          _showSettingsPage("Sécurité");
-                        },
-                        color: Colors.deepOrange,
-                      ),
-                      Divider(height: 1, color: Colors.grey.shade200),
-                      _buildMenuItem(
-                        icon: Icons.backup,
-                        title: "Sauvegarde",
-                        subtitle: "Sauvegarder vos conversations",
-                        onTap: () {
-                          _showBackupOptions();
-                        },
-                        color: Colors.deepOrange,
-                      ),
-                      Divider(height: 1, color: Colors.grey.shade200),
-                      _buildMenuItem(
-                        icon: Icons.delete,
-                        title: "Supprimer le compte",
-                        subtitle: "Supprimer définitivement votre compte",
-                        onTap: _showDeleteAccountDialog,
-                        color: Colors.red,
-                        isDestructive: true,
-                      ),
-                      Divider(height: 1, color: Colors.grey.shade200),
-                      _buildMenuItem(
-                        icon: Icons.exit_to_app,
-                        title: "Déconnexion",
-                        subtitle: "Se déconnecter de ce compte",
-                        onTap: _showLogoutDialog,
-                        color: Colors.red,
-                        isDestructive: true,
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 40),
-
-                // Version de l'application
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Column(
-                    children: [
-                      Text(
-                        "SimpleChat v2.1.0",
-                        style: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "Dernière mise à jour: 15 Mars 2024",
-                        style: TextStyle(
-                          color: Colors.grey.shade400,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ),
+        ],
       ),
     );
   }
