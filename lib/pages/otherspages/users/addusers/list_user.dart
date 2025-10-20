@@ -76,7 +76,7 @@ class _ListUserState extends State<ListUser> {
         return CardUser(
           userName: user['name'] ?? user['username'] ?? 'Utilisateur sans nom',
           country: user['country'] ?? 'Pays non spécifié',
-          mutualFriends: user['mutual_friends'] ?? 0, // Adaptez selon votre API
+          mutualFriends: 10, // Adaptez selon votre API
           gender: user['gender'] ?? 'Non spécifié',
         );
       },
