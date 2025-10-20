@@ -55,15 +55,9 @@ class _ConfirmState extends State<Confirm> {
 
     // Si tout est valide, naviguer vers la page de succès
     if (success) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              const SuccesfullPage(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        ),
+        MaterialPageRoute(builder: (context) => const SuccesfullPage()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

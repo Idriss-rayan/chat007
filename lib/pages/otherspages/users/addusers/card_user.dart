@@ -6,7 +6,7 @@ class CardUser extends StatefulWidget {
   final String country;
   final String countryCode;
   final String userImage;
-  final String profession;
+  final String gender;
   final int mutualFriends;
   final String lastSeen;
   final bool isOnline;
@@ -21,7 +21,7 @@ class CardUser extends StatefulWidget {
     required this.country,
     this.countryCode = 'cmr',
     this.userImage = 'assets/component/avatar.svg',
-    this.profession = 'Développeur',
+    this.gender = 'Développeur',
     this.mutualFriends = 0,
     this.lastSeen = 'En ligne',
     this.isOnline = true,
@@ -153,7 +153,7 @@ class _CardUserState extends State<CardUser> {
 
                       // Profession
                       Text(
-                        widget.profession,
+                        widget.gender,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.orange.shade700,

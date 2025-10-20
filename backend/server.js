@@ -56,7 +56,20 @@ app.post('/register', async (req, res) => {
                     console.error('Erreur MySQL:', err);
                     return res.status(500).json({ message: 'Erreur lors de la création de l’utilisateur' });
                 }
-                res.status(201).json({ message: 'Utilisateur créé avec succès' });
+
+                // ✅ Génération du token JWT
+                const token = jwt.sign(
+                    { id: results.insertId, email: email },
+                    SECRET_KEY, // ⚠️ mets une vraie clé secrète dans une variable d'environnement
+                    { expiresIn: '2h' }
+                );
+
+                // ✅ Réponse complète
+                res.status(201).json({
+                    message: 'Utilisateur créé avec succès',
+                    user: { id: results.insertId, username, email },
+                    token: token
+                });
             }
         );
     } catch (err) {
@@ -156,6 +169,20 @@ app.get('/user-info', authenticateToken, (req, res) => {
     });
 });
 
+//------------------------------------------------
+// Obtenir la listes des utilisateurs from mysql |
+//------------------------------------------------
+
+app.get('/users', (req, res) => {
+    const sql = `SELECT id, first_name,CONCAT(first_name, ' ', last_name) AS name, gender, country FROM user_infos`;
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Erreur lors de la récupération des utilisateurs:', err);
+            return res.status(500).json({ message: 'Erreur serveur' });
+        }
+        res.json(results);
+    });
+});
 
 
 

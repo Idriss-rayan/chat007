@@ -1,56 +1,72 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:simplechat/pages/custom/animated_gradient_border.dart';
+import 'package:http/http.dart' as http;
 import 'package:simplechat/pages/otherspages/users/addusers/card_user.dart';
-import 'package:simplechat/pages/otherspages/users/addusers/card_user2.dart';
 
-class ListUser extends StatelessWidget {
+class ListUser extends StatefulWidget {
   const ListUser({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Nombre total de CardUser2
-    const int totalCardUser2 = 1000;
-    // Chaque bloc contient 10 CardUser2
-    const int cardUser2PerRow = 10;
-    // Nombre total de blocs horizontaux
-    final int totalHorizontalBlocks = (totalCardUser2 / cardUser2PerRow).ceil();
+  State<ListUser> createState() => _ListUserState();
+}
 
-    // Chaque bloc horizontal est précédé par 9 CardUser
-    final int totalItems = totalHorizontalBlocks * (9 + 1);
+class _ListUserState extends State<ListUser> {
+  List users = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUsers();
+  }
+
+  Future<void> fetchUsers() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://192.168.43.198:3000/users'),
+      );
+      if (response.statusCode == 200) {
+        print('Réponse API: ${response.body}'); // ← AJOUTEZ CETTE LIGNE
+        setState(() {
+          users = jsonDecode(response.body);
+          isLoading = false;
+        });
+      } else {
+        setState(() => isLoading = false);
+        print('Erreur HTTP: ${response.statusCode}');
+      }
+    } catch (e) {
+      print("Erreur lors du chargement des utilisateurs: $e");
+      setState(() => isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (users.isEmpty) {
+      return const Center(
+        child: Text('Aucun utilisateur trouvé'),
+      );
+    }
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: totalItems,
+      itemCount: users.length,
       itemBuilder: (context, index) {
-        // Tous les 10ème item (après 9 CardUser) -> bloc horizontal
-        if ((index + 1) % 10 == 0) {
-          // Bloc horizontal actuel (0, 1, 2, ...)
-          final int blockIndex = (index + 1) ~/ 10 - 1;
+        final user = users[index];
 
-          return SizedBox(
-            height: 200,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: cardUser2PerRow,
-              itemBuilder: (context, i) {
-                // Calculer l’index global de CardUser2
-                final int cardUser2Index = blockIndex * cardUser2PerRow + i;
-
-                if (cardUser2Index >= totalCardUser2) return const SizedBox();
-
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: CardUser2(), // ici tu peux aussi passer l’index
-                );
-              },
-            ),
-          );
-        }
-
-        // Sinon -> CardUser normal
+        // Adapté à la structure de votre API SQL
         return CardUser(
-          userName: 'Idriss rayan',
-          country: 'Cameroon',
+          userName: user['name'] ?? 'Utilisateur sans nom',
+          country: user['country'] ?? 'Country non disponible',
+          mutualFriends: 10,
+          gender: user['gender'] ?? 'gender address non disponible',
         );
       },
     );

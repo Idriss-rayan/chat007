@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:simplechat/pages/main_page.dart';
-import 'package:simplechat/pages/otherspages/publication/pub_page.dart';
 
 class SuccesfullPage extends StatefulWidget {
   const SuccesfullPage({super.key});
@@ -48,16 +47,21 @@ class _SuccesfullPageState extends State<SuccesfullPage> {
               padding: const EdgeInsets.only(top: 50.0),
               child: InkWell(
                 onTap: () {
-                  Navigator.push(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
-                          MainPage(),
+                          const SuccesfullPage(),
+                      transitionDuration: Duration.zero, // ⛔ pas d’animation
+                      reverseTransitionDuration:
+                          Duration.zero, // ⛔ pas d’animation au retour
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(opacity: animation, child: child);
+                        return child; // 👈 on affiche la page sans effet
                       },
                     ),
+                    (Route<dynamic> route) =>
+                        false, // 🔥 supprime toutes les pages précédentes
                   );
                 },
                 child: Container(

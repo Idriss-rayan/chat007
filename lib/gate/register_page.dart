@@ -33,7 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'name': nameController.text,
+        'username': nameController.text,
         'email': emailController.text,
         'password': passwordController.text,
       }),
