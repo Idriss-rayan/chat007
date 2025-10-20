@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:simplechat/pages/otherspages/users/addusers/card_user.dart';
+import 'package:simplechat/pages/otherspages/users/component/bucket.dart';
 
 class ListUser extends StatefulWidget {
   const ListUser({super.key});
@@ -11,7 +12,7 @@ class ListUser extends StatefulWidget {
 }
 
 class _ListUserState extends State<ListUser> {
-  List users = [];
+  Bucket bucket = Bucket();
   bool isLoading = true;
 
   @override
@@ -25,15 +26,20 @@ class _ListUserState extends State<ListUser> {
       final response = await http.get(
         Uri.parse('http://192.168.43.198:3000/users'),
       );
+
       if (response.statusCode == 200) {
-        print('Réponse API: ${response.body}'); // ← AJOUTEZ CETTE LIGNE
+        final List<dynamic> responseData = jsonDecode(response.body);
+        print(
+            'Nombre d\'utilisateurs récupérés: ${responseData.length}'); // Debug
+
         setState(() {
-          users = jsonDecode(response.body);
+          bucket.users = responseData;
           isLoading = false;
         });
       } else {
         setState(() => isLoading = false);
         print('Erreur HTTP: ${response.statusCode}');
+        print('Body: ${response.body}');
       }
     } catch (e) {
       print("Erreur lors du chargement des utilisateurs: $e");
@@ -45,11 +51,14 @@ class _ListUserState extends State<ListUser> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          color: Color.fromARGB(61, 244, 107, 2),
+        ),
       );
     }
 
-    if (users.isEmpty) {
+    // CORRECTION : Utiliser bucket.users au lieu de users
+    if (bucket.users.isEmpty) {
       return const Center(
         child: Text('Aucun utilisateur trouvé'),
       );
@@ -57,16 +66,18 @@ class _ListUserState extends State<ListUser> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: users.length,
+      itemCount: bucket.users.length,
       itemBuilder: (context, index) {
-        final user = users[index];
+        final user = bucket.users[index];
 
-        // Adapté à la structure de votre API SQL
+        // Debug pour voir la structure des données
+        print('Utilisateur $index: $user');
+
         return CardUser(
-          userName: user['name'] ?? 'Utilisateur sans nom',
-          country: user['country'] ?? 'Country non disponible',
-          mutualFriends: 10,
-          gender: user['gender'] ?? 'gender address non disponible',
+          userName: user['name'] ?? user['username'] ?? 'Utilisateur sans nom',
+          country: user['country'] ?? 'Pays non spécifié',
+          mutualFriends: user['mutual_friends'] ?? 0, // Adaptez selon votre API
+          gender: user['gender'] ?? 'Non spécifié',
         );
       },
     );

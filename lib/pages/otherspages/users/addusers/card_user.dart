@@ -1,3 +1,4 @@
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -156,7 +157,12 @@ class _CardUserState extends State<CardUser> {
                         widget.gender,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.orange.shade700,
+                          color: (widget.gender
+                                      .toLowerCase()
+                                      .contains('homme') ||
+                                  widget.gender.toLowerCase().contains('male'))
+                              ? Colors.deepOrange
+                              : Colors.pinkAccent,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -185,11 +191,16 @@ class _CardUserState extends State<CardUser> {
                             ),
                           ),
                           const SizedBox(width: 4),
-                          SvgPicture.asset(
-                            'assets/component/${widget.countryCode}.svg',
-                            width: 14,
-                            height: 14,
-                          ),
+                          // SvgPicture.asset(
+                          //   'assets/component/${widget.countryCode}.svg',
+                          //   width: 14,
+                          //   height: 14,
+                          // ),
+                          // SizedBox(
+                          //   width: 14,
+                          //   height: 14,
+                          //   child: ,
+                          // )
                         ],
                       ),
 
@@ -237,46 +248,6 @@ class _CardUserState extends State<CardUser> {
                   const Spacer(),
                 ] else
                   const Spacer(),
-
-                // Bouton Message
-                // if (_isFollowing) ...[
-                //   GestureDetector(
-                //     onTap: widget.onMessageTap,
-                //     child: Container(
-                //       padding: const EdgeInsets.symmetric(
-                //         horizontal: 16,
-                //         vertical: 8,
-                //       ),
-                //       decoration: BoxDecoration(
-                //         color: Colors.grey.shade100,
-                //         borderRadius: BorderRadius.circular(20),
-                //         border: Border.all(
-                //           color: Colors.grey.shade300,
-                //         ),
-                //       ),
-                //       child: Row(
-                //         children: [
-                //           Icon(
-                //             Icons.message,
-                //             size: 16,
-                //             color: Colors.grey.shade700,
-                //           ),
-                //           const SizedBox(width: 6),
-                //           Text(
-                //             'Message',
-                //             style: TextStyle(
-                //               color: Colors.grey.shade700,
-                //               fontSize: 12,
-                //               fontWeight: FontWeight.w500,
-                //             ),
-                //           ),
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                //   const SizedBox(width: 12),
-                // ],
-
                 // Bouton Follow/Unfollow
                 GestureDetector(
                   onTap: _handleFollowTap,
