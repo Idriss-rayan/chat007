@@ -28,7 +28,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<bool> registerUser() async {
     final url = Uri.parse(
-        'http://192.168.43.198:3000/register'); // 🔗 ton endpoint backend
+        'http://192.168.0.169:3000/register'); // 🔗 ton endpoint backend
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},

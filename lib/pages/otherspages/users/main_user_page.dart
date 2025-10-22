@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:simplechat/pages/otherspages/users/addusers/list_user.dart';
 import 'package:simplechat/pages/otherspages/users/component/search_bar2.dart';
 import 'package:simplechat/pages/otherspages/users/followers_pages/follow_list.dart';
-import 'package:simplechat/pages/otherspages/users/friend_pages/friend_list.dart';
+import 'package:simplechat/pages/otherspages/users/following_pages/following_list.dart';
 
 class MainUserPage extends StatefulWidget {
   const MainUserPage({super.key});
@@ -16,7 +16,7 @@ class _MainUserPageState extends State<MainUserPage> {
   final PageController _controller = PageController();
   bool isSearchActive = false;
   int _currentPage = 0;
-  final List<String> _tabs = ["Follow", "Followers", "List of contact"];
+  final List<String> _tabs = ["Users", "Followers", "Following"];
 
   @override
   Widget build(BuildContext context) {

@@ -184,6 +184,112 @@ app.get('/users', (req, res) => {
     });
 });
 
+// ===========================
+// 🔹 FOLLOW un utilisateur
+// ===========================
+app.post('/follow', (req, res) => {
+    const { followerId, followedId } = req.body; // ← snake_case
+
+    if (followerId === followedId) {
+        return res.status(400).json({ message: "Tu ne peux pas te suivre toi-même" });
+    }
+
+    const sql = `INSERT IGNORE INTO followers (follower_id, followed_id) VALUES (?, ?)`;
+    db.query(sql, [followerId, followedId], (err, result) => {
+        if (err) {
+            console.error('Erreur follow:', err);
+            return res.status(500).json({ error: 'Erreur serveur' });
+        }
+        res.json({ message: 'Utilisateur suivi avec succès' });
+    });
+});
+
+
+// ===========================
+// 🔹 UNFOLLOW un utilisateur
+// ===========================
+app.post('/unfollow', (req, res) => {
+    const { followerId, followedId } = req.body;
+
+    const sql = `
+    DELETE FROM followers
+    WHERE follower_id = ? AND followed_id = ?
+  `;
+    db.query(sql, [followerId, followedId], (err, result) => {
+        if (err) {
+            console.error('Erreur unfollow:', err);
+            return res.status(500).json({ error: 'Erreur serveur' });
+        }
+        res.json({ message: 'Unfollow réussi' });
+    });
+});
+
+// ===========================
+// 🔹 Récupérer MES FOLLOWERS
+// (ceux qui me suivent)
+// ===========================
+app.get('/followers/:userId', (req, res) => {
+    const userId = req.params.userId;
+
+    const sql = `
+    SELECT u.id, u.username, ui.profile_picture
+    FROM followers f
+    JOIN users u ON f.follower_id = u.id
+    LEFT JOIN user_infos ui ON u.id = ui.user_id
+    WHERE f.followed_id = ?
+  `;
+
+    db.query(sql, [userId], (err, results) => {
+        if (err) {
+            console.error('Erreur récupération followers:', err);
+            return res.status(500).json({ error: 'Erreur serveur' });
+        }
+        res.json(results);
+    });
+});
+
+// ===========================
+// 🔹 Récupérer LES PERSONNES QUE JE SUIS
+// ===========================
+app.get('/following/:userId', (req, res) => {
+    const userId = req.params.userId;
+
+    const sql = `
+    SELECT u.id, u.username, ui.profile_picture
+    FROM followers f
+    JOIN users u ON f.followed_id = u.id
+    LEFT JOIN user_infos ui ON u.id = ui.user_id
+    WHERE f.follower_id = ?
+  `;
+
+    db.query(sql, [userId], (err, results) => {
+        if (err) {
+            console.error('Erreur récupération following:', err);
+            return res.status(500).json({ error: 'Erreur serveur' });
+        }
+        res.json(results);
+    });
+});
+
+// ===========================
+// 🔹 Vérifier si je follow déjà un utilisateur
+// (utile pour afficher le bouton "Follow"/"Unfollow")
+// ===========================
+app.get('/is-following', (req, res) => {
+    const { followerId, followedId } = req.query;
+
+    const sql = `
+    SELECT * FROM followers
+    WHERE follower_id = ? AND followed_id = ?
+  `;
+    db.query(sql, [followerId, followedId], (err, results) => {
+        if (err) {
+            console.error('Erreur vérification follow:', err);
+            return res.status(500).json({ error: 'Erreur serveur' });
+        }
+        res.json({ isFollowing: results.length > 0 });
+    });
+});
 
 
 // ---------------------------

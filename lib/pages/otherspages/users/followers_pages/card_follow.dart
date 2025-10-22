@@ -2,7 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CardFollow extends StatefulWidget {
-  const CardFollow({super.key});
+  final String userName;
+  final String country;
+  final String countryCode;
+  final String userImage;
+  final String gender;
+  final int mutualFriends;
+  final bool isOnline;
+  final VoidCallback onUnfollow;
+
+  const CardFollow({
+    super.key,
+    required this.userName,
+    required this.country,
+    this.countryCode = 'cmr',
+    this.userImage = 'assets/component/avatar.svg',
+    this.gender = 'Développeur',
+    this.mutualFriends = 0,
+    this.isOnline = true,
+    required this.onUnfollow,
+  });
 
   @override
   State<CardFollow> createState() => _CardFollowState();
@@ -10,7 +29,7 @@ class CardFollow extends StatefulWidget {
 
 class _CardFollowState extends State<CardFollow>
     with SingleTickerProviderStateMixin {
-  bool isFollowed = false;
+  bool isFollowed = true; // Toujours true car c'est un follower
 
   late final AnimationController _controller;
   late final Animation<double> _scaleAnimation;
@@ -42,6 +61,11 @@ class _CardFollowState extends State<CardFollow>
         _controller.forward().then((value) => _controller.reverse());
       }
     });
+
+    // ⭐⭐ APPEL LA FONCTION UNFOLLOW QUAND ON CLIQUE ⭐⭐
+    if (!isFollowed) {
+      widget.onUnfollow();
+    }
   }
 
   @override
@@ -68,22 +92,52 @@ class _CardFollowState extends State<CardFollow>
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
-            // Avatar
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: ClipOval(
-                  child: SvgPicture.asset(
-                    'assets/component/avatar.svg',
-                    fit: BoxFit.cover,
+            // Avatar avec badge online
+            Stack(
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: ClipOval(
+                      child: widget.userImage.startsWith('http')
+                          ? Image.network(
+                              widget.userImage,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return SvgPicture.asset(
+                                  'assets/component/avatar.svg',
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            )
+                          : SvgPicture.asset(
+                              widget.userImage,
+                              fit: BoxFit.cover,
+                            ),
+                    ),
                   ),
                 ),
-              ),
+                // Badge online
+                if (widget.isOnline)
+                  Positioned(
+                    bottom: 8,
+                    right: 8,
+                    child: Container(
+                      width: 16,
+                      height: 16,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(width: 12),
             // Info
@@ -96,7 +150,7 @@ class _CardFollowState extends State<CardFollow>
                     children: [
                       Expanded(
                         child: Text(
-                          "Idriss Rayan".toUpperCase(),
+                          widget.userName.toUpperCase(),
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
@@ -113,9 +167,7 @@ class _CardFollowState extends State<CardFollow>
                             padding: EdgeInsets.all(6),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: isFollowed
-                                  ? Colors.transparent
-                                  : Colors.transparent,
+                              color: Colors.transparent,
                             ),
                             child: SvgPicture.asset(
                               isFollowed
@@ -130,6 +182,21 @@ class _CardFollowState extends State<CardFollow>
                     ],
                   ),
                   const SizedBox(height: 6),
+
+                  // Profession/Gender
+                  Text(
+                    widget.gender,
+                    style: TextStyle(
+                      color: (widget.gender.toLowerCase().contains('homme') ||
+                              widget.gender.toLowerCase().contains('male'))
+                          ? Colors.blue.shade700
+                          : Colors.pink.shade700,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+
                   // Location
                   Row(
                     children: [
@@ -141,20 +208,55 @@ class _CardFollowState extends State<CardFollow>
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        "Cameroun",
+                        widget.country,
                         style: TextStyle(
                           color: Colors.black54,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(width: 6),
-                      SvgPicture.asset(
-                        'assets/component/cmr.svg',
-                        width: 12,
+                      Container(
+                        width: 16,
                         height: 12,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(2),
+                          // Vous pouvez utiliser vos assets de drapeaux
+                          // image: DecorationImage(
+                          //   image: AssetImage('assets/flags/${widget.countryCode}.png'),
+                          //   fit: BoxFit.cover,
+                          // ),
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/component/${widget.countryCode}.svg',
+                          width: 16,
+                          height: 12,
+                        ),
                       ),
                     ],
                   ),
+
+                  // Amis communs
+                  if (widget.mutualFriends > 0) ...[
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.people_outline,
+                          size: 14,
+                          color: Colors.grey.shade600,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "${widget.mutualFriends} ami${widget.mutualFriends > 1 ? 's' : ''} en commun",
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),

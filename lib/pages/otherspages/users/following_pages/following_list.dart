@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simplechat/pages/otherspages/users/friend_pages/friend_card.dart';
+import 'package:simplechat/pages/otherspages/users/following_pages/following_card.dart';
 
 class FriendList extends StatelessWidget {
   const FriendList({super.key});

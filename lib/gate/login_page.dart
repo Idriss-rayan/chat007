@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   // voici la fonction pour faire une inscription ...
   Future<bool> loginUser() async {
-    final url = Uri.parse('http://192.168.43.198:3000/login');
+    final url = Uri.parse('http://192.168.0.169:3000/login');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},

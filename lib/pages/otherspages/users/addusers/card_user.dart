@@ -1,6 +1,7 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:simplechat/pages/otherspages/users/followers_api.dart';
 
 class CardUser extends StatefulWidget {
   final String userName;
@@ -15,6 +16,8 @@ class CardUser extends StatefulWidget {
   final VoidCallback? onFollowChanged;
   final VoidCallback? onProfileTap;
   final VoidCallback? onMessageTap;
+  final int currentUserId;
+  final int otherUserId;
 
   const CardUser({
     super.key,
@@ -30,6 +33,8 @@ class CardUser extends StatefulWidget {
     this.onFollowChanged,
     this.onProfileTap,
     this.onMessageTap,
+    required this.currentUserId,
+    required this.otherUserId,
   });
 
   @override
@@ -37,19 +42,42 @@ class CardUser extends StatefulWidget {
 }
 
 class _CardUserState extends State<CardUser> {
-  bool _isFollowing = false;
+  bool isFollowingUser = false;
+  bool loading = true;
 
   @override
   void initState() {
     super.initState();
-    _isFollowing = widget.isInitiallyFollowing;
+    _checkFollowStatus();
   }
 
-  void _handleFollowTap() {
-    setState(() {
-      _isFollowing = !_isFollowing;
-    });
-    widget.onFollowChanged?.call();
+  Future<void> _checkFollowStatus() async {
+    try {
+      final result =
+          await isFollowing(widget.currentUserId, widget.otherUserId);
+      setState(() {
+        isFollowingUser = result;
+        loading = false;
+      });
+    } catch (e) {
+      setState(() => loading = false);
+    }
+  }
+
+  Future<void> _toggleFollow() async {
+    setState(() => loading = true);
+    try {
+      if (isFollowingUser) {
+        await unfollowUser(widget.currentUserId, widget.otherUserId);
+      } else {
+        await followUser(widget.currentUserId, widget.otherUserId);
+      }
+      setState(() {
+        isFollowingUser = !isFollowingUser;
+      });
+    } finally {
+      setState(() => loading = false);
+    }
   }
 
   @override
@@ -250,21 +278,22 @@ class _CardUserState extends State<CardUser> {
                   const Spacer(),
                 // Bouton Follow/Unfollow
                 GestureDetector(
-                  onTap: _handleFollowTap,
+                  onTap: _toggleFollow,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: _isFollowing ? Colors.white : Colors.orange,
+                      color: isFollowingUser ? Colors.white : Colors.orange,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color:
-                            _isFollowing ? Colors.orange : Colors.transparent,
+                        color: isFollowingUser
+                            ? Colors.orange
+                            : Colors.transparent,
                         width: 1.5,
                       ),
-                      boxShadow: _isFollowing
+                      boxShadow: isFollowingUser
                           ? []
                           : [
                               BoxShadow(
@@ -278,17 +307,20 @@ class _CardUserState extends State<CardUser> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          _isFollowing ? Icons.check : Icons.person_add_alt_1,
+                          isFollowingUser
+                              ? Icons.check
+                              : Icons.person_add_alt_1,
                           size: 16,
-                          color: _isFollowing ? Colors.orange : Colors.white,
+                          color: isFollowingUser ? Colors.orange : Colors.white,
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          _isFollowing ? 'Suivi' : 'Suivre',
+                          isFollowingUser ? 'Suivi' : 'Suivre',
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: _isFollowing ? Colors.orange : Colors.white,
+                            color:
+                                isFollowingUser ? Colors.orange : Colors.white,
                           ),
                         ),
                       ],

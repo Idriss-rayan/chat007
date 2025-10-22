@@ -55,7 +55,7 @@ class _InformationsState extends State<Informations> {
       }
 
       final response = await http.post(
-        Uri.parse('http://192.168.43.198:3000/user-info'),
+        Uri.parse('http://192.168.0.169:3000/user-info'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
