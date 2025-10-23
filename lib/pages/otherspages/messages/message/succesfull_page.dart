@@ -51,7 +51,7 @@ class _SuccesfullPageState extends State<SuccesfullPage> {
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
-                          const SuccesfullPage(),
+                          const MainPage(),
                       transitionDuration: Duration.zero, // ⛔ pas d’animation
                       reverseTransitionDuration:
                           Duration.zero, // ⛔ pas d’animation au retour

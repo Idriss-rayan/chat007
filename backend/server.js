@@ -232,7 +232,7 @@ app.get('/followers/:userId', (req, res) => {
     const userId = req.params.userId;
 
     const sql = `
-    select concat (ui.first_name , ui.last_name) as name, ui.country,
+    select concat (ui.first_name ,' ', ui.last_name) as name, ui.country,
     ui.email from followers f 
     join users u on f.follower_id = u.id 
     join user_infos ui on u.id = ui.user_id where f.followed_id = ?
