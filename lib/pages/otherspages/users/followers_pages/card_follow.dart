@@ -4,10 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 class CardFollow extends StatefulWidget {
   final String userName;
   final String country;
-  final String countryCode;
   final String userImage;
-  final String gender;
-  final int mutualFriends;
+
   final bool isOnline;
   final VoidCallback onUnfollow;
 
@@ -15,10 +13,7 @@ class CardFollow extends StatefulWidget {
     super.key,
     required this.userName,
     required this.country,
-    this.countryCode = 'cmr',
     this.userImage = 'assets/component/avatar.svg',
-    this.gender = 'Développeur',
-    this.mutualFriends = 0,
     this.isOnline = true,
     required this.onUnfollow,
   });
@@ -55,23 +50,13 @@ class _CardFollowState extends State<CardFollow>
   void toggleFollow() {
     setState(() {
       isFollowed = !isFollowed;
-      if (isFollowed) {
-        _controller.forward().then((value) => _controller.reverse());
-      } else {
-        _controller.forward().then((value) => _controller.reverse());
-      }
     });
-
-    // ⭐⭐ APPEL LA FONCTION UNFOLLOW QUAND ON CLIQUE ⭐⭐
-    if (!isFollowed) {
-      widget.onUnfollow();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -152,13 +137,54 @@ class _CardFollowState extends State<CardFollow>
                         child: Text(
                           widget.userName.toUpperCase(),
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 14,
                             fontWeight: FontWeight.bold,
                             color: Colors.black87,
                             letterSpacing: 0.5,
                           ),
                         ),
                       ),
+                      // GestureDetector(
+                      //   onTap: toggleFollow,
+                      //   child: ScaleTransition(
+                      //     scale: _scaleAnimation,
+                      //     child: Container(
+                      //       padding: EdgeInsets.all(6),
+                      //       decoration: BoxDecoration(
+                      //         shape: BoxShape.circle,
+                      //         color: Colors.transparent,
+                      //       ),
+                      //       child: SvgPicture.asset(
+                      //         isFollowed
+                      //             ? 'assets/component/contact.svg'
+                      //             : 'assets/component/friends 1.svg',
+                      //         width: 28,
+                      //         height: 28,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  // Location
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/component/loc.svg',
+                        width: 18,
+                        height: 15,
+                        color: Colors.orange,
+                      ),
+                      const SizedBox(width: 1),
+                      Text(
+                        widget.country,
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
                       GestureDetector(
                         onTap: toggleFollow,
                         child: ScaleTransition(
@@ -169,94 +195,44 @@ class _CardFollowState extends State<CardFollow>
                               shape: BoxShape.circle,
                               color: Colors.transparent,
                             ),
-                            child: SvgPicture.asset(
-                              isFollowed
-                                  ? 'assets/component/contact.svg'
-                                  : 'assets/component/friends 1.svg',
-                              width: 28,
-                              height: 28,
-                            ),
+                            child: isFollowed
+                                ? Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.deepOrange,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                        12,
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text('Add as contact'),
+                                    ),
+                                  )
+                                : Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(
+                                        7,
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Contact now',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 6),
-
-                  // Profession/Gender
-                  Text(
-                    widget.gender,
-                    style: TextStyle(
-                      color: (widget.gender.toLowerCase().contains('homme') ||
-                              widget.gender.toLowerCase().contains('male'))
-                          ? Colors.blue.shade700
-                          : Colors.pink.shade700,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-
-                  // Location
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/component/loc.svg',
-                        width: 18,
-                        height: 18,
-                        color: Colors.orange,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        widget.country,
-                        style: TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Container(
-                        width: 16,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(2),
-                          // Vous pouvez utiliser vos assets de drapeaux
-                          // image: DecorationImage(
-                          //   image: AssetImage('assets/flags/${widget.countryCode}.png'),
-                          //   fit: BoxFit.cover,
-                          // ),
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/component/${widget.countryCode}.svg',
-                          width: 16,
-                          height: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  // Amis communs
-                  if (widget.mutualFriends > 0) ...[
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.people_outline,
-                          size: 14,
-                          color: Colors.grey.shade600,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          "${widget.mutualFriends} ami${widget.mutualFriends > 1 ? 's' : ''} en commun",
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
                 ],
               ),
             ),

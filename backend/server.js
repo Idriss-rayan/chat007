@@ -105,7 +105,7 @@ app.post('/login', (req, res) => {
         const token = jwt.sign(
             { id: user.id, username: user.username },
             SECRET_KEY,
-            { expiresIn: '1h' }
+            { expiresIn: '8h' }
         );
 
         res.json({ message: 'Connexion réussie', token });
@@ -232,11 +232,10 @@ app.get('/followers/:userId', (req, res) => {
     const userId = req.params.userId;
 
     const sql = `
-    SELECT u.id, u.username, ui.profile_picture
-    FROM followers f
-    JOIN users u ON f.follower_id = u.id
-    LEFT JOIN user_infos ui ON u.id = ui.user_id
-    WHERE f.followed_id = ?
+    select concat (ui.first_name , ui.last_name) as name, ui.country,
+    ui.email from followers f 
+    join users u on f.follower_id = u.id 
+    join user_infos ui on u.id = ui.user_id where f.followed_id = ?
   `;
 
     db.query(sql, [userId], (err, results) => {
