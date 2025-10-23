@@ -307,6 +307,97 @@ function authenticateToken(req, res, next) {
     });
 }
 
+
+// =========================================
+// 🔹 Récupérer les statistiques utilisateur
+// =========================================
+app.get('/user-stats/:userId', (req, res) => {
+    const userId = req.params.userId;
+
+    // Compter les followers
+    const followersQuery = 'SELECT COUNT(*) as count FROM followers WHERE followed_id = ?';
+
+    // Compter les following
+    const followingQuery = 'SELECT COUNT(*) as count FROM followers WHERE follower_id = ?';
+
+    // Exécuter les requêtes en parallèle
+    db.query(followersQuery, [userId], (err, followersResult) => {
+        if (err) {
+            console.error('Erreur comptage followers:', err);
+            return res.status(500).json({ error: 'Erreur serveur' });
+        }
+
+        db.query(followingQuery, [userId], (err, followingResult) => {
+            if (err) {
+                console.error('Erreur comptage following:', err);
+                return res.status(500).json({ error: 'Erreur serveur' });
+            }
+
+            // Retourner les résultats sans les groupes pour l'instant
+            res.json({
+                totalContacts: followersResult[0].count,
+                groupsCount: 0, // Mettre à 0 puisque vous n'avez pas de groupes
+                followingCount: followingResult[0].count,
+                lastSeen: "En ligne"
+            });
+        });
+    });
+});
+
+// ===========================
+// 🔹 Récupérer les informations utilisateur complètes
+// ===========================
+app.get('/profile/:userId', authenticateToken, (req, res) => {
+    const userId = req.params.userId;
+
+    const sql = `
+        SELECT 
+            u.id,
+            u.username,
+            u.email,
+            u.is_online,
+            u.created_at,
+            ui.first_name,
+            ui.last_name,
+            ui.country,
+            ui.city,
+            ui.gender,
+            ui.bio,
+            ui.avatar_url
+        FROM users u
+        LEFT JOIN user_infos ui ON u.id = ui.user_id
+        WHERE u.id = ?
+    `;
+
+    db.query(sql, [userId], (err, results) => {
+        if (err) {
+            console.error('Erreur récupération profil:', err);
+            return res.status(500).json({ error: 'Erreur serveur' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
+        }
+
+        const user = results[0];
+        res.json({
+            id: user.id,
+            userName: user.username,
+            firstName: user.first_name,
+            lastName: user.last_name,
+            email: user.email,
+            country: user.country,
+            city: user.city,
+            gender: user.gender,
+            bio: user.bio,
+            avatarUrl: user.avatar_url,
+            isOnline: user.is_online,
+            joinDate: user.created_at,
+            phoneNumber: user.phone_number // Si disponible
+        });
+    });
+});
+
 // ---------------------------
 // Exemple de route protégée
 // ---------------------------
