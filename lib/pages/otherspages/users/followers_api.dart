@@ -13,6 +13,7 @@ Future<List<dynamic>> getFollowers(int userId) async {
 }
 
 Future<List<dynamic>> getFollowing(int userId) async {
+  print(userId);
   final res = await http.get(Uri.parse('$baseUrl/following/$userId'));
   if (res.statusCode == 200) {
     return jsonDecode(res.body);

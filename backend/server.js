@@ -248,17 +248,17 @@ app.get('/followers/:userId', (req, res) => {
 });
 
 // ===========================
-// 🔹 Récupérer LES PERSONNES QUE JE SUIS
+// 🔹 Récupérer LES PERSONNES 
+//    QUE JE SUIS
 // ===========================
 app.get('/following/:userId', (req, res) => {
     const userId = req.params.userId;
 
     const sql = `
-    SELECT u.id, u.username, ui.profile_picture
-    FROM followers f
-    JOIN users u ON f.followed_id = u.id
-    LEFT JOIN user_infos ui ON u.id = ui.user_id
-    WHERE f.follower_id = ?
+    select concat (ui.first_name ,' ', ui.last_name) as name, ui.country, ui.city,
+    ui.email from followers f 
+    join users u on f.followed_id = u.id 
+    join user_infos ui on u.id = ui.user_id where f.follower_id = ?
   `;
 
     db.query(sql, [userId], (err, results) => {

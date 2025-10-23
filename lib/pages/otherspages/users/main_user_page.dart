@@ -246,7 +246,7 @@ class _MainUserPageState extends State<MainUserPage> {
               children: const [
                 ListUser(),
                 FollowList(),
-                FriendList(),
+                FollowingList(),
               ],
             ),
           ),
