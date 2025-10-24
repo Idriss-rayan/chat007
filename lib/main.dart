@@ -6,6 +6,7 @@ import 'package:simplechat/gate/login_page.dart';
 import 'package:simplechat/gate/register_page.dart';
 import 'package:simplechat/model/provider_model.dart';
 import 'package:simplechat/pages/main_page.dart';
+import 'package:simplechat/pages/otherspages/messages/message/components/button_contact.dart';
 
 void main() {
   runApp(
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
       title: 'Auth App',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: const Gate(),
+      //home: const ButtonContact(),
       routes: {
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),

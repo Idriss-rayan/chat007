@@ -39,7 +39,7 @@ class _CardMsgState extends State<CardMsg> {
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           //color: Color.fromARGB(7, 236, 34, 31),
           color: Color.fromARGB(0, 236, 34, 31),
@@ -225,28 +225,12 @@ class _CardMsgState extends State<CardMsg> {
               },
               child: Hero(
                 tag: "profile",
-                child: Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 6,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  alignment: Alignment.center,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
-                    child: SvgPicture.asset(
-                      'assets/component/avatar.svg',
-                      width: 60,
-                      height: 60,
-                    ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(40),
+                  child: SvgPicture.asset(
+                    'assets/component/avatar.svg',
+                    width: 60,
+                    height: 60,
                   ),
                 ),
               ),
