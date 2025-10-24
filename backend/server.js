@@ -526,21 +526,21 @@ app.get('/contacts/:user_id', (req, res) => {
 
     // Cette requête suppose que tu as une table 'users' avec ces colonnes
     const sql = `
-    SELECT 
-    ui.user_id AS contact_id,
-    ui.first_name,
+  SELECT 
+    c.*,
+    ui.user_id AS contact_user_id,  -- ← IMPORTANT: l'ID de l'utilisateur contact
+    ui.first_name,   
     ui.last_name,
-    ui.email,
-    ui.country,
+    ui.email,   
+    ui.country,   
     ui.city,
-    ui.gender,
+    ui.gender,   
     c.created_at AS added_on
-   FROM contacts c
-   JOIN user_infos ui 
-   ON c.contact_id = ui.user_id
-   WHERE c.user_id = 1
-   ORDER BY ui.first_name ASC
-  `;
+  FROM contacts c 
+  JOIN user_infos ui ON c.contact_id = ui.user_id 
+  WHERE c.user_id = ? 
+  ORDER BY ui.first_name ASC
+`;
 
     db.query(sql, [userId], (err, results) => {
         if (err) {
@@ -552,6 +552,113 @@ app.get('/contacts/:user_id', (req, res) => {
         res.json({
             success: true,
             contacts: results
+        });
+    });
+});
+
+// ===========================
+// 🔹 Vérifier/Créer une room privée
+// ===========================
+app.post('/private-room', authenticateToken, (req, res) => {
+    const { contactUserId } = req.body;
+    const currentUserId = req.user.id;
+
+    console.log('🔄 Création room privée:', { currentUserId, contactUserId });
+
+    if (!contactUserId) {
+        return res.status(400).json({ error: 'contactUserId est requis' });
+    }
+
+    // 1. Vérifier si une room existe déjà
+    const checkRoomSql = `
+        SELECT r.* 
+        FROM rooms r
+        JOIN room_members rm1 ON r.id = rm1.room_id AND rm1.user_id = ?
+        JOIN room_members rm2 ON r.id = rm2.room_id AND rm2.user_id = ?
+        WHERE r.type = 'private'
+    `;
+
+    db.query(checkRoomSql, [currentUserId, contactUserId], (err, results) => {
+        if (err) {
+            console.error('❌ Erreur vérification room:', err);
+            return res.status(500).json({ error: 'Erreur base de données' });
+        }
+
+        if (results.length > 0) {
+            // Room existe déjà
+            console.log('✅ Room existante trouvée:', results[0].id);
+            return res.json({
+                success: true,
+                room: results[0],
+                isNew: false
+            });
+        }
+
+        // 2. Créer une nouvelle room
+        const createRoomSql = 'INSERT INTO rooms (type, created_by) VALUES (?, ?)';
+
+        db.query(createRoomSql, ['private', currentUserId], (err, roomResults) => {
+            if (err) {
+                console.error('❌ Erreur création room:', err);
+                return res.status(500).json({ error: 'Erreur création room' });
+            }
+
+            const newRoomId = roomResults.insertId;
+            console.log('✅ Nouvelle room créée:', newRoomId);
+
+            // 3. Ajouter les deux membres
+            const addMembersSql = 'INSERT INTO room_members (room_id, user_id) VALUES (?, ?), (?, ?)';
+
+            db.query(addMembersSql, [newRoomId, currentUserId, newRoomId, contactUserId], (err, memberResults) => {
+                if (err) {
+                    console.error('❌ Erreur ajout membres:', err);
+                    return res.status(500).json({ error: 'Erreur ajout membres' });
+                }
+
+                console.log('✅ Membres ajoutés à la room');
+
+                // Récupérer les infos de la nouvelle room
+                const getRoomSql = 'SELECT * FROM rooms WHERE id = ?';
+                db.query(getRoomSql, [newRoomId], (err, roomInfo) => {
+                    if (err) {
+                        console.error('❌ Erreur récupération room:', err);
+                        return res.status(500).json({ error: 'Erreur récupération room' });
+                    }
+
+                    res.json({
+                        success: true,
+                        room: roomInfo[0],
+                        isNew: true
+                    });
+                });
+            });
+        });
+    });
+});
+
+// ===========================
+// 🔹 Récupérer les rooms d'un utilisateur
+// ===========================
+app.get('/user-rooms', authenticateToken, (req, res) => {
+    const currentUserId = req.user.id;
+
+    const sql = `
+        SELECT r.*, rm.joined_at
+        FROM rooms r
+        JOIN room_members rm ON r.id = rm.room_id
+        WHERE rm.user_id = ?
+        ORDER BY rm.joined_at DESC
+    `;
+
+    db.query(sql, [currentUserId], (err, results) => {
+        if (err) {
+            console.error('❌ Erreur récupération rooms:', err);
+            return res.status(500).json({ error: 'Erreur base de données' });
+        }
+
+        res.json({
+            success: true,
+            rooms: results
         });
     });
 });

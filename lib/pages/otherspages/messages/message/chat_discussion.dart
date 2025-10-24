@@ -1,14 +1,10 @@
-import 'dart:async';
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:simplechat/pages/otherspages/messages/calls/page_calls.dart';
 import 'package:simplechat/pages/otherspages/messages/message/components/attach.dart';
-import 'package:simplechat/pages/otherspages/messages/message/components/audio_msg.dart';
-import 'package:simplechat/pages/otherspages/messages/message/components/voice.dart';
 
 class ChatDiscussion extends StatefulWidget {
   const ChatDiscussion({super.key});
@@ -23,14 +19,6 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
   bool _isTyping = false;
   bool _showEmojiPicker = false;
   final List<Map<String, dynamic>> _messages = [];
-  String? _previewAudioPath;
-  int? _previewAudioDuration;
-  bool _showPreviewModal = false;
-
-  // Nouvelle variable pour suivre l'état d'enregistrement
-  bool _isRecording = false;
-  int _recordingDuration = 0;
-  Timer? _recordingTimer;
 
   @override
   void initState() {
@@ -46,7 +34,6 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
-    _recordingTimer?.cancel();
     super.dispose();
   }
 
@@ -74,267 +61,6 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
     setState(() {
       _showEmojiPicker = !_showEmojiPicker;
     });
-  }
-
-  // Nouvelle méthode pour démarrer l'indicateur d'enregistrement
-  void _startRecordingIndicator(int duration) {
-    setState(() {
-      _isRecording = true;
-      _recordingDuration = duration;
-    });
-
-    // Mettre à jour la durée chaque seconde
-    _recordingTimer?.cancel();
-    _recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted) {
-        setState(() {
-          _recordingDuration++;
-        });
-      }
-    });
-  }
-
-  // Nouvelle méthode pour arrêter l'indicateur d'enregistrement
-  void _stopRecordingIndicator() {
-    _recordingTimer?.cancel();
-    if (mounted) {
-      setState(() {
-        _isRecording = false;
-        _recordingDuration = 0;
-      });
-    }
-  }
-
-  void _handleRecordedAudio(String path, int duration) {
-    debugPrint("🎤 Audio envoyé: $path");
-    debugPrint("⏱️ Durée: $duration secondes");
-
-    setState(() {
-      _messages.add({
-        "audio": path,
-        "duration": duration,
-        "isMe": true,
-      });
-      _previewAudioPath = null;
-      _previewAudioDuration = null;
-    });
-
-    // Arrêter l'indicateur d'enregistrement
-    _stopRecordingIndicator();
-
-    // Réponse automatique simulée
-    Future.delayed(const Duration(seconds: 2), () {
-      setState(() {
-        _messages.add({
-          "text": "J'ai bien reçu ton message audio !",
-          "isMe": false,
-        });
-      });
-    });
-  }
-
-  void _handleAudioPreview(String path, int duration) {
-    debugPrint("🎧 Prévisualisation audio: $path");
-    debugPrint("⏱️ Durée: $duration secondes");
-
-    setState(() {
-      _previewAudioPath = path;
-      _previewAudioDuration = duration;
-    });
-
-    // Démarrer l'indicateur d'enregistrement
-    _startRecordingIndicator(duration);
-
-    // Afficher la modal de prévisualisation automatiquement
-    _showAudioPreviewModal();
-  }
-
-  // Nouveau callback pour le début d'enregistrement
-  void _handleRecordingStarted() {
-    _startRecordingIndicator(0);
-  }
-
-  void _showAudioPreviewModal() {
-    if (_previewAudioPath == null || _previewAudioDuration == null) return;
-
-    setState(() {
-      _showPreviewModal = true;
-    });
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _buildPreviewModal(),
-    ).then((_) {
-      setState(() {
-        _showPreviewModal = false;
-      });
-    });
-  }
-
-  Widget _buildPreviewModal() {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Prévisualisation audio",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.close),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 20),
-
-          // Visualisation audio stylée
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.blue[50],
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(color: Colors.blue),
-            ),
-            child: Column(
-              children: [
-                const Icon(
-                  Icons.audiotrack,
-                  size: 50,
-                  color: Colors.blue,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Durée: ${_formatDuration(_previewAudioDuration ?? 0)}",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Lecteur audio de prévisualisation
-                if (_previewAudioPath != null && _previewAudioDuration != null)
-                  AudioMsg(
-                    path: _previewAudioPath!,
-                    duration: _previewAudioDuration!,
-                    color: Colors.blue,
-                    height: 8,
-                  ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 30),
-
-          // Boutons d'action
-          Row(
-            children: [
-              // Bouton Annuler
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    setState(() {
-                      _previewAudioPath = null;
-                      _previewAudioDuration = null;
-                    });
-                    _stopRecordingIndicator();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Audio supprimé"),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                    side: const BorderSide(color: Colors.red),
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.delete),
-                      SizedBox(width: 8),
-                      Text("Supprimer"),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(width: 16),
-
-              // Bouton Envoyer
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    if (_previewAudioPath != null &&
-                        _previewAudioDuration != null) {
-                      _handleRecordedAudio(
-                          _previewAudioPath!, _previewAudioDuration!);
-                    }
-                    // ScaffoldMessenger.of(context).showSnackBar(
-                    //   const SnackBar(
-                    //     content: Text("Audio envoyé !"),
-                    //     backgroundColor: Colors.green,
-                    //   ),
-                    // );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.send),
-                      SizedBox(width: 8),
-                      Text("Envoyer"),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 10),
-        ],
-      ),
-    );
-  }
-
-  String _formatDuration(int seconds) {
-    final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
-    final secs = (seconds % 60).toString().padLeft(2, '0');
-    return "$minutes:$secs";
   }
 
   @override
@@ -377,8 +103,8 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                         borderRadius: BorderRadius.circular(20),
                         gradient: const LinearGradient(
                           colors: [
-                            Color(0xFFFFB88C), // orange doux
-                            Color(0xFFFF6F91), // rose doux
+                            Color(0xFFFFB88C),
+                            Color(0xFFFF6F91),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -418,12 +144,9 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                             ),
                           ),
                           const SizedBox(height: 20),
-
-                          // Ligne de boutons Oui / Fermer
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              // Bouton Fermer
                               ElevatedButton(
                                 onPressed: () => Navigator.pop(context),
                                 style: ElevatedButton.styleFrom(
@@ -437,15 +160,13 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                               ),
                               ElevatedButton(
                                 onPressed: () {
-                                  Navigator.pop(context); // fermer le dialog
+                                  Navigator.pop(context);
                                   Navigator.push(
                                     context,
                                     PageRouteBuilder(
                                       pageBuilder: (context, animation,
                                               secondaryAnimation) =>
-                                          const PageCalls(
-                                        name: 'rayan',
-                                      ),
+                                          const PageCalls(name: 'rayan'),
                                       transitionsBuilder: (context, animation,
                                           secondaryAnimation, child) {
                                         return SlideTransition(
@@ -523,12 +244,7 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                                   height: 150,
                                 ),
                               )
-                            : msg.containsKey("audio")
-                                ? AudioMsg(
-                                    path: msg["audio"],
-                                    duration: msg["duration"] ?? 0,
-                                  )
-                                : Text(msg["text"] ?? ""),
+                            : Text(msg["text"] ?? ""),
                       ),
                     );
                   },
@@ -537,47 +253,6 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
               SafeArea(
                 child: Column(
                   children: [
-                    // Indicateur de prévisualisation audio
-                    if (_previewAudioPath != null && !_showPreviewModal)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        color: Colors.blue[50],
-                        child: Row(
-                          children: [
-                            const Icon(Icons.audiotrack,
-                                color: Colors.blue, size: 20),
-                            const SizedBox(width: 8),
-                            Text(
-                              "Audio en attente (${_formatDuration(_previewAudioDuration ?? 0)})",
-                              style: const TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const Spacer(),
-                            TextButton(
-                              onPressed: _showAudioPreviewModal,
-                              child: const Text(
-                                "Écouter",
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _previewAudioPath = null;
-                                  _previewAudioDuration = null;
-                                });
-                                _stopRecordingIndicator();
-                              },
-                              icon: const Icon(Icons.close, size: 16),
-                              color: Colors.red,
-                            ),
-                          ],
-                        ),
-                      ),
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
@@ -590,71 +265,23 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                             onPressed: _toggleEmojiPicker,
                           ),
                           Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: _isRecording
-                                    ? Colors.red[50]
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(20),
-                                border: _isRecording
-                                    ? Border.all(
-                                        color: const Color.fromARGB(
-                                            0, 244, 67, 54),
-                                        width: 0,
-                                      )
-                                    : null,
+                            child: TextField(
+                              keyboardType: TextInputType.multiline,
+                              controller: _controller,
+                              focusNode: _focusNode,
+                              minLines: 1,
+                              maxLines: 5,
+                              decoration: const InputDecoration(
+                                hintText: "Message",
+                                border: InputBorder.none,
                               ),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
-                              child: _isRecording
-                                  ? Row(
-                                      children: [
-                                        const Icon(Icons.mic,
-                                            color: Colors.red, size: 20),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          // ← AJOUT DE EXPANDED ICI
-                                          child: Text(
-                                            " ${_formatDuration(_recordingDuration)}",
-                                            style: const TextStyle(
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        // Animation de pulsation rouge
-                                        AnimatedContainer(
-                                          duration:
-                                              const Duration(milliseconds: 500),
-                                          width: 12,
-                                          height: 12,
-                                          decoration: const BoxDecoration(
-                                            color: Colors.red,
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : TextField(
-                                      keyboardType: TextInputType.multiline,
-                                      controller: _controller,
-                                      //focusNode: _focusNode,
-                                      minLines: 1,
-                                      maxLines: 5,
-                                      decoration: const InputDecoration(
-                                        hintText: "Message",
-                                        border: InputBorder.none,
-                                      ),
-                                      onTap: () {
-                                        if (_showEmojiPicker) {
-                                          setState(
-                                            () => _showEmojiPicker = false,
-                                          );
-                                        }
-                                      },
-                                    ),
+                              onTap: () {
+                                if (_showEmojiPicker) {
+                                  setState(
+                                    () => _showEmojiPicker = false,
+                                  );
+                                }
+                              },
                             ),
                           ),
                           const Attach(),
@@ -662,12 +289,10 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                             icon: const Icon(Icons.camera_alt,
                                 color: Colors.grey),
                             onPressed: () async {
-                              // Ouvre la caméra
                               final XFile? photo = await _picker.pickImage(
                                   source: ImageSource.camera);
 
                               if (photo != null) {
-                                // Ajoute l'image à la liste des messages
                                 setState(() {
                                   _messages.add({
                                     "image": File(photo.path),
@@ -677,19 +302,12 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                               }
                             },
                           ),
-                          _isTyping
-                              ? IconButton(
-                                  icon: const Icon(Icons.send,
-                                      color: Colors.orange),
-                                  onPressed: _sendMessage,
-                                )
-                              : Voice(
-                                  onRecorded: _handleRecordedAudio,
-                                  onPreview: _handleAudioPreview,
-                                  onRecordingStarted: () {
-                                    _handleRecordingStarted();
-                                  },
-                                ),
+                          if (_isTyping)
+                            IconButton(
+                              icon:
+                                  const Icon(Icons.send, color: Colors.orange),
+                              onPressed: _sendMessage,
+                            ),
                         ],
                       ),
                     ),
