@@ -105,7 +105,7 @@ app.post('/login', (req, res) => {
         const token = jwt.sign(
             { id: user.id, username: user.username },
             SECRET_KEY,
-            { expiresIn: '8h' }
+            //{ expiresIn: '8h' }
         );
 
         res.json({ message: 'Connexion réussie', token });
