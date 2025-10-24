@@ -193,6 +193,8 @@ class _FollowListState extends State<FollowList> {
         itemCount: followers.length,
         itemBuilder: (context, index) {
           final user = followers[index];
+          print('🔍 Toutes les clés de user: ${user.keys}');
+          print('🔍 Objet user complet: $user');
 
           return CardFollow(
             userName: user['name'] ?? 'Utilisateur sans nom',
@@ -200,6 +202,8 @@ class _FollowListState extends State<FollowList> {
             userImage: user['avatar_url'] ?? 'assets/component/avatar.svg',
             isOnline: user['is_online'] ?? false,
             onUnfollow: () => _handleUnfollow(user['id']),
+            currentUserId: currentUserId!,
+            targetUserId: user['id'],
           );
         },
       ),

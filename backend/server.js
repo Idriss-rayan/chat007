@@ -232,7 +232,7 @@ app.get('/followers/:userId', (req, res) => {
     const userId = req.params.userId;
 
     const sql = `
-    select concat (ui.first_name ,' ', ui.last_name) as name, ui.country,
+    select concat (ui.first_name ,' ', ui.last_name) as name, ui.country, u.id,
     ui.email from followers f 
     join users u on f.follower_id = u.id 
     join user_infos ui on u.id = ui.user_id where f.followed_id = ?
@@ -397,6 +397,165 @@ app.get('/profile/:userId', authenticateToken, (req, res) => {
         });
     });
 });
+//========================
+// 1. Ajouter un contact
+//========================
+app.post('/contacts', (req, res) => {
+    const { user_id, contact_id } = req.body;
+
+    console.log('🔄 Tentative d\'ajout de contact:', { user_id, contact_id });
+
+    // Vérifier que les données sont présentes
+    if (!user_id || !contact_id) {
+        return res.status(400).json({
+            error: 'Données manquantes: user_id et contact_id sont requis'
+        });
+    }
+
+    // Vérifier si le contact existe déjà
+    const checkSql = 'SELECT id FROM contacts WHERE user_id = ? AND contact_id = ?';
+
+    db.query(checkSql, [user_id, contact_id], (err, results) => {
+        if (err) {
+            console.error('❌ Erreur SQL (check):', err);
+            return res.status(500).json({ error: 'Erreur base de données' });
+        }
+
+        if (results.length > 0) {
+            console.log('⚠️ Contact déjà existant');
+            return res.status(400).json({ error: 'Contact déjà existant' });
+        }
+
+        // Ajouter le contact
+        const insertSql = 'INSERT INTO contacts (user_id, contact_id) VALUES (?, ?)';
+
+        db.query(insertSql, [user_id, contact_id], (err, results) => {
+            if (err) {
+                console.error('❌ Erreur SQL (insert):', err);
+                return res.status(500).json({ error: 'Erreur lors de l\'ajout du contact' });
+            }
+
+            console.log('✅ Contact ajouté avec succès, ID:', results.insertId);
+            res.status(201).json({
+                success: true,
+                message: 'Contact ajouté avec succès',
+                contactId: results.insertId
+            });
+        });
+    });
+});
+
+//=========================
+// 2. Supprimer un contact
+//=========================
+app.delete('/contacts', (req, res) => {
+    const { user_id, contact_id } = req.body;
+
+    console.log('🔄 Tentative de suppression de contact:', { user_id, contact_id });
+
+    if (!user_id || !contact_id) {
+        return res.status(400).json({
+            error: 'Données manquantes: user_id et contact_id sont requis'
+        });
+    }
+
+    const sql = 'DELETE FROM contacts WHERE user_id = ? AND contact_id = ?';
+
+    db.query(sql, [user_id, contact_id], (err, results) => {
+        if (err) {
+            console.error('❌ Erreur SQL (delete):', err);
+            return res.status(500).json({ error: 'Erreur base de données' });
+        }
+
+        if (results.affectedRows === 0) {
+            console.log('⚠️ Contact non trouvé pour suppression');
+            return res.status(404).json({ error: 'Contact non trouvé' });
+        }
+
+        console.log('✅ Contact supprimé avec succès');
+        res.json({
+            success: true,
+            message: 'Contact supprimé avec succès'
+        });
+    });
+});
+
+//---------------------------------
+// 3. Vérifier si un contact existe
+//---------------------------------
+app.get('/contacts/check', (req, res) => {
+    const user_id = req.query.user_id;
+    const contact_id = req.query.contact_id;
+
+    console.log('🔄 Vérification contact:', { user_id, contact_id });
+
+    if (!user_id || !contact_id) {
+        return res.status(400).json({
+            error: 'Paramètres manquants: user_id et contact_id sont requis'
+        });
+    }
+
+    const sql = 'SELECT id FROM contacts WHERE user_id = ? AND contact_id = ?';
+
+    db.query(sql, [user_id, contact_id], (err, results) => {
+        if (err) {
+            console.error('❌ Erreur SQL (check):', err);
+            return res.status(500).json({ error: 'Erreur base de données' });
+        }
+
+        const exists = results.length > 0;
+        console.log('✅ Vérification terminée, existe:', exists);
+
+        res.json({
+            exists: exists,
+            success: true
+        });
+    });
+});
+//----------------------------------------------
+// 4. Obtenir tous les contacts d'un utilisateur
+//----------------------------------------------
+app.get('/contacts/:user_id', (req, res) => {
+    const userId = req.params.user_id;
+
+    console.log('🔄 Récupération des contacts pour user_id:', userId);
+
+    if (!userId) {
+        return res.status(400).json({ error: 'user_id est requis' });
+    }
+
+    // Cette requête suppose que tu as une table 'users' avec ces colonnes
+    const sql = `
+    SELECT 
+    ui.user_id AS contact_id,
+    ui.first_name,
+    ui.last_name,
+    ui.email,
+    ui.country,
+    ui.city,
+    ui.gender,
+    c.created_at AS added_on
+   FROM contacts c
+   JOIN user_infos ui 
+   ON c.contact_id = ui.user_id
+   WHERE c.user_id = 1
+   ORDER BY ui.first_name ASC
+  `;
+
+    db.query(sql, [userId], (err, results) => {
+        if (err) {
+            console.error('❌ Erreur SQL (get contacts):', err);
+            return res.status(500).json({ error: 'Erreur base de données' });
+        }
+
+        console.log('✅ Contacts récupérés:', results.length);
+        res.json({
+            success: true,
+            contacts: results
+        });
+    });
+});
+
 
 // ---------------------------
 // Exemple de route protégée

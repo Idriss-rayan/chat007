@@ -94,9 +94,10 @@ class _FollowingCardState extends State<FollowingCard> {
                         child: Text(
                           widget.userName.toUpperCase(),
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 13,
                             fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(195, 0, 0, 0),
+                            color: Colors.black,
+                            //fontStyle: FontStyle.italic,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -112,7 +113,7 @@ class _FollowingCardState extends State<FollowingCard> {
                         width: 16,
                         height: 16,
                       ),
-                      const SizedBox(width: 4),
+                      //const SizedBox(width: 1),
                       Flexible(
                         child: RichText(
                           text: TextSpan(
