@@ -37,10 +37,13 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       String token = data['token'];
+      final user = data['user'];
       print("Connexion réussie !");
       print("Token JWT : ${data['token']}");
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('jwt_token', token);
+      await prefs.setInt(
+          'user_id', user['id']); // 👈 ici on sauvegarde le userId
 
       return true; // ✅ login OK
     } else {

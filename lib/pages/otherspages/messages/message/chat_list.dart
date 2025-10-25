@@ -16,7 +16,7 @@ class ChatList extends StatelessWidget {
           left: 16,
           right: 16,
         ),
-        itemCount: 50,
+        itemCount: 0,
         itemBuilder: (context, index) {
           return const CardMsg();
         },
@@ -24,11 +24,11 @@ class ChatList extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         elevation: 5,
         shape: CircleBorder(
-          side: BorderSide(
-            color: Colors.deepOrange, // Couleur de la bordure
-            width: 1.0, // Épaisseur de la bordure
-          ),
-        ),
+            // side: BorderSide(
+            //   color: Colors.deepOrange, // Couleur de la bordure
+            //   width: 1.0, // Épaisseur de la bordure
+            // ),
+            ),
         onPressed: () {
           Navigator.push(
             context,
@@ -38,8 +38,7 @@ class ChatList extends StatelessWidget {
           );
         },
 
-        backgroundColor:
-            const Color.fromARGB(99, 255, 153, 0), // Couleur personnalisée
+        backgroundColor: Colors.orange, // Couleur personnalisée
         child: const Icon(
           Icons.add,
           color: Colors.deepOrange,

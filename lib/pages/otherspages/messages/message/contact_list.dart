@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'contact_card.dart';
 
 class ContactList extends StatefulWidget {
@@ -13,9 +14,11 @@ class ContactList extends StatefulWidget {
 class _ContactListState extends State<ContactList> {
   List<dynamic> contacts = [];
   bool isLoading = true;
-  final int userId = 1;
+  //final int userId = 1;
 
   Future<void> fetchContacts() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? userId = prefs.getInt('user_id');
     try {
       final url = Uri.parse('http://192.168.0.169:3000/contacts/$userId');
       final response = await http.get(url);

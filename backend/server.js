@@ -104,13 +104,22 @@ app.post('/login', (req, res) => {
 
         const token = jwt.sign(
             { id: user.id, username: user.username },
-            SECRET_KEY,
-            //{ expiresIn: '8h' }
+            SECRET_KEY
         );
 
-        res.json({ message: 'Connexion réussie', token });
+        // ✅ On renvoie aussi les infos user
+        res.json({
+            message: 'Connexion réussie',
+            token,
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email
+            }
+        });
     });
 });
+
 
 // ---------------------------
 // Route pour ajouter des infos utilisateur
