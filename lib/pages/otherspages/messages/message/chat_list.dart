@@ -22,7 +22,7 @@ class ChatList extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        elevation: 0,
+        elevation: 5,
         shape: CircleBorder(
           side: BorderSide(
             color: Colors.deepOrange, // Couleur de la bordure
@@ -38,7 +38,8 @@ class ChatList extends StatelessWidget {
           );
         },
 
-        backgroundColor: Colors.transparent, // Couleur personnalisée
+        backgroundColor:
+            const Color.fromARGB(99, 255, 153, 0), // Couleur personnalisée
         child: const Icon(
           Icons.add,
           color: Colors.deepOrange,
