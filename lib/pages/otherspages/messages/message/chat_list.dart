@@ -16,7 +16,7 @@ class ChatList extends StatelessWidget {
           left: 16,
           right: 16,
         ),
-        itemCount: 0,
+        itemCount: 1,
         itemBuilder: (context, index) {
           return const CardMsg();
         },

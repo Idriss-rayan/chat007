@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:simplechat/pages/otherspages/messages/message/chat_discussion.dart';
 
 class ContactCard extends StatefulWidget {
   final Map<String, dynamic> contact;
+  final int userId;
 
   const ContactCard({
     super.key,
     required this.contact,
+    required this.userId,
   });
 
   @override
@@ -174,6 +177,14 @@ class _ContactCardState extends State<ContactCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _buildActionButton(
+                        icon: Icons.message,
+                        label: 'SMS',
+                        color: const Color(0xFF2196F3),
+                        onTap: () {
+                          _startPrivateChat(context);
+                        },
+                      ),
+                      _buildActionButton(
                         icon: Icons.phone,
                         label: 'Appeler',
                         color: const Color(0xFF4CAF50),
@@ -182,19 +193,11 @@ class _ContactCardState extends State<ContactCard> {
                         },
                       ),
                       _buildActionButton(
-                        icon: Icons.email,
-                        label: 'Email',
+                        icon: Icons.info,
+                        label: 'More',
                         color: const Color(0xFFFF6B35),
                         onTap: () {
                           // Action email
-                        },
-                      ),
-                      _buildActionButton(
-                        icon: Icons.message,
-                        label: 'SMS',
-                        color: const Color(0xFF2196F3),
-                        onTap: () {
-                          _startPrivateChat(context);
                         },
                       ),
                     ],
@@ -251,10 +254,14 @@ class _ContactCardState extends State<ContactCard> {
 
   void _startPrivateChat(BuildContext context) {
     // Pour l'instant, on affiche juste un message
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Démarrer chat avec ${widget.contact['first_name']}'),
-        backgroundColor: const Color(0xFFFF6B35),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatDiscussion(
+          userId: widget.userId,
+          contactId: widget.contact['contact_user_id'],
+          contactName: "${widget.contact['first_name']}",
+        ),
       ),
     );
   }

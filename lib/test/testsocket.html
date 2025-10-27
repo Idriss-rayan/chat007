@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Test Socket.IO avec messages</title>
+</head>
+
+<body>
+    <h1>Test Socket.IO</h1>
+    <p id="status">Statut : ❌ Déconnecté</p>
+
+    <input type="text" id="messageInput" placeholder="Écris un message" />
+    <button id="sendBtn">Envoyer</button>
+
+    <h3>Messages reçus :</h3>
+    <ul id="messagesList"></ul>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        // ⚠️ Mets ici l'IP de ton PC
+        const socket = io("http://192.168.0.169:3000", {
+            transports: ["websocket"]
+        });
+
+        const statusEl = document.getElementById("status");
+        const sendBtn = document.getElementById("sendBtn");
+        const messageInput = document.getElementById("messageInput");
+        const messagesList = document.getElementById("messagesList");
+
+        // Connexion
+        socket.on("connect", () => {
+            console.log("✅ Connecté au serveur Socket.IO", socket.id);
+            statusEl.textContent = "Statut : ✅ Connecté (ID: " + socket.id + ")";
+        });
+
+        // Déconnexion
+        socket.on("disconnect", () => {
+            console.log("🔴 Déconnecté du serveur");
+            statusEl.textContent = "Statut : 🔴 Déconnecté";
+        });
+
+        // Erreur de connexion
+        socket.on("connect_error", (err) => {
+            console.error("⚠️ Erreur de connexion :", err);
+            statusEl.textContent = "Statut : ⚠️ Erreur de connexion";
+        });
+
+        // Réception d'un message
+        socket.on("message", (msg) => {
+            console.log("💬 Message reçu :", msg);
+            const li = document.createElement("li");
+            li.textContent = msg;
+            messagesList.appendChild(li);
+        });
+
+        // Envoyer un message
+        sendBtn.addEventListener("click", () => {
+            const msg = messageInput.value.trim();
+            if (!msg) return;
+            socket.emit("message", msg); // Émet au serveur
+            messageInput.value = "";
+            const li = document.createElement("li");
+            li.textContent = "Moi : " + msg;
+            messagesList.appendChild(li);
+        });
+    </script>
+</body>
+
+</html>

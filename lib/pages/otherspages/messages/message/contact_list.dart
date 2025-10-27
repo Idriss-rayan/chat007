@@ -15,10 +15,20 @@ class _ContactListState extends State<ContactList> {
   List<dynamic> contacts = [];
   bool isLoading = true;
   //final int userId = 1;
+  int? storedUserId;
 
   Future<void> fetchContacts() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? userId = prefs.getInt('user_id');
+
+    setState(() {
+      storedUserId = userId;
+    });
+    if (storedUserId == null) {
+      setState(() => isLoading = false);
+      print('❌ User ID non trouvé');
+      return;
+    }
     try {
       final url = Uri.parse('http://192.168.0.169:3000/contacts/$userId');
       final response = await http.get(url);
@@ -146,7 +156,10 @@ class _ContactListState extends State<ContactList> {
                   itemCount: contacts.length,
                   itemBuilder: (context, index) {
                     final contact = contacts[index];
-                    return ContactCard(contact: contact);
+                    return ContactCard(
+                      contact: contact,
+                      userId: storedUserId!,
+                    );
                   },
                 ),
     );

@@ -16,26 +16,26 @@ class _CardMsgState extends State<CardMsg> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const ChatDiscussion(),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              return SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0.0, 0.2),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: FadeTransition(
-                  opacity: animation,
-                  child: child,
-                ),
-              );
-            },
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   PageRouteBuilder(
+        //     pageBuilder: (context, animation, secondaryAnimation) =>
+        //         const ChatDiscussion(),
+        //     transitionsBuilder:
+        //         (context, animation, secondaryAnimation, child) {
+        //       return SlideTransition(
+        //         position: Tween<Offset>(
+        //           begin: const Offset(0.0, 0.2),
+        //           end: Offset.zero,
+        //         ).animate(animation),
+        //         child: FadeTransition(
+        //           opacity: animation,
+        //           child: child,
+        //         ),
+        //       );
+        //     },
+        //   ),
+        // );
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
@@ -104,33 +104,33 @@ class _CardMsgState extends State<CardMsg> {
                                                 color: Colors.white,
                                                 onPressed: () {
                                                   Navigator.pop(context);
-                                                  Navigator.push(
-                                                    context,
-                                                    PageRouteBuilder(
-                                                      pageBuilder: (context,
-                                                              animation,
-                                                              secondaryAnimation) =>
-                                                          const ChatDiscussion(),
-                                                      transitionsBuilder:
-                                                          (context,
-                                                              animation,
-                                                              secondaryAnimation,
-                                                              child) {
-                                                        return SlideTransition(
-                                                          position:
-                                                              Tween<Offset>(
-                                                            begin: const Offset(
-                                                                0.0, 0.2),
-                                                            end: Offset.zero,
-                                                          ).animate(animation),
-                                                          child: FadeTransition(
-                                                            opacity: animation,
-                                                            child: child,
-                                                          ),
-                                                        );
-                                                      },
-                                                    ),
-                                                  );
+                                                  // Navigator.push(
+                                                  //   context,
+                                                  //   PageRouteBuilder(
+                                                  //     pageBuilder: (context,
+                                                  //             animation,
+                                                  //             secondaryAnimation) =>
+                                                  //         const ChatDiscussion(),
+                                                  //     transitionsBuilder:
+                                                  //         (context,
+                                                  //             animation,
+                                                  //             secondaryAnimation,
+                                                  //             child) {
+                                                  //       return SlideTransition(
+                                                  //         position:
+                                                  //             Tween<Offset>(
+                                                  //           begin: const Offset(
+                                                  //               0.0, 0.2),
+                                                  //           end: Offset.zero,
+                                                  //         ).animate(animation),
+                                                  //         child: FadeTransition(
+                                                  //           opacity: animation,
+                                                  //           child: child,
+                                                  //         ),
+                                                  //       );
+                                                  //     },
+                                                  //   ),
+                                                  // );
                                                 },
                                                 icon: Icon(Icons.message),
                                               ),

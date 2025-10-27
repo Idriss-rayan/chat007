@@ -1,32 +1,48 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:simplechat/pages/otherspages/messages/calls/page_calls.dart';
-import 'package:simplechat/pages/otherspages/messages/message/components/attach.dart';
+import 'package:provider/provider.dart';
+import 'package:simplechat/pages/otherspages/messages/message/service_socket.dart';
 
 class ChatDiscussion extends StatefulWidget {
-  const ChatDiscussion({super.key});
+  final int userId;
+  final int contactId;
+  final String contactName;
+
+  const ChatDiscussion({
+    super.key,
+    required this.userId,
+    required this.contactId,
+    required this.contactName,
+  });
+
   @override
   State<ChatDiscussion> createState() => _ChatDiscussionState();
 }
 
 class _ChatDiscussionState extends State<ChatDiscussion> {
-  final ImagePicker _picker = ImagePicker();
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  final ImagePicker _picker = ImagePicker();
   bool _isTyping = false;
   bool _showEmojiPicker = false;
-  final List<Map<String, dynamic>> _messages = [];
 
   @override
   void initState() {
     super.initState();
+
+    // ✅ Détecte si l’utilisateur tape du texte
     _controller.addListener(() {
       setState(() {
         _isTyping = _controller.text.trim().isNotEmpty;
       });
+    });
+
+    // ✅ Connecte le socket au démarrage
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final socketService = context.read<SocketService>();
+      socketService.connect();
     });
   }
 
@@ -37,19 +53,23 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
     super.dispose();
   }
 
-  void _sendMessage() {
-    final text = _controller.text.trim();
-    if (text.isEmpty) return;
-    setState(() {
-      _messages.add({"text": text, "isMe": true});
-      _controller.clear();
-      _isTyping = false;
-    });
-    Future.delayed(const Duration(milliseconds: 500), () {
-      setState(() {
-        _messages.add({"text": "Réponse automatique", "isMe": false});
-      });
-    });
+  // ✅ Envoi de message texte
+  void _sendMessage(SocketService socketService) {
+    final message = _controller.text.trim();
+    if (message.isEmpty) return;
+
+    socketService.sendMessage(message);
+    _controller.clear();
+    setState(() => _isTyping = false);
+  }
+
+  // ✅ Envoi d’une image depuis la caméra
+  Future<void> _sendImage(SocketService socketService) async {
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    if (photo != null) {
+      // Tu pourras plus tard émettre l’image via socket
+      socketService.addLocalMessage("[Image envoyée]");
+    }
   }
 
   void _toggleEmojiPicker() {
@@ -58,198 +78,79 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
     } else {
       _focusNode.unfocus();
     }
-    setState(() {
-      _showEmojiPicker = !_showEmojiPicker;
-    });
+    setState(() => _showEmojiPicker = !_showEmojiPicker);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(15, 220, 54, 3),
-        title: Row(
-          children: [
-            SvgPicture.asset('assets/component/avatar.svg',
-                width: 40, height: 40),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text("John Doe",
-                    style: TextStyle(fontSize: 16, color: Colors.black87)),
-                Text("en ligne",
-                    style: TextStyle(fontSize: 12, color: Colors.black54)),
+    return Consumer<SocketService>(
+      builder: (context, socketService, _) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: const Color.fromARGB(15, 220, 54, 3),
+            title: Row(
+              children: [
+                SvgPicture.asset('assets/component/avatar.svg',
+                    width: 40, height: 40),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.contactName,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const Text(
+                      "en ligne",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.call, color: Colors.black54),
-            onPressed: () {
-              showDialog(
-                context: context,
-                barrierDismissible: true,
-                builder: (context) {
-                  return Dialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Container(
-                      width: 300,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFFFFB88C),
-                            Color(0xFFFF6F91),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 12,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.call,
-                            color: Colors.white,
-                            size: 60,
-                          ),
-                          const SizedBox(height: 16),
-                          const Text(
-                            "Appel vers Rayan",
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            "Tu es sur le point d'appeler Rayan. Veux-tu continuer ?",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white70,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () => Navigator.pop(context),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                child: const Text("Fermer"),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                    context,
-                                    PageRouteBuilder(
-                                      pageBuilder: (context, animation,
-                                              secondaryAnimation) =>
-                                          const PageCalls(name: 'rayan'),
-                                      transitionsBuilder: (context, animation,
-                                          secondaryAnimation, child) {
-                                        return SlideTransition(
-                                          position: Tween<Offset>(
-                                            begin: const Offset(0.0, 0.2),
-                                            end: Offset.zero,
-                                          ).animate(animation),
-                                          child: FadeTransition(
-                                            opacity: animation,
-                                            child: child,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Colors.pinkAccent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                child: const Text("Continuer"),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
           ),
-          IconButton(
-            icon: const Icon(Icons.videocam, color: Colors.black54),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          Column(
+          body: Column(
             children: [
+              // ✅ Liste des messages
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.all(12),
                   reverse: true,
-                  itemCount: _messages.length,
+                  itemCount: socketService.messages.length,
                   itemBuilder: (context, index) {
-                    final msg = _messages[_messages.length - 1 - index];
+                    final msg = socketService.messages.reversed.toList()[index];
+
+                    final isMe = msg["isMe"] ?? false;
+                    final text = msg["text"] ?? "";
+
                     return Align(
-                      alignment: msg["isMe"]
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
+                      alignment:
+                          isMe ? Alignment.centerRight : Alignment.centerLeft,
                       child: Container(
                         margin: const EdgeInsets.symmetric(vertical: 4),
                         padding: const EdgeInsets.all(12),
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.7),
                         decoration: BoxDecoration(
-                          color: msg["isMe"]
+                          color: isMe
                               ? const Color.fromARGB(69, 247, 95, 7)
                               : Colors.pink[100],
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: msg.containsKey("image")
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.file(
-                                  msg["image"],
-                                  fit: BoxFit.cover,
-                                  width: 200,
-                                  height: 150,
-                                ),
-                              )
-                            : Text(msg["text"] ?? ""),
+                        child: Text(text),
                       ),
                     );
                   },
                 ),
               ),
+
+              // ✅ Zone de saisie
               SafeArea(
                 child: Column(
                   children: [
@@ -266,9 +167,9 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                           ),
                           Expanded(
                             child: TextField(
-                              keyboardType: TextInputType.multiline,
                               controller: _controller,
                               focusNode: _focusNode,
+                              keyboardType: TextInputType.multiline,
                               minLines: 1,
                               maxLines: 5,
                               decoration: const InputDecoration(
@@ -277,56 +178,34 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                               ),
                               onTap: () {
                                 if (_showEmojiPicker) {
-                                  setState(
-                                    () => _showEmojiPicker = false,
-                                  );
+                                  setState(() => _showEmojiPicker = false);
                                 }
                               },
                             ),
                           ),
-                          const Attach(),
                           IconButton(
                             icon: const Icon(Icons.camera_alt,
                                 color: Colors.grey),
-                            onPressed: () async {
-                              final XFile? photo = await _picker.pickImage(
-                                  source: ImageSource.camera);
-
-                              if (photo != null) {
-                                setState(() {
-                                  _messages.add({
-                                    "image": File(photo.path),
-                                    "isMe": true,
-                                  });
-                                });
-                              }
-                            },
+                            onPressed: () => _sendImage(socketService),
                           ),
                           if (_isTyping)
                             IconButton(
                               icon:
                                   const Icon(Icons.send, color: Colors.orange),
-                              onPressed: _sendMessage,
+                              onPressed: () => _sendMessage(socketService),
                             ),
                         ],
                       ),
                     ),
                     if (_showEmojiPicker)
                       SizedBox(
-                        height: 250,
+                        height: 300,
                         child: EmojiPicker(
                           textEditingController: _controller,
                           config: Config(
                             height: 250,
-                            checkPlatformCompatibility: true,
                             emojiViewConfig:
                                 const EmojiViewConfig(emojiSizeMax: 28.0),
-                            viewOrderConfig: const ViewOrderConfig(),
-                            skinToneConfig: const SkinToneConfig(),
-                            categoryViewConfig: const CategoryViewConfig(),
-                            bottomActionBarConfig:
-                                const BottomActionBarConfig(),
-                            searchViewConfig: const SearchViewConfig(),
                           ),
                         ),
                       ),
@@ -335,8 +214,8 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -495,26 +495,26 @@ class _DisplayProfileState extends State<DisplayProfile> {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) =>
-                          ChatDiscussion(),
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                        return SlideTransition(
-                          position: Tween<Offset>(
-                            begin: const Offset(0.0, 0.2),
-                            end: Offset.zero,
-                          ).animate(animation),
-                          child: FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          ),
-                        );
-                      },
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   PageRouteBuilder(
+                  //     pageBuilder: (context, animation, secondaryAnimation) =>
+                  //         ChatDiscussion(),
+                  //     transitionsBuilder:
+                  //         (context, animation, secondaryAnimation, child) {
+                  //       return SlideTransition(
+                  //         position: Tween<Offset>(
+                  //           begin: const Offset(0.0, 0.2),
+                  //           end: Offset.zero,
+                  //         ).animate(animation),
+                  //         child: FadeTransition(
+                  //           opacity: animation,
+                  //           child: child,
+                  //         ),
+                  //       );
+                  //     },
+                  //   ),
+                  // );
                 },
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12),

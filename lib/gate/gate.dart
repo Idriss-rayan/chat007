@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplechat/gate/login_page.dart';
 import 'package:simplechat/pages/main_page.dart';
+import 'package:simplechat/test/test2.dart';
 
 class Gate extends StatefulWidget {
   const Gate({super.key});
@@ -39,5 +40,6 @@ class _GateState extends State<Gate> {
     }
 
     return _isLoggedIn ? const MainPage() : const LoginPage();
+    //return _isLoggedIn ? const SocketStatusWidget() : const LoginPage();
   }
 }

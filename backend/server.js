@@ -7,12 +7,18 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const http = require('http');
+const { Server } = require('socket.io');
 
 // ---------------------------
 // Configuration du serveur
 // ---------------------------
 const app = express();
 app.use(bodyParser.json());
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: { origin: '*' } // autoriser Flutter à se connecter
+});
 
 const PORT = 3000;
 const SECRET_KEY = process.env.JWT_SECRET;
@@ -33,6 +39,23 @@ db.connect(err => {
         process.exit(1);
     }
     console.log('✅ Connecté à la base MySQL:', process.env.DB_NAME);
+});
+
+//===================================================================
+
+// Quand un client se connecte
+io.on('connection', (socket) => {
+    console.log('🟢 Nouveau client connecté:', socket.id);
+
+    socket.on('message', (msg) => {
+        console.log('Message reçu:', msg);
+        socket.broadcast.emit('message', msg); // envoie à tous les autres clients
+    });
+
+    // Quand il se déconnecte
+    socket.on('disconnect', () => {
+        console.log('🔴 Client déconnecté:', socket.id);
+    });
 });
 
 // ---------------------------
@@ -683,6 +706,6 @@ app.get('/dashboard', authenticateToken, (req, res) => {
 // ---------------------------
 // Démarrage du serveur
 // ---------------------------
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
 });
