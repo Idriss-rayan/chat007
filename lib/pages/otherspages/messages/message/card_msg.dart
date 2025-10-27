@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:simplechat/pages/otherspages/messages/calls/page_calls.dart';
-import 'package:simplechat/pages/otherspages/messages/message/chat_discussion.dart';
 import 'package:simplechat/pages/otherspages/messages/message/components/display_profile.dart';
 
 class CardMsg extends StatefulWidget {
