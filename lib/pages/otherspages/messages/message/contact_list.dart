@@ -152,7 +152,7 @@ class _ContactListState extends State<ContactList> {
                   ),
                 )
               : ListView.builder(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(5),
                   itemCount: contacts.length,
                   itemBuilder: (context, index) {
                     final contact = contacts[index];

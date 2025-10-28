@@ -4,45 +4,67 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 class SocketService with ChangeNotifier {
   IO.Socket? _socket;
   final List<Map<String, dynamic>> _messages = [];
-
   List<Map<String, dynamic>> get messages => _messages;
 
-  void connect() {
-    if (_socket != null && _socket!.connected) return;
+  bool _isConnected = false;
+  bool get isConnected => _isConnected;
 
+  void connect(int userId, String token) {
+    // 👈 AJOUT DU TOKEN
+    if (_socket != null && _socket!.connected) return;
     _socket = IO.io(
-      'http://192.168.0.169:3000', // ⚠️ Mets ton IP locale ici
+      'http://192.168.0.169:3000',
       IO.OptionBuilder()
           .setTransports(['websocket'])
-          .enableReconnection()
+          .setAuth({'token': token})
+          .disableAutoConnect() // ⚡ Désactive la connexion auto pour contrôler manuellement
+          .enableForceNew() // ⚡ Force toujours un nouveau socket, utile pour reconnect
           .build(),
     );
 
     _socket!.onConnect((_) {
+      _isConnected = true;
+      notifyListeners();
       debugPrint('✅ Connecté au serveur Socket.IO');
+
+      // 👇 PLUS BESOIN de register manuel si vous utilisez le middleware JWT
+      // _socket!.emit('register', userId); // 🗑️ À SUPPRIMER
     });
 
     _socket!.onDisconnect((_) {
+      _isConnected = false;
+      notifyListeners();
       debugPrint('❌ Déconnecté du serveur');
     });
 
-    _socket!.on('message', (data) {
+    // Réception d'un message privé
+    _socket!.on('private_message', (data) {
       _messages.add({
-        "text": data,
+        "text": data["message"],
         "isMe": false,
+        "from": data["from"],
       });
       notifyListeners();
     });
+    _socket!.connect();
   }
 
-  void sendMessage(String message) {
+  void sendPrivateMessage(String message, int contactId, int userID) {
     if (_socket == null || !_socket!.connected) return;
-    _socket!.emit('message', message);
 
     _messages.add({
       "text": message,
       "isMe": true,
+      "from": userID,
+      "to": contactId,
     });
+    print(contactId);
+
+    _socket!.emit('private_message', {
+      "to": contactId,
+      "message": message,
+    });
+
     notifyListeners();
   }
 
@@ -53,5 +75,24 @@ class SocketService with ChangeNotifier {
       "isMe": true,
     });
     notifyListeners();
+  }
+
+  // 👈 AJOUTER une méthode disconnect propre
+  void disconnect() {
+    if (_socket != null) {
+      try {
+        if (_socket!.connected) {
+          _socket!.disconnect(); // Déconnecte proprement
+        }
+        _socket!.destroy(); // Détruit complètement le socket
+      } catch (e) {
+        debugPrint('Erreur lors de la déconnexion du socket: $e');
+      } finally {
+        _socket = null;
+        _isConnected = false;
+        notifyListeners();
+        debugPrint('🔴 Socket détruit et déconnexion complète');
+      }
+    }
   }
 }

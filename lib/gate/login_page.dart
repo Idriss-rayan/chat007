@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:simplechat/component/buttons/dont_have_account.dart';
 import 'package:simplechat/component/buttons/email_button.dart';
 import 'package:simplechat/component/buttons/facebook_btn.dart';
@@ -11,6 +12,7 @@ import 'package:simplechat/component/buttons/google_btn.dart';
 import 'package:simplechat/component/buttons/password_button.dart';
 import 'package:simplechat/component/buttons/login_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simplechat/pages/otherspages/messages/message/service_socket.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -38,12 +40,22 @@ class _LoginPageState extends State<LoginPage> {
       final data = jsonDecode(response.body);
       String token = data['token'];
       final user = data['user'];
+
+      // 🔥 CORRECTION : Récupérer l'ID utilisateur correctement
+      final userId = user['id'];
+
       print("Connexion réussie !");
-      print("Token JWT : ${data['token']}");
+      print("Token JWT : $token");
+      print("User ID : $userId");
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('jwt_token', token);
-      await prefs.setInt(
-          'user_id', user['id']); // 👈 ici on sauvegarde le userId
+      await prefs.setInt('user_id', userId);
+
+      // 🔥 CORRECTION : Bon ordre des paramètres et bon ID
+      final socketService = Provider.of<SocketService>(context, listen: false);
+      socketService.connect(userId, token); // userId d'abord, puis token
+      print("🆕 NOUVEAU USER: ID=$userId, Email=${emailController.text}");
 
       return true; // ✅ login OK
     } else {

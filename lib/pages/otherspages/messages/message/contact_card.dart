@@ -177,7 +177,7 @@ class _ContactCardState extends State<ContactCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _buildActionButton(
-                        icon: Icons.message,
+                        icon: Icons.message_outlined,
                         label: 'SMS',
                         color: const Color(0xFF2196F3),
                         onTap: () {

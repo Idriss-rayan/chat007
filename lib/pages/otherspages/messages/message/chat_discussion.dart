@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplechat/pages/otherspages/messages/message/service_socket.dart';
 
 class ChatDiscussion extends StatefulWidget {
@@ -40,9 +41,13 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
     });
 
     // ✅ Connecte le socket au démarrage
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Récupérer d'abord l'userID
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int? userId = prefs.getInt('user_id');
+      final String? token = prefs.getString('jwt_token');
       final socketService = context.read<SocketService>();
-      socketService.connect();
+      socketService.connect(userId!, token!);
     });
   }
 
@@ -53,12 +58,15 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
     super.dispose();
   }
 
-  // ✅ Envoi de message texte
-  void _sendMessage(SocketService socketService) {
+  // ✅ Envoi de message privé
+  void _sendMessage(SocketService socketService, int contactId, int userId) {
     final message = _controller.text.trim();
     if (message.isEmpty) return;
 
-    socketService.sendMessage(message);
+    // Envoie le message avec le contactId
+    socketService.sendPrivateMessage(message, contactId, userId);
+
+    // Réinitialise le champ
     _controller.clear();
     setState(() => _isTyping = false);
   }
@@ -192,7 +200,8 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                             IconButton(
                               icon:
                                   const Icon(Icons.send, color: Colors.orange),
-                              onPressed: () => _sendMessage(socketService),
+                              onPressed: () => _sendMessage(socketService,
+                                  widget.contactId, widget.userId),
                             ),
                         ],
                       ),

@@ -1,7 +1,7 @@
 // ---------------------------
 // Import des modules
 // ---------------------------
-require('dotenv').config(); // 👈 charge les variables depuis .env
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
@@ -17,7 +17,7 @@ const app = express();
 app.use(bodyParser.json());
 const server = http.createServer(app);
 const io = new Server(server, {
-    cors: { origin: '*' } // autoriser Flutter à se connecter
+    cors: { origin: '*' }
 });
 
 const PORT = 3000;
@@ -42,19 +42,63 @@ db.connect(err => {
 });
 
 //===================================================================
+const users = {}; // Mapping: userId -> socket.id
+
+// Middleware d'authentification Socket.io
+io.use((socket, next) => {
+    const token = socket.handshake.auth.token;
+    console.log('🔐 Token reçu:', token?.substring(0, 20) + '...'); // 🔥 Log partiel
+
+    if (!token) {
+        return next(new Error('Authentication error'));
+    }
+
+    jwt.verify(token, SECRET_KEY, (err, user) => {
+        if (err) return next(new Error('Authentication error'));
+
+        socket.userId = user.id;
+        next();
+    });
+});
 
 // Quand un client se connecte
 io.on('connection', (socket) => {
-    console.log('🟢 Nouveau client connecté:', socket.id);
+    console.log('🟢 Nouveau client connecté:', socket.id, 'User ID:', socket.userId);
 
-    socket.on('message', (msg) => {
-        console.log('Message reçu:', msg);
-        socket.broadcast.emit('message', msg); // envoie à tous les autres clients
+    // Auto-register avec le userId du JWT
+    if (socket.userId) {
+        // Nettoyer l'ancien mapping pour cet userId
+        for (const [existingUserId, existingSocketId] of Object.entries(users)) {
+            if (existingUserId === socket.userId.toString()) {
+                delete users[existingUserId];
+                break;
+            }
+        }
+
+        users[socket.userId] = socket.id;
+        console.log(`📱 User ${socket.userId} enregistré avec socket ${socket.id}`);
+    }
+
+    // 🔹 Envoi d'un message privé
+    socket.on('private_message', ({ to, message }) => {
+        const targetSocketId = users[to];
+        if (targetSocketId) {
+            io.to(targetSocketId).emit('private_message', {
+                from: socket.userId,
+                message,
+            });
+            console.log(`📩 Message privé de ${socket.userId} vers ${to}: ${message}`);
+        } else {
+            console.log(`⚠️ Utilisateur ${to} introuvable ou déconnecté`);
+        }
     });
 
-    // Quand il se déconnecte
+    // 🔹 Déconnexion
     socket.on('disconnect', () => {
-        console.log('🔴 Client déconnecté:', socket.id);
+        if (socket.userId) {
+            delete users[socket.userId];
+            console.log(`🔴 Utilisateur ${socket.userId} déconnecté`);
+        }
     });
 });
 
@@ -77,14 +121,14 @@ app.post('/register', async (req, res) => {
             (err, results) => {
                 if (err) {
                     console.error('Erreur MySQL:', err);
-                    return res.status(500).json({ message: 'Erreur lors de la création de l’utilisateur' });
+                    return res.status(500).json({ message: "Erreur lors de la création de l'utilisateur" });
                 }
 
                 // ✅ Génération du token JWT
                 const token = jwt.sign(
                     { id: results.insertId, email: email },
-                    SECRET_KEY, // ⚠️ mets une vraie clé secrète dans une variable d'environnement
-                    { expiresIn: '2h' }
+                    SECRET_KEY,
+
                 );
 
                 // ✅ Réponse complète
@@ -107,10 +151,6 @@ app.post('/register', async (req, res) => {
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({ message: 'Email et mot de passe requis' });
-    }
-
     db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
         if (err) return res.status(500).json({ message: 'Erreur serveur', error: err });
 
@@ -125,12 +165,24 @@ app.post('/login', (req, res) => {
             return res.status(401).json({ message: 'Mot de passe incorrect' });
         }
 
-        const token = jwt.sign(
-            { id: user.id, username: user.username },
-            SECRET_KEY
-        );
+        console.log('🔐 User trouvé:', {
+            id: user.id,
+            email: user.email,
+            username: user.username
+        });
 
-        // ✅ On renvoie aussi les infos user
+        // 🔥 GÉNÈRE LE TOKEN AVEC LE BON USER
+        const tokenPayload = {
+            id: user.id,
+            username: user.username
+        };
+
+        const token = jwt.sign(tokenPayload, SECRET_KEY);
+
+        // 🔥 VÉRIFIE CE QUE CONTIENT LE TOKEN
+        const decoded = jwt.verify(token, SECRET_KEY);
+        console.log('🔐 Token généré pour user ID:', decoded.id);
+
         res.json({
             message: 'Connexion réussie',
             token,
@@ -142,7 +194,6 @@ app.post('/login', (req, res) => {
         });
     });
 });
-
 
 // ---------------------------
 // Route pour ajouter des infos utilisateur
@@ -174,15 +225,15 @@ app.post('/user-info', authenticateToken, (req, res) => {
     db.query(sql, [user_id, first_name, last_name, email, country || null, city || null, genderValue], (err, results) => {
         if (err) {
             console.error('Erreur MySQL:', err);
-            return res.status(500).json({ message: 'Erreur lors de l’insertion des infos', error: err });
+            return res.status(500).json({ message: "Erreur lors de l'insertion des infos", error: err });
         }
         res.status(201).json({ message: 'Infos utilisateur enregistrées avec succès' });
     });
 });
+
 //------------------------------------------------
 // Récupérer les infos de l'utilisateur connecté
-//________________________________________________
-
+//------------------------------------------------
 app.get('/user-info', authenticateToken, (req, res) => {
     const user_id = req.user.id;
 
@@ -204,7 +255,6 @@ app.get('/user-info', authenticateToken, (req, res) => {
 //------------------------------------------------
 // Obtenir la listes des utilisateurs from mysql |
 //------------------------------------------------
-
 app.get('/users', (req, res) => {
     const sql = `SELECT id, first_name,CONCAT(first_name, ' ', last_name) AS name, gender, country FROM user_infos`;
     db.query(sql, (err, results) => {
@@ -220,7 +270,7 @@ app.get('/users', (req, res) => {
 // 🔹 FOLLOW un utilisateur
 // ===========================
 app.post('/follow', (req, res) => {
-    const { followerId, followedId } = req.body; // ← snake_case
+    const { followerId, followedId } = req.body;
 
     if (followerId === followedId) {
         return res.status(400).json({ message: "Tu ne peux pas te suivre toi-même" });
@@ -235,7 +285,6 @@ app.post('/follow', (req, res) => {
         res.json({ message: 'Utilisateur suivi avec succès' });
     });
 });
-
 
 // ===========================
 // 🔹 UNFOLLOW un utilisateur
@@ -304,7 +353,6 @@ app.get('/following/:userId', (req, res) => {
 
 // ===========================
 // 🔹 Vérifier si je follow déjà un utilisateur
-// (utile pour afficher le bouton "Follow"/"Unfollow")
 // ===========================
 app.get('/is-following', (req, res) => {
     const { followerId, followedId } = req.query;
@@ -322,37 +370,15 @@ app.get('/is-following', (req, res) => {
     });
 });
 
-
-// ---------------------------
-// Middleware d’authentification JWT
-// ---------------------------
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) return res.sendStatus(401);
-
-    jwt.verify(token, SECRET_KEY, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
-}
-
-
 // =========================================
 // 🔹 Récupérer les statistiques utilisateur
 // =========================================
 app.get('/user-stats/:userId', (req, res) => {
     const userId = req.params.userId;
 
-    // Compter les followers
     const followersQuery = 'SELECT COUNT(*) as count FROM followers WHERE followed_id = ?';
-
-    // Compter les following
     const followingQuery = 'SELECT COUNT(*) as count FROM followers WHERE follower_id = ?';
 
-    // Exécuter les requêtes en parallèle
     db.query(followersQuery, [userId], (err, followersResult) => {
         if (err) {
             console.error('Erreur comptage followers:', err);
@@ -365,10 +391,9 @@ app.get('/user-stats/:userId', (req, res) => {
                 return res.status(500).json({ error: 'Erreur serveur' });
             }
 
-            // Retourner les résultats sans les groupes pour l'instant
             res.json({
                 totalContacts: followersResult[0].count,
-                groupsCount: 0, // Mettre à 0 puisque vous n'avez pas de groupes
+                groupsCount: 0,
                 followingCount: followingResult[0].count,
                 lastSeen: "En ligne"
             });
@@ -425,10 +450,11 @@ app.get('/profile/:userId', authenticateToken, (req, res) => {
             avatarUrl: user.avatar_url,
             isOnline: user.is_online,
             joinDate: user.created_at,
-            phoneNumber: user.phone_number // Si disponible
+            phoneNumber: user.phone_number
         });
     });
 });
+
 //========================
 // 1. Ajouter un contact
 //========================
@@ -437,14 +463,12 @@ app.post('/contacts', (req, res) => {
 
     console.log('🔄 Tentative d\'ajout de contact:', { user_id, contact_id });
 
-    // Vérifier que les données sont présentes
     if (!user_id || !contact_id) {
         return res.status(400).json({
             error: 'Données manquantes: user_id et contact_id sont requis'
         });
     }
 
-    // Vérifier si le contact existe déjà
     const checkSql = 'SELECT id FROM contacts WHERE user_id = ? AND contact_id = ?';
 
     db.query(checkSql, [user_id, contact_id], (err, results) => {
@@ -458,7 +482,6 @@ app.post('/contacts', (req, res) => {
             return res.status(400).json({ error: 'Contact déjà existant' });
         }
 
-        // Ajouter le contact
         const insertSql = 'INSERT INTO contacts (user_id, contact_id) VALUES (?, ?)';
 
         db.query(insertSql, [user_id, contact_id], (err, results) => {
@@ -544,6 +567,7 @@ app.get('/contacts/check', (req, res) => {
         });
     });
 });
+
 //----------------------------------------------
 // 4. Obtenir tous les contacts d'un utilisateur
 //----------------------------------------------
@@ -556,17 +580,16 @@ app.get('/contacts/:user_id', (req, res) => {
         return res.status(400).json({ error: 'user_id est requis' });
     }
 
-    // Cette requête suppose que tu as une table 'users' avec ces colonnes
     const sql = `
   SELECT 
     c.*,
-    ui.user_id AS contact_user_id,  -- ← IMPORTANT: l'ID de l'utilisateur contact
+    ui.user_id AS contact_user_id,
     ui.first_name,   
     ui.last_name,
     ui.email,   
     ui.country,   
     ui.city,
-    ui.gender,   
+    ui.gender,
     c.created_at AS added_on
   FROM contacts c 
   JOIN user_infos ui ON c.contact_id = ui.user_id 
@@ -601,7 +624,6 @@ app.post('/private-room', authenticateToken, (req, res) => {
         return res.status(400).json({ error: 'contactUserId est requis' });
     }
 
-    // 1. Vérifier si une room existe déjà
     const checkRoomSql = `
         SELECT r.* 
         FROM rooms r
@@ -617,7 +639,6 @@ app.post('/private-room', authenticateToken, (req, res) => {
         }
 
         if (results.length > 0) {
-            // Room existe déjà
             console.log('✅ Room existante trouvée:', results[0].id);
             return res.json({
                 success: true,
@@ -626,7 +647,6 @@ app.post('/private-room', authenticateToken, (req, res) => {
             });
         }
 
-        // 2. Créer une nouvelle room
         const createRoomSql = 'INSERT INTO rooms (type, created_by) VALUES (?, ?)';
 
         db.query(createRoomSql, ['private', currentUserId], (err, roomResults) => {
@@ -638,7 +658,6 @@ app.post('/private-room', authenticateToken, (req, res) => {
             const newRoomId = roomResults.insertId;
             console.log('✅ Nouvelle room créée:', newRoomId);
 
-            // 3. Ajouter les deux membres
             const addMembersSql = 'INSERT INTO room_members (room_id, user_id) VALUES (?, ?), (?, ?)';
 
             db.query(addMembersSql, [newRoomId, currentUserId, newRoomId, contactUserId], (err, memberResults) => {
@@ -649,7 +668,6 @@ app.post('/private-room', authenticateToken, (req, res) => {
 
                 console.log('✅ Membres ajoutés à la room');
 
-                // Récupérer les infos de la nouvelle room
                 const getRoomSql = 'SELECT * FROM rooms WHERE id = ?';
                 db.query(getRoomSql, [newRoomId], (err, roomInfo) => {
                     if (err) {
@@ -695,6 +713,21 @@ app.get('/user-rooms', authenticateToken, (req, res) => {
     });
 });
 
+// ---------------------------
+// Middleware d'authentification JWT
+// ---------------------------
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) return res.sendStatus(401);
+
+    jwt.verify(token, SECRET_KEY, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+}
 
 // ---------------------------
 // Exemple de route protégée

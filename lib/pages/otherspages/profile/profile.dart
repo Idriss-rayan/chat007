@@ -2,7 +2,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simplechat/pages/otherspages/messages/message/service_socket.dart';
 import 'profile_colors.dart';
 import 'profile_widgets.dart';
 import 'profile_dialogs.dart';
@@ -182,7 +184,10 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
   Future<void> logout(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    final socketService = Provider.of<SocketService>(context, listen: false);
+    socketService.disconnect();
     await prefs.remove('jwt_token');
+    await prefs.remove('user_id');
     Navigator.pushReplacementNamed(context, '/login');
   }
 
