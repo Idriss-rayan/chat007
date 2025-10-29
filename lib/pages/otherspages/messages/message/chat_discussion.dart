@@ -65,6 +65,9 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
 
     // Envoie le message avec le contactId
     socketService.sendPrivateMessage(message, contactId, userId);
+    print(
+      'ici le id du contact est ${contactId} et le id du user est ${userId}',
+    );
 
     // Réinitialise le champ
     _controller.clear();
@@ -133,10 +136,8 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                   itemCount: socketService.messages.length,
                   itemBuilder: (context, index) {
                     final msg = socketService.messages.reversed.toList()[index];
-
                     final isMe = msg["isMe"] ?? false;
                     final text = msg["text"] ?? "";
-
                     return Align(
                       alignment:
                           isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -200,8 +201,11 @@ class _ChatDiscussionState extends State<ChatDiscussion> {
                             IconButton(
                               icon:
                                   const Icon(Icons.send, color: Colors.orange),
-                              onPressed: () => _sendMessage(socketService,
-                                  widget.contactId, widget.userId),
+                              onPressed: () => _sendMessage(
+                                socketService,
+                                widget.contactId,
+                                widget.userId,
+                              ),
                             ),
                         ],
                       ),

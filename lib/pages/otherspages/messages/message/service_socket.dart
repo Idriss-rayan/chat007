@@ -26,9 +26,6 @@ class SocketService with ChangeNotifier {
       _isConnected = true;
       notifyListeners();
       debugPrint('✅ Connecté au serveur Socket.IO');
-
-      // 👇 PLUS BESOIN de register manuel si vous utilisez le middleware JWT
-      // _socket!.emit('register', userId); // 🗑️ À SUPPRIMER
     });
 
     _socket!.onDisconnect((_) {
@@ -58,8 +55,6 @@ class SocketService with ChangeNotifier {
       "from": userID,
       "to": contactId,
     });
-    print(contactId);
-
     _socket!.emit('private_message', {
       "to": contactId,
       "message": message,

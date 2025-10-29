@@ -3,67 +3,619 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Test Socket.IO avec messages</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testeur Chat Temps Réel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 5px;
+        }
+
+        .status.connected {
+            background: #27ae60;
+        }
+
+        .status.disconnected {
+            background: #e74c3c;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            height: 600px;
+        }
+
+        .sidebar {
+            background: #34495e;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            background: #ecf0f1;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+
+        input,
+        textarea,
+        button,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.success {
+            background: #27ae60;
+        }
+
+        button.success:hover {
+            background: #219a52;
+        }
+
+        button.danger {
+            background: #e74c3c;
+        }
+
+        button.danger:hover {
+            background: #c0392b;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: white;
+            border-bottom: 2px solid #bdc3c7;
+        }
+
+        .message {
+            padding: 12px 16px;
+            margin: 10px 0;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .message.sent {
+            background: #3498db;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+
+        .message.received {
+            background: #ecf0f1;
+            color: #2c3e50;
+            margin-right: auto;
+            border-bottom-left-radius: 2px;
+        }
+
+        .message.system {
+            background: #f39c12;
+            color: white;
+            margin: 5px auto;
+            text-align: center;
+            max-width: 60%;
+            font-size: 0.9rem;
+        }
+
+        .message-info {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 2px solid #bdc3c7;
+        }
+
+        .message-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-form input {
+            flex: 1;
+        }
+
+        .users-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .user-item {
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .user-item:hover {
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .user-item.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .logs {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 2px solid #34495e;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+            padding: 3px 0;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .log-time {
+            color: #3498db;
+        }
+
+        .log-type.info {
+            color: #3498db;
+        }
+
+        .log-type.success {
+            color: #27ae60;
+        }
+
+        .log-type.error {
+            color: #e74c3c;
+        }
+
+        .log-type.warning {
+            color: #f39c12;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Test Socket.IO</h1>
-    <p id="status">Statut : ❌ Déconnecté</p>
+    <div class="container">
+        <header>
+            <h1>🧪 Testeur Chat Temps Réel</h1>
+            <div class="status disconnected" id="connectionStatus">Déconnecté</div>
+            <div id="userInfo"></div>
+        </header>
 
-    <input type="text" id="messageInput" placeholder="Écris un message" />
-    <button id="sendBtn">Envoyer</button>
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="section">
+                    <div class="section-title">🔐 Authentification</div>
+                    <input type="email" id="loginEmail" placeholder="Email" value="miro@test.com">
+                    <input type="password" id="loginPassword" placeholder="Mot de passe" value="password123">
+                    <button onclick="login()" class="success">Se connecter</button>
+                    <button onclick="logout()" class="danger" style="display:none;" id="logoutBtn">Se
+                        déconnecter</button>
+                </div>
 
-    <h3>Messages reçus :</h3>
-    <ul id="messagesList"></ul>
+                <div class="section">
+                    <div class="section-title">👥 Utilisateurs Disponibles</div>
+                    <div class="users-list" id="usersList">
+                        <div class="user-item">Connectez-vous pour charger les utilisateurs</div>
+                    </div>
+                </div>
 
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+                <div class="section">
+                    <div class="section-title">⚙️ Configuration</div>
+                    <select id="targetUser">
+                        <option value="">Sélectionner un destinataire</option>
+                    </select>
+                    <button onclick="connectSocket()">🔌 Connecter Socket</button>
+                    <button onclick="disconnectSocket()" class="danger">🔌 Déconnecter Socket</button>
+                </div>
+            </div>
+
+            <div class="chat-area">
+                <div class="messages" id="messages">
+                    <div class="message system">
+                        Bienvenue dans le testeur de chat! Connectez-vous pour commencer.
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <div class="message-form">
+                        <input type="text" id="messageInput" placeholder="Tapez votre message..." disabled>
+                        <button onclick="sendMessage()" id="sendBtn" disabled>Envoyer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="logs" id="logs">
+            <div class="log-entry">
+                <span class="log-time" id="currentTime"></span>
+                <span class="log-type info">Système prêt - En attente de connexion</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔥 CORRECTION : URL complète pour socket.io -->
+    <script src="http://127.0.0.1:3000/socket.io/socket.io.js"></script>
     <script>
-        // ⚠️ Mets ici l'IP de ton PC
-        const socket = io("http://192.168.0.169:3000", {
-            transports: ["websocket"]
+        const API_BASE = 'http://127.0.0.1:3000';
+        let socket = null;
+        let currentUser = null;
+        let currentToken = null;
+
+        // 🔥 CORRECTION : Mise à jour de l'heure en temps réel
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent =
+                `[${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}]`;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Logging system
+        function addLog(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const time = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <span class="log-time">[${time}]</span>
+                <span class="log-type ${type}">${message}</span>
+            `;
+            logs.appendChild(logEntry);
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        // Authentication
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                addLog('❌ Veuillez remplir email et mot de passe', 'error');
+                return;
+            }
+
+            try {
+                addLog('🔐 Tentative de connexion...', 'info');
+
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                // 🔥 CORRECTION : Meilleure gestion des erreurs HTTP
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.token && data.user) {
+                    currentUser = data.user;
+                    currentToken = data.token;
+
+                    document.getElementById('userInfo').innerHTML =
+                        `Connecté en tant que: <strong>${currentUser.username}</strong> (ID: ${currentUser.id})`;
+                    document.getElementById('connectionStatus').textContent = 'Authentifié';
+                    document.getElementById('connectionStatus').className = 'status connected';
+                    document.getElementById('logoutBtn').style.display = 'block';
+
+                    addLog(`✅ Connexion réussie: ${currentUser.username} (ID: ${currentUser.id})`, 'success');
+
+                    // 🔥 CORRECTION : Attendre le chargement des utilisateurs
+                    await loadUsers();
+                } else {
+                    throw new Error('Données de connexion manquantes');
+                }
+            } catch (error) {
+                addLog(`❌ Erreur de connexion: ${error.message}`, 'error');
+            }
+        }
+
+        function logout() {
+            if (socket) {
+                socket.disconnect();
+                socket = null;
+            }
+
+            currentUser = null;
+            currentToken = null;
+            document.getElementById('userInfo').innerHTML = '';
+            document.getElementById('connectionStatus').textContent = 'Déconnecté';
+            document.getElementById('connectionStatus').className = 'status disconnected';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('messageInput').disabled = true;
+            document.getElementById('sendBtn').disabled = true;
+
+            // Réinitialiser les listes
+            document.getElementById('usersList').innerHTML = '<div class="user-item">Connectez-vous pour charger les utilisateurs</div>';
+            document.getElementById('targetUser').innerHTML = '<option value="">Sélectionner un destinataire</option>';
+
+            addLog('✅ Déconnexion réussie', 'info');
+        }
+
+        // Socket.io connection
+        function connectSocket() {
+            if (!currentToken) {
+                addLog('❌ Veuillez vous connecter d\'abord', 'error');
+                return;
+            }
+
+            if (socket && socket.connected) {
+                addLog('ℹ️ Socket déjà connecté', 'info');
+                return;
+            }
+
+            try {
+                // 🔥 CORRECTION : Connexion Socket.io avec gestion d'erreur
+                socket = io(API_BASE, {
+                    auth: {
+                        token: currentToken
+                    },
+                    transports: ['websocket', 'polling'] // 🔥 Support multiple transports
+                });
+
+                socket.on('connect', () => {
+                    document.getElementById('connectionStatus').textContent = 'Connecté WebSocket';
+                    document.getElementById('messageInput').disabled = false;
+                    document.getElementById('sendBtn').disabled = false;
+                    addLog('✅ Connecté au serveur WebSocket', 'success');
+                });
+
+                socket.on('disconnect', (reason) => {
+                    document.getElementById('connectionStatus').textContent = 'Déconnecté WebSocket';
+                    document.getElementById('messageInput').disabled = true;
+                    document.getElementById('sendBtn').disabled = true;
+                    addLog(`🔌 Déconnecté: ${reason}`, 'warning');
+                });
+
+                socket.on('private_message', (data) => {
+                    addMessage(data.from, data.message, 'received');
+                    addLog(`📩 Message reçu de ${data.from}: ${data.message}`, 'info');
+                });
+
+                socket.on('connect_error', (error) => {
+                    addLog(`❌ Erreur connexion WebSocket: ${error.message}`, 'error');
+                });
+
+            } catch (error) {
+                addLog(`❌ Erreur initialisation Socket: ${error.message}`, 'error');
+            }
+        }
+
+        function disconnectSocket() {
+            if (socket) {
+                socket.disconnect();
+                socket = null;
+                addLog('🔌 Socket déconnecté manuellement', 'info');
+            }
+        }
+
+        // Message handling
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const targetUserSelect = document.getElementById('targetUser');
+            const message = messageInput.value.trim();
+            const to = targetUserSelect.value;
+
+            if (!message) {
+                addLog('❌ Veuillez taper un message', 'warning');
+                return;
+            }
+
+            if (!to) {
+                addLog('❌ Veuillez sélectionner un destinataire', 'warning');
+                return;
+            }
+
+            if (!socket || !socket.connected) {
+                addLog('❌ WebSocket non connecté', 'error');
+                return;
+            }
+
+            socket.emit('private_message', { to, message });
+            addMessage(currentUser.id, message, 'sent');
+            addLog(`📤 Message envoyé à ${to}: ${message}`, 'success');
+
+            messageInput.value = '';
+            messageInput.focus();
+        }
+
+        function addMessage(from, message, type) {
+            const messages = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+
+            const fromText = type === 'sent' ? 'Moi' : `User ${from}`;
+            messageDiv.innerHTML = `
+                <div>${message}</div>
+                <div class="message-info">${fromText} - ${new Date().toLocaleTimeString()}</div>
+            `;
+
+            messages.appendChild(messageDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Load users list
+        async function loadUsers() {
+            try {
+                addLog('👥 Chargement des utilisateurs...', 'info');
+
+                const response = await fetch(`${API_BASE}/users`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const users = await response.json();
+
+                const usersList = document.getElementById('usersList');
+                const targetUser = document.getElementById('targetUser');
+
+                usersList.innerHTML = '';
+                targetUser.innerHTML = '<option value="">Sélectionner un destinataire</option>';
+
+                let userCount = 0;
+                users.forEach(user => {
+                    if (user.id !== currentUser.id) {
+                        userCount++;
+
+                        // Users list
+                        const userItem = document.createElement('div');
+                        userItem.className = 'user-item';
+                        userItem.textContent = `${user.name} (${user.country})`;
+                        userItem.onclick = () => {
+                            document.querySelectorAll('.user-item').forEach(item =>
+                                item.classList.remove('active'));
+                            userItem.classList.add('active');
+                            targetUser.value = user.id;
+                            addLog(`👤 ${user.name} sélectionné`, 'info');
+                        };
+                        usersList.appendChild(userItem);
+
+                        // Target select
+                        const option = document.createElement('option');
+                        option.value = user.id;
+                        option.textContent = `${user.name} (${user.country})`;
+                        targetUser.appendChild(option);
+                    }
+                });
+
+                addLog(`✅ ${userCount} utilisateurs chargés`, 'success');
+            } catch (error) {
+                addLog(`❌ Erreur chargement utilisateurs: ${error.message}`, 'error');
+            }
+        }
+
+        // Enter key to send message
+        document.getElementById('messageInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
         });
 
-        const statusEl = document.getElementById("status");
-        const sendBtn = document.getElementById("sendBtn");
-        const messageInput = document.getElementById("messageInput");
-        const messagesList = document.getElementById("messagesList");
+        // 🔥 CORRECTION : Test automatique de connexion au backend
+        async function testBackendConnection() {
+            try {
+                const response = await fetch(`${API_BASE}/users`);
+                if (response.ok) {
+                    addLog('✅ Backend détecté et accessible', 'success');
+                }
+            } catch (error) {
+                addLog('❌ Backend inaccessible - Vérifiez que le serveur Node.js est démarré', 'error');
+            }
+        }
 
-        // Connexion
-        socket.on("connect", () => {
-            console.log("✅ Connecté au serveur Socket.IO", socket.id);
-            statusEl.textContent = "Statut : ✅ Connecté (ID: " + socket.id + ")";
-        });
-
-        // Déconnexion
-        socket.on("disconnect", () => {
-            console.log("🔴 Déconnecté du serveur");
-            statusEl.textContent = "Statut : 🔴 Déconnecté";
-        });
-
-        // Erreur de connexion
-        socket.on("connect_error", (err) => {
-            console.error("⚠️ Erreur de connexion :", err);
-            statusEl.textContent = "Statut : ⚠️ Erreur de connexion";
-        });
-
-        // Réception d'un message
-        socket.on("message", (msg) => {
-            console.log("💬 Message reçu :", msg);
-            const li = document.createElement("li");
-            li.textContent = msg;
-            messagesList.appendChild(li);
-        });
-
-        // Envoyer un message
-        sendBtn.addEventListener("click", () => {
-            const msg = messageInput.value.trim();
-            if (!msg) return;
-            socket.emit("message", msg); // Émet au serveur
-            messageInput.value = "";
-            const li = document.createElement("li");
-            li.textContent = "Moi : " + msg;
-            messagesList.appendChild(li);
-        });
+        // Initialisation
+        testBackendConnection();
+        addLog('🚀 Interface de test chargée - Prêt à utiliser');
     </script>
 </body>
 

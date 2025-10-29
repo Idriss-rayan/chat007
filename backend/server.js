@@ -23,6 +23,7 @@ const io = new Server(server, {
 const PORT = 3000;
 const SECRET_KEY = process.env.JWT_SECRET;
 
+
 // ---------------------------
 // Connexion à MySQL
 // ---------------------------
@@ -43,6 +44,7 @@ db.connect(err => {
 
 //===================================================================
 const users = {}; // Mapping: userId -> socket.id
+const userSockets = new Map();
 
 // Middleware d'authentification Socket.io
 io.use((socket, next) => {
