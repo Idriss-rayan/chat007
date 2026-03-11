@@ -28,7 +28,7 @@ class _InformationsState extends State<Informations> {
   late TextEditingController citycontroller;
   late TextEditingController gendercontroller;
   bool _areConditionsAccepted = false; // ✅ Corrigé le nom et initialisé
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   @override
   void initState() {

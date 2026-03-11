@@ -61,7 +61,7 @@ class ProfileApi {
         body: jsonEncode(profileData),
       );
 
-      if (response.statusCode != 201) {
+      if (response.statusCode != 200 && response.statusCode != 201) {
         throw Exception(
             'Erreur lors de la mise à jour: ${response.statusCode}');
       }

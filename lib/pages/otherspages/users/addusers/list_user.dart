@@ -99,8 +99,8 @@ class _ListUserState extends State<ListUser> {
         Uri.parse('http://192.168.0.169:3000/follow'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'follower_id': currentUserId,
-          'followed_id': user['id'],
+          'followerId': currentUserId,
+          'followedId': user['id'],
         }),
       );
 

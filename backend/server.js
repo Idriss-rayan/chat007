@@ -43,63 +43,109 @@ db.connect(err => {
 });
 
 //===================================================================
-const users = {}; // Mapping: userId -> socket.id
-const userSockets = new Map();
+// 🔐 MAPPING UTILISATEURS CONNECTÉS
+// Utiliser Map au lieu d'un simple objet pour de meilleures performances
+const userSockets = new Map(); // userId -> socket.id
 
-// Middleware d'authentification Socket.io
+//===================================================================
+// 🔒 MIDDLEWARE D’AUTHENTIFICATION SOCKET.IO
 io.use((socket, next) => {
     const token = socket.handshake.auth.token;
-    console.log('🔐 Token reçu:', token?.substring(0, 20) + '...'); // 🔥 Log partiel
+    console.log('🔐 Token reçu:', token?.substring(0, 20) + '...');
 
     if (!token) {
-        return next(new Error('Authentication error'));
+        return next(new Error('Authentication error: Token manquant'));
     }
 
     jwt.verify(token, SECRET_KEY, (err, user) => {
-        if (err) return next(new Error('Authentication error'));
+        if (err) {
+            console.log('❌ JWT invalide:', err.message);
+            return next(new Error('Authentication error: Token invalide'));
+        }
 
-        socket.userId = user.id;
+        socket.userId = user.id; // Attache l'ID utilisateur au socket
         next();
     });
 });
 
-// Quand un client se connecte
+//===================================================================
+// ⚡ QUAND UN CLIENT SE CONNECTE
 io.on('connection', (socket) => {
     console.log('🟢 Nouveau client connecté:', socket.id, 'User ID:', socket.userId);
 
-    // Auto-register avec le userId du JWT
+    // 🧩 Enregistrer le socket avec le userId du JWT
     if (socket.userId) {
-        // Nettoyer l'ancien mapping pour cet userId
-        for (const [existingUserId, existingSocketId] of Object.entries(users)) {
-            if (existingUserId === socket.userId.toString()) {
-                delete users[existingUserId];
-                break;
+        // Si cet utilisateur est déjà connecté ailleurs, on ferme l’ancienne connexion
+        if (userSockets.has(socket.userId)) {
+            const oldSocketId = userSockets.get(socket.userId);
+            if (io.sockets.sockets.has(oldSocketId)) {
+                io.to(oldSocketId).disconnectSockets(true);
+                console.log(`♻️ Ancienne connexion de l'utilisateur ${socket.userId} fermée`);
             }
         }
 
-        users[socket.userId] = socket.id;
+        // Enregistrer le nouveau socket
+        userSockets.set(socket.userId.toString(), socket.id);
         console.log(`📱 User ${socket.userId} enregistré avec socket ${socket.id}`);
+        console.log('👥 Utilisateurs connectés:', Array.from(userSockets.entries()));
     }
 
-    // 🔹 Envoi d'un message privé
-    socket.on('private_message', ({ to, message }) => {
-        const targetSocketId = users[to];
-        if (targetSocketId) {
-            io.to(targetSocketId).emit('private_message', {
+    //===================================================================
+    // 💬 MESSAGE PRIVÉ ENTRE DEUX UTILISATEURS
+    // 🔹 Envoi d'un message privé - VERSION CORRIGÉE
+    socket.on('private_message', async ({ to, message }) => {
+        try {
+            console.log(`📤 Message de ${socket.userId} vers ${to}: ${message}`);
+
+            // 1. Sauvegarder le message en base de données
+            const connection = await mysql.createConnection(process.env.DATABASE_URL);
+            const [result] = await connection.execute(
+                'INSERT INTO messages (from_user_id, to_user_id, message) VALUES (?, ?, ?)',
+                [socket.userId, to, message]
+            );
+            await connection.end();
+
+            const messageId = result.insertId;
+
+            // 2. Préparer l'objet message complet
+            const messageData = {
+                id: messageId,
                 from: socket.userId,
-                message,
+                to: parseInt(to),
+                message: message,
+                timestamp: new Date().toISOString()
+            };
+
+            // 3. Envoyer au destinataire s'il est connecté
+            const targetSocketId = userSockets.get(to.toString());
+            if (targetSocketId && io.sockets.sockets.has(targetSocketId)) {
+                io.to(targetSocketId).emit('private_message', messageData);
+                console.log(`📩 Message envoyé à l'utilisateur ${to} (socket: ${targetSocketId})`);
+            } else {
+                console.log(`⚠️ Utilisateur ${to} déconnecté, message sauvegardé en base`);
+            }
+
+            // 4. Accusé de réception à l'expéditeur
+            socket.emit('message_sent', {
+                ...messageData,
+                status: 'delivered'
             });
-            console.log(`📩 Message privé de ${socket.userId} vers ${to}: ${message}`);
-        } else {
-            console.log(`⚠️ Utilisateur ${to} introuvable ou déconnecté`);
+
+            console.log(`✅ Message ${messageId} sauvegardé et diffusé`);
+
+        } catch (error) {
+            console.error('❌ Erreur lors de l\'envoi du message:', error);
+            socket.emit('message_error', { error: 'Erreur lors de l\'envoi' });
         }
     });
 
-    // 🔹 Déconnexion
+    //===================================================================
+    // 🔴 DÉCONNEXION D'UN UTILISATEUR
     socket.on('disconnect', () => {
         if (socket.userId) {
-            delete users[socket.userId];
+            userSockets.delete(socket.userId.toString());
             console.log(`🔴 Utilisateur ${socket.userId} déconnecté`);
+            console.log('👥 Utilisateurs restants:', Array.from(userSockets.entries()));
         }
     });
 });
@@ -713,6 +759,39 @@ app.get('/user-rooms', authenticateToken, (req, res) => {
             rooms: results
         });
     });
+});
+
+// Route pour récupérer les messages entre deux utilisateurs
+app.get('/messages/:userId1/:userId2', async (req, res) => {
+    try {
+        const { userId1, userId2 } = req.params;
+
+        const connection = await mysql.createConnection(process.env.DATABASE_URL);
+        const [messages] = await connection.execute(
+            `SELECT m.*, 
+                    u1.first_name as from_first_name,
+                    u1.last_name as from_last_name,
+                    u2.first_name as to_first_name,
+                    u2.last_name as to_last_name
+             FROM messages m
+             JOIN users u1 ON m.from_user_id = u1.id
+             JOIN users u2 ON m.to_user_id = u2.id
+             WHERE (m.from_user_id = ? AND m.to_user_id = ?) 
+                OR (m.from_user_id = ? AND m.to_user_id = ?)
+             ORDER BY m.created_at ASC`,
+            [userId1, userId2, userId2, userId1]
+        );
+        await connection.end();
+
+        res.json({
+            success: true,
+            messages: messages
+        });
+
+    } catch (error) {
+        console.error('Erreur récupération messages:', error);
+        res.status(500).json({ success: false, error: 'Erreur serveur' });
+    }
 });
 
 // ---------------------------

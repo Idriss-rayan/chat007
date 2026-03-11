@@ -50,7 +50,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   String get phoneNumber =>
       _userProfile['phoneNumber'] ?? "+225 07 00 00 00 00";
   String get status =>
-      _userProfile['isOnline'] == true ? "En ligne" : "En ligne";
+      _userProfile['isOnline'] == true ? "En ligne" : "Hors ligne";
   String get email => _userProfile['email'] ?? "john.doe@email.com";
   String get bio =>
       _userProfile['bio'] ??

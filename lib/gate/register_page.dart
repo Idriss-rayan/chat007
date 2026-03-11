@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simplechat/component/buttons/surname.dart';
 import 'package:simplechat/component/buttons/email_button.dart';
 import 'package:simplechat/component/buttons/facebook_btn.dart';
-import 'package:simplechat/component/buttons/forgot_pass.dart';
 import 'package:simplechat/component/buttons/google_btn.dart';
 import 'package:simplechat/component/buttons/password_button.dart';
 import 'package:simplechat/component/buttons/register_button.dart';
@@ -89,7 +88,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       top: height * 0.125,
                     ), // je pouvais utliser positionned, mais prefere align parce qu'il est plus adaptatif
                     child: Text(
-                      "Sign In",
+                      "Sign Up",
                       style: TextStyle(
                         fontSize: 50,
                         fontWeight: FontWeight.bold,
@@ -134,7 +133,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                   PasswordButton(
                                     controller: passwordController,
                                   ),
-                                  ForgotPass(),
                                   RegisterButton(
                                     onRegister: registerUser,
                                   ),

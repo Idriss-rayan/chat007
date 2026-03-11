@@ -85,12 +85,19 @@ class _PubCardState extends State<PubCard> {
                     ),
                     child: Container(
                       decoration: BoxDecoration(),
-                      child: Image.file(
-                        widget.imageFile ?? File('assets/images/default.jpg'),
-                        height: height * 0.25,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
+                      child: widget.imageFile != null
+                          ? Image.file(
+                              widget.imageFile!,
+                              height: height * 0.25,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.asset(
+                              'assets/images/default.jpg',
+                              height: height * 0.25,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ),
                 ],
@@ -190,7 +197,7 @@ class _PubCardState extends State<PubCard> {
                                                         localSelectedTab = 0;
                                                       });
                                                     },
-                                                    child: localSelectedTab == 1
+                                                    child: localSelectedTab == 0
                                                         ? TopWhite()
                                                         : Top(),
                                                   ),

@@ -89,7 +89,7 @@ class _FollowListState extends State<FollowList> {
     }
   }
 
-  Future<void> _handleUnfollow(int followedId) async {
+  Future<void> _handleRemoveFollower(int followerId) async {
     try {
       // Check if currentUserId is available
       if (currentUserId == null) {
@@ -102,23 +102,24 @@ class _FollowListState extends State<FollowList> {
         return;
       }
 
-      // Call your unfollowUser function
-      await unfollowUser(currentUserId!, followedId);
+      // C'est le follower (followerId) qui nous suit (currentUserId)
+      // On lui fait faire un unfollow de nous
+      await unfollowUser(followerId, currentUserId!);
 
-      // Refresh the list after unfollowing
+      // Refresh the list after removing
       await _loadFollowers();
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Utilisateur unfollow avec succès'),
+          content: Text('Follower retiré avec succès'),
           backgroundColor: Colors.green,
         ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Erreur lors de l\'unfollow: $e'),
+          content: Text('Erreur lors de la suppression: $e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -201,7 +202,7 @@ class _FollowListState extends State<FollowList> {
             country: user['country'] ?? 'Pays non spécifié',
             userImage: user['avatar_url'] ?? 'assets/component/avatar.svg',
             isOnline: user['is_online'] ?? false,
-            onUnfollow: () => _handleUnfollow(user['id']),
+            onUnfollow: () => _handleRemoveFollower(user['id']),
             currentUserId: currentUserId!,
             targetUserId: user['id'],
           );
